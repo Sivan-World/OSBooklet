@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My High School Operating System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@300;400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#EFEAD9;
+  --ink:#1B1A17;
+  --ink-soft:#5A5449;
+  --pur:#D854DC;
+  --pur-deep:#8E2B96;
+  --pur-tint:#F6DEF8;
+  --pur-wash:#FBF0FC;
+  --rule:#CFC7B0;
+  --rule-soft:#DED7C4;
+  --mono:"Martian Mono",ui-monospace,monospace;
+  --serif:"Newsreader",Georgia,serif;
+  --disp:"Bricolage Grotesque",system-ui,sans-serif;
+  --pw:376px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{
+  background:#221E1B;
+  background-image:radial-gradient(ellipse at 50% -10%,#3B332C 0%,#1D1A17 72%);
+  font-family:var(--serif);color:var(--ink);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* ============ CHROME ============ */
+header.bar{
+  flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:9px 16px;
+  color:#C4B9A6;font-family:var(--mono);font-size:8.5px;letter-spacing:.11em;text-transform:uppercase;
+  border-bottom:1px solid #38312A;
+}
+header.bar .ttl{color:#F0E6D6;font-weight:500;letter-spacing:.08em}
+header.bar .sp{flex:1}
+header.bar .btn{
+  font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;
+  background:none;border:1px solid #4A4137;color:#C4B9A6;padding:5px 10px;border-radius:2px;cursor:pointer;
+}
+header.bar .btn:hover{border-color:var(--pur);color:var(--pur)}
+header.bar .btn.go{border-color:var(--pur);color:var(--pur)}
+.saved{color:#6F6759;font-size:8px}
+
+.rail{display:flex;gap:3px}
+.rail button{
+  width:25px;height:25px;display:grid;place-items:center;padding:0;
+  background:transparent;border:1px solid #453D33;border-radius:2px;color:#948877;cursor:pointer;
+}
+.rail button:hover{border-color:var(--pur);color:var(--pur)}
+.rail button.on{background:var(--pur);border-color:var(--pur);color:#221E1B}
+.rail button svg{width:14px;height:14px}
+
+.stage{flex:1;display:grid;place-items:center;padding:12px;min-height:0}
+.spread{display:flex;filter:drop-shadow(0 22px 38px rgba(0,0,0,.55))}
+
+footer.nav{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:16px;padding:9px 12px;
+  color:#8A7E6D;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;
+}
+footer.nav button{
+  font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;
+  background:none;border:1px solid #4A4137;color:#C4B9A6;padding:6px 13px;border-radius:2px;cursor:pointer;
+}
+footer.nav button:hover:not(:disabled){border-color:var(--pur);color:var(--pur)}
+footer.nav button:disabled{opacity:.28;cursor:default}
+:focus-visible{outline:2px solid var(--pur);outline-offset:2px}
+
+/* ============ PAGE ============ */
+.page{
+  width:var(--pw);height:calc(var(--pw) * 1.5454);
+  background:var(--paper);position:relative;overflow:hidden;
+  padding:30px 27px 32px;display:flex;flex-direction:column;
+  background-image:
+    radial-gradient(rgba(120,105,80,.10) .6px,transparent .7px),
+    radial-gradient(rgba(120,105,80,.06) .6px,transparent .7px);
+  background-size:5px 5px,8px 8px;
+  background-position:0 0,3px 4px;
+}
+.page.verso{box-shadow:inset -16px 0 20px -16px rgba(60,45,25,.5)}
+.page.recto{box-shadow:inset 16px 0 20px -16px rgba(60,45,25,.5)}
+.page.solo{box-shadow:none}
+@media (prefers-reduced-motion:no-preference){
+  .spread{animation:settle .2s ease-out}
+  @keyframes settle{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}
+}
+
+.sysmark{
+  position:absolute;top:26px;display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);
+}
+.verso .sysmark,.solo .sysmark{left:27px}
+.recto .sysmark{right:27px;flex-direction:row-reverse}
+.sysmark svg{width:12px;height:12px;color:var(--pur-deep)}
+
+.body{margin-top:24px;flex:1;display:flex;flex-direction:column;min-height:0}
+.body.tight{margin-top:18px}
+.body.nomark{margin-top:0}
+
+/* ============ TYPE ============ */
+h2.ptitle{
+  font-family:var(--disp);font-weight:800;font-size:25px;line-height:.98;
+  letter-spacing:-.022em;margin:0 0 8px;
+}
+h2.ptitle.sm{font-size:21px}
+h2.ptitle.lg{font-size:31px}
+h2.ptitle em{font-style:normal;color:var(--pur-deep)}
+.kicker{
+  font-family:var(--mono);font-size:7px;letter-spacing:.19em;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 8px;
+}
+.kicker.pur{color:var(--pur-deep)}
+p.lede{font-size:13px;line-height:1.44;margin:0 0 10px}
+p.small{font-size:11.5px;line-height:1.46;margin:0 0 8px;color:var(--ink-soft)}
+p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
+.rulez{height:1px;background:var(--rule);margin:9px 0;flex:0 0 auto}
+.rulez.thick{height:2px;background:var(--ink)}
+.spacer{flex:1;min-height:0}
+
+/* ============ PURPLE BOX ============ */
+.star{background:var(--pur-tint);border-left:4px solid var(--pur);padding:9px 11px 10px;margin:10px 0 0;flex:0 0 auto}
+.star .slab{
+  font-family:var(--mono);font-size:7px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--pur-deep);display:flex;align-items:center;gap:5px;margin-bottom:6px;
+}
+.star .slab::before{content:"★"}
+.star .sq{font-size:12.5px;line-height:1.32;margin-bottom:4px}
+
+/* ============ FIELDS ============ */
+.fill{
+  display:inline-block;min-width:56px;border-bottom:1.5px dotted var(--pur-deep);
+  font-family:var(--serif);font-style:italic;font-size:12.5px;line-height:1.75;
+  padding:0 3px;color:var(--ink);outline:none;
+}
+.fill:empty::before{content:attr(data-ph);color:#B4A990;font-style:normal;font-size:9px;font-family:var(--mono);letter-spacing:.03em}
+.fill:focus{background:rgba(216,84,220,.13)}
+.fill.wide{min-width:120px}
+.lines{
+  display:block;border-bottom:1.5px dotted var(--pur-deep);min-height:23px;padding:2px 3px;
+  font-style:italic;font-size:12.5px;line-height:1.5;outline:none;
+}
+.lines:empty::before{content:attr(data-ph);color:#B4A990;font-style:normal;font-size:9px;font-family:var(--mono)}
+.lines:focus{background:rgba(216,84,220,.13)}
+.lines.short{min-height:20px}
+.open{
+  flex:1;width:100%;align-self:stretch;min-height:64px;border:1.5px dashed var(--rule);padding:7px 9px;
+  font-size:12.5px;line-height:1.72;outline:none;font-style:italic;
+  background-image:repeating-linear-gradient(transparent,transparent 20px,rgba(207,199,176,.5) 20px,rgba(207,199,176,.5) 21px);
+}
+.open.plain{background-image:none}
+.open.nogrow{flex:0 0 auto}
+.open:empty::before{content:attr(data-ph);color:#B4A990;font-style:normal;font-size:9px;font-family:var(--mono);letter-spacing:.03em}
+.open:focus{border-color:var(--pur)}
+
+/* ============ CHECKS / TAPS ============ */
+.chk{
+  display:flex;align-items:flex-start;gap:8px;padding:4.5px 0;font-size:11.5px;line-height:1.32;
+  cursor:pointer;border-bottom:1px solid var(--rule-soft);
+}
+.chk:last-child{border-bottom:0}
+.box{flex:0 0 auto;width:12px;height:12px;border:1.5px solid var(--ink);margin-top:2px;background:transparent}
+.chk.on .box{background:var(--pur);border-color:var(--pur)}
+.chk.wide{font-size:12px}
+
+.circ{
+  display:inline-block;padding:2px 8px;margin:3px 4px 3px 0;cursor:pointer;font-size:11.5px;
+  border:1.5px solid transparent;border-radius:50%/58%;line-height:1.3;
+}
+.circ:hover{border-color:var(--rule)}
+.circ.on{border-color:var(--pur);color:var(--pur-deep);transform:rotate(-1.2deg)}
+
+.fear{
+  display:inline-block;padding:3px 8px;cursor:pointer;position:relative;color:var(--ink);
+  font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:-.01em;line-height:1.15;
+}
+.fear.on{color:#A99E8A}
+.fear.on::after{content:"";position:absolute;left:-2px;right:-2px;top:52%;height:2.5px;background:var(--pur);transform:rotate(-2.5deg)}
+.scatter{position:relative;flex:0 0 auto;height:176px;margin:6px 0 2px}
+.scatter .fear{position:absolute}
+
+.chip{
+  display:inline-block;padding:3px 8px;margin:3px 4px 3px 0;font-size:11px;cursor:pointer;
+  border:1.5px solid var(--ink);background:var(--paper);line-height:1.3;
+}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+.tri{
+  font-family:var(--mono);font-size:6.5px;letter-spacing:.07em;text-transform:uppercase;
+  border:1.5px solid var(--ink);padding:4px 5px;cursor:pointer;min-width:70px;text-align:center;color:var(--ink-soft);
+}
+.tri[data-s="1"]{background:var(--pur-tint);border-color:var(--pur-deep);color:var(--pur-deep)}
+.tri[data-s="2"]{background:var(--pur);border-color:var(--pur);color:#fff}
+.tri[data-s="3"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+.rate{display:flex;gap:4px;align-items:center}
+.rate i{width:11px;height:11px;border:1.5px solid var(--ink);border-radius:50%;cursor:pointer;display:block}
+.rate i.on{background:var(--pur);border-color:var(--pur)}
+.ratelbl{font-family:var(--mono);font-size:6px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* ============ CARDS / METHODS ============ */
+.card{border:1.5px solid var(--ink);padding:8px 10px;margin-bottom:7px}
+.card.soft{border:1px solid var(--rule);background:rgba(255,255,255,.32)}
+.card .ch{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.01em;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.card .ch svg{width:13px;height:13px;color:var(--pur-deep);flex:0 0 auto}
+.card .cb{font-size:11px;line-height:1.4;color:var(--ink-soft)}
+.card .cb b{color:var(--ink);font-weight:600}
+
+.method{border-top:1.5px solid var(--ink);padding:6px 0 6.5px}
+.method:last-of-type{border-bottom:1.5px solid var(--ink)}
+.mh{display:flex;align-items:baseline;gap:6px;margin-bottom:3px}
+.mh .mn{font-family:var(--mono);font-size:7px;color:var(--pur-deep);letter-spacing:.1em;flex:0 0 auto}
+.mh .mt{font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:-.01em;line-height:1.1}
+.mw{font-size:9.9px;line-height:1.36;color:var(--ink-soft);margin-bottom:4px}
+.mw b{color:var(--ink);font-weight:600}
+.mfoot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+.tool{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--rule-soft)}
+.tool .tname{font-size:11.5px;line-height:1.32}
+.tool .tname b{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.01em;display:block;margin-bottom:1px;color:var(--ink)}
+.addhint{font-family:var(--mono);font-size:6.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--pur-deep);margin:8px 0 1px}
+.blankslot{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--rule-soft)}
+.blankslot .n{font-family:var(--mono);font-size:6.5px;color:var(--pur-deep);letter-spacing:.1em;flex:0 0 auto}
+.blankslot .fill{flex:1;min-width:0}
+
+/* ============ COLUMNS ============ */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:9px;flex:1;min-height:0}
+.threecol{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;min-height:0}
+.colhd{
+  font-family:var(--mono);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--pur-deep);
+  border-bottom:1.5px solid var(--pur);padding-bottom:3px;margin-bottom:5px;flex:0 0 auto;
+}
+.colhd.ink{color:var(--ink);border-color:var(--ink)}
+.colsub{font-size:9.5px;line-height:1.35;color:var(--ink-soft);margin-bottom:4px;flex:0 0 auto}
+
+/* ============ GRAPHICS ============ */
+.grid24{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin:6px 0;flex:0 0 auto}
+.cell{aspect-ratio:1;border:1px solid var(--rule);cursor:pointer;position:relative;background:transparent}
+.cell span{position:absolute;top:1px;left:2px;font-family:var(--mono);font-size:5.5px;color:#B7AC95;pointer-events:none}
+.cell.on{background:var(--pur);border-color:var(--pur)}
+.cell.on span{color:rgba(255,255,255,.85)}
+
+.gauge{margin:6px 0 2px;flex:0 0 auto}
+.gaugebar{height:24px;border:1.5px solid var(--ink);display:flex;overflow:hidden}
+.gaugebar div{flex:1;border-right:1px solid var(--rule);cursor:pointer}
+.gaugebar div:last-child{border-right:0}
+.gaugebar div.on{background:var(--pur)}
+.gaugelbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:6px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:3px}
+
+.helpgrid{display:grid;grid-template-columns:1fr 64px 1fr;gap:14px 10px;align-items:center;flex:1;min-height:0}
+.hnode .nl{font-family:var(--mono);font-size:6px;letter-spacing:.09em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:1px}
+.hnode .lines{min-height:20px;font-size:11px}
+.hmid{position:relative;display:grid;place-items:center;align-self:stretch}
+.hmid .spine{position:absolute;top:-12px;bottom:-12px;width:1.5px;background:var(--rule)}
+.hub{
+  width:58px;height:58px;border:2px solid var(--pur);border-radius:50%;display:grid;place-items:center;
+  font-family:var(--mono);font-size:7px;letter-spacing:.1em;color:var(--pur-deep);background:var(--paper);z-index:2;
+}
+.node{position:absolute;width:96px;z-index:2}
+.node .nl{font-family:var(--mono);font-size:6px;letter-spacing:.09em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:0}
+.node .lines{min-height:19px;font-size:11px}
+.spoke{position:absolute;background:var(--rule);height:1.5px;transform-origin:0 50%;z-index:0}
+
+.logrow{display:grid;grid-template-columns:1fr 52px 52px 1fr;gap:5px;align-items:center;padding:5px 0;border-bottom:1px solid var(--rule-soft)}
+.loghd{
+  display:grid;grid-template-columns:1fr 52px 52px 1fr;gap:5px;
+  font-family:var(--mono);font-size:6px;letter-spacing:.09em;text-transform:uppercase;color:var(--pur-deep);
+  border-bottom:1.5px solid var(--pur);padding-bottom:3px;
+}
+.logrow .lines{min-height:18px;font-size:11px}
+
+.pomo{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0}
+.pomocell{border:1.5px solid var(--ink);padding:5px;text-align:center}
+.pomocell .pn{font-family:var(--mono);font-size:6px;letter-spacing:.1em;color:var(--pur-deep);margin-bottom:3px}
+.pomocell svg{width:30px;height:30px;color:#C3BAA3;cursor:pointer;display:block;margin:2px auto 1px}
+.pomocell.on svg{color:var(--pur)}
+
+.sample{border:1px solid var(--rule);background:rgba(255,255,255,.4);padding:7px 9px;font-size:10px;line-height:1.5;color:var(--ink-soft)}
+.sample .sh{font-family:var(--mono);font-size:6.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:4px}
+.sample b{color:var(--ink);font-weight:600}
+.cornell{display:grid;grid-template-columns:76px 1fr;gap:0;border:1.5px solid var(--ink)}
+.cornell .cq{border-right:1.5px solid var(--ink);padding:6px 7px}
+.cornell .cn{padding:6px 7px}
+.cornell .clbl{font-family:var(--mono);font-size:5.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:3px}
+.cornell .lines,.cornell .open{font-size:11px}
+.cornell-sum{border:1.5px solid var(--ink);border-top:0;padding:6px 7px}
+
+.wordbank{border:1.5px solid var(--ink);padding:7px 8px;margin-bottom:8px}
+.wordbank .wh{font-family:var(--mono);font-size:6.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:4px}
+
+.flow{display:flex;flex-direction:column;gap:4px}
+.flowbox{border:1.5px solid var(--ink);padding:5px 8px}
+.flowbox .fl{font-family:var(--mono);font-size:6.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:3px}
+.arrow{text-align:center;color:var(--pur);font-size:13px;line-height:.7}
+
+/* ============ LOOP PAGE ============ */
+.loopwrap{display:flex;flex-direction:column;gap:5px;flex:1;min-height:0}
+.loopstep{border:1.5px solid var(--ink);padding:7px 9px;display:flex;flex-direction:column}
+.loopstep.fixed{background:var(--ink);color:var(--paper);flex:0 0 auto}
+.loopstep:not(.fixed){flex:1 1 0;min-height:0}
+.loopstep .open{flex:1 1 auto}
+.loopstep .ls{font-family:var(--mono);font-size:6.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:3px}
+.loopstep.fixed .ls{color:var(--pur)}
+.loopstep .lq{font-size:10.5px;line-height:1.35;color:var(--ink-soft);margin-bottom:3px}
+.loopstep.fixed .lq{color:#BDB2A0}
+.loopstep .lv{font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:-.01em}
+.loopstep.upd{background:var(--pur-tint);border-color:var(--pur);border-left-width:4px}
+.loopstep.upd .ls::before{content:"★ ";}
+
+/* ============ BREAK PAGES ============ */
+.brk{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
+.brk .bt{font-family:var(--disp);font-weight:800;font-size:28px;line-height:.95;letter-spacing:-.025em;color:var(--pur-deep)}
+.brk .bs{font-size:12.5px;line-height:1.4;max-width:250px;color:var(--ink)}
+.brk .bbox{width:100%;flex:0 0 auto;height:44%;border:1.5px dashed var(--rule);outline:none;padding:8px;font-size:12px;font-style:italic;line-height:1.6;text-align:left}
+.brk .bbox:empty::before{content:attr(data-ph);color:#B4A990;font-style:normal;font-size:9px;font-family:var(--mono)}
+.brk .bbox:focus{border-color:var(--pur)}
+
+/* ============ COVER ============ */
+.cover{background:var(--ink);color:var(--paper);justify-content:flex-start;background-image:none}
+.cover h1{font-family:var(--disp);font-weight:800;font-size:36px;line-height:.92;letter-spacing:-.035em;margin:0}
+.cover h1 span{color:var(--pur);display:block}
+.cover .sub{font-family:var(--mono);font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:#948877;margin-bottom:26px;line-height:1.7}
+.cover .glyphgrid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:52px;gap:24px 10px;place-items:center;margin:38px 0 0;flex:0 0 auto}
+.cover .glyphgrid svg{width:46px;height:46px;color:var(--pur)}
+.cover .nameplate{border-top:1px solid #453D33;padding-top:11px;margin-top:auto}
+.cover .nplbl{font-family:var(--mono);font-size:6.5px;letter-spacing:.17em;text-transform:uppercase;color:#7B7161;margin-bottom:1px}
+.cover .nameplate .fill{color:var(--paper);border-color:var(--pur);display:block;min-width:0;font-size:14px}
+.cover .nameplate .fill:empty::before{color:#7B7161}
+
+/* ============ OS SUMMARY ============ */
+.osrow{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--rule)}
+.osrow svg{width:13px;height:13px;color:var(--pur-deep);flex:0 0 auto;margin-top:3px}
+.osrow .osl{flex:0 0 74px;font-family:var(--mono);font-size:6.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px;line-height:1.3}
+.osrow .osv{flex:1;font-size:11px;font-style:italic;line-height:1.35;min-height:16px;border-bottom:1px dotted var(--rule);padding-bottom:2px;outline:none}
+.osrow .osv.empty::before{content:attr(data-ph);font-style:normal;font-family:var(--mono);font-size:6.5px;color:#BDB299;letter-spacing:.05em}
+
+.qrow{padding:5px 0;border-bottom:1px solid var(--rule-soft)}
+.qrow .ql{font-family:var(--mono);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:1px}
+
+.colophon{font-family:var(--mono);font-size:7px;line-height:1.9;letter-spacing:.08em;color:#8A7E6D;text-transform:uppercase}
+
+@media (max-width:940px){
+  .spread .page:nth-child(2){display:none}
+  .page{--pw:318px}
+}
+
+/* ============ PRINT ============ */
+@media print{
+  @page{size:5.5in 8.5in;margin:0}
+  body{background:#fff;display:block;overflow:visible}
+  header.bar,footer.nav,.stage{display:none !important}
+  #pages{display:block !important}
+  .page{
+    width:5.5in;height:8.5in;box-shadow:none !important;page-break-after:always;break-after:page;
+    padding:0.42in 0.38in 0.4in;background-image:none;
+  }
+  .page:last-child{page-break-after:auto}
+  .cover{background:#1B1A17 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true"><defs>
+  <symbol id="g-ask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    <path d="M9.6 8.6a2.5 2.5 0 1 1 3.4 3.2c-.6.3-1 .9-1 1.6"/><path d="M12 16.2v.01"/>
+  </symbol>
+  <symbol id="g-time" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.6 2.2"/>
+  </symbol>
+  <symbol id="g-org" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 7.5a1.5 1.5 0 0 1 1.5-1.5h4l2 2.2h8A1.5 1.5 0 0 1 20 9.7v8.8a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3 18.5z"/>
+    <path d="M3 12.4h17"/><path d="M9.5 12.4v7.6"/>
+  </symbol>
+  <symbol id="g-study" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 6.4C10.4 5.1 8.3 4.5 5 4.5v13c3.3 0 5.4.6 7 1.9 1.6-1.3 3.7-1.9 7-1.9v-13c-3.3 0-5.4.6-7 1.9z"/>
+    <path d="M12 6.4v13"/>
+  </symbol>
+  <symbol id="g-notes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13.5 3.5H6.5A1.5 1.5 0 0 0 5 5v14a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-6"/>
+    <path d="M8.5 9.5h5M8.5 13h3.5"/>
+    <path d="M20.2 3.9a1.7 1.7 0 0 1 0 2.4l-5.1 5.1-2.9.6.6-2.9 5.1-5.1a1.7 1.7 0 0 1 2.3 0z"/>
+  </symbol>
+  <symbol id="g-stress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.5 12.5h4l2-5.5 3.5 11 2.5-8 1.8 2.5h5.2"/>
+  </symbol>
+  <symbol id="g-stuck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.5 12h9"/><path d="M8.5 8.6 11.9 12l-3.4 3.4"/>
+    <path d="M16 3.5v17"/><path d="M16 6.5h4M16 11h4M16 15.5h4M16 20h4" opacity=".55"/>
+  </symbol>
+  <symbol id="g-upd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.4 12a8.4 8.4 0 1 1-2.6-6.1"/><path d="M20.6 4.2v4.6h-4.6"/>
+    <path d="M12 15.6V8.9"/><path d="M9.4 11.4 12 8.8l2.6 2.6"/>
+  </symbol>
+  <symbol id="g-tomato" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 6.2c4.2 0 7.4 3.1 7.4 7.1 0 3.9-3.2 6.9-7.4 6.9s-7.4-3-7.4-6.9c0-4 3.2-7.1 7.4-7.1z"/>
+    <path d="M12 6.2V3.6"/><path d="M12 6.2c-1.3-1.6-3-2.1-4.4-1.9.3 1.4 1.6 2.6 3 2.9"/>
+    <path d="M12 6.2c1.3-1.6 3-2.1 4.4-1.9-.3 1.4-1.6 2.6-3 2.9"/>
+  </symbol>
+  <symbol id="g-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3l2.6 5.7 6.2.7-4.6 4.2 1.2 6.1L12 16.8 6.6 19.7l1.2-6.1L3.2 9.4l6.2-.7z"/></symbol>
+</defs></svg>
+
+<header class="bar">
+  <span class="ttl">My High School OS</span>
+  <span id="edition">digital edition</span>
+  <span class="sp"></span>
+  <span class="saved" id="saved"></span>
+  <button class="btn" id="clearbtn">Clear</button>
+  <button class="btn go" id="pdfbtn">Save as PDF</button>
+  <nav class="rail" id="rail" aria-label="Jump to section"></nav>
+</header>
+
+<main class="stage"><div class="spread" id="spread"></div></main>
+
+<footer class="nav">
+  <button id="prev">&larr; Prev</button>
+  <span id="counter"></span>
+  <button id="next">Next &rarr;</button>
+  <span style="opacity:.55">arrow keys turn pages &middot; everything saves on this device</span>
+</footer>
+
+<div id="pages" hidden>
+<!-- ============ COVER ============ -->
+<section class="page cover" data-sys="">
+  <div>
+    <div class="sub">San Francisco University High School<br>Grade 9 &middot; Metacognition</div>
+    <h1>My<br>High School<br><span>Operating<br>System</span></h1>
+  </div>
+  <div class="glyphgrid">
+    <svg><use href="#g-ask"/></svg><svg><use href="#g-time"/></svg><svg><use href="#g-org"/></svg><svg><use href="#g-study"/></svg>
+    <svg><use href="#g-notes"/></svg><svg><use href="#g-stress"/></svg><svg><use href="#g-stuck"/></svg><svg><use href="#g-upd"/></svg>
+  </div>
+  <div class="nameplate">
+    <div class="nplbl">This one belongs to</div>
+    <div class="fill" contenteditable data-k="name" data-ph="your name"></div>
+  </div>
+</section>
+
+<!-- ============ HOW TO USE ============ -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker">Start here</p>
+    <h2 class="ptitle">This is a book you <em>test things in</em></h2>
+    <p class="lede">It does not tell you what works. You try things, you write down what happened, and you keep the ones that hold up.</p>
+    <div class="rulez"></div>
+    <div class="card">
+      <div class="ch"><svg><use href="#g-notes"/></svg>There is no right amount of writing</div>
+      <div class="cb">Some pages you will fill edge to edge. Some you will leave alone. Both are fine. Nobody grades this and nobody collects it.</div>
+    </div>
+    <div class="card">
+      <div class="ch"><svg><use href="#g-star"/></svg>Except for the purple boxes</div>
+      <div class="cb">There is one at the end of every section. Eight total. They take about ten seconds each, and they build the last page of this book.</div>
+    </div>
+    <div class="card">
+      <div class="ch"><svg><use href="#g-upd"/></svg>Nothing in here is permanent</div>
+      <div class="cb">Cross things out. Change your mind in week six. That is the point.</div>
+    </div>
+    <div class="card">
+      <div class="ch"><svg><use href="#g-stress"/></svg>The Brain Break pages are not a trick</div>
+      <div class="cb">They are not secretly about metacognition. Draw the thing, write the joke, move on.</div>
+    </div>
+    <div class="spacer"></div>
+    <p class="tiny">Eight systems. Five pages each. One loop that works on all of them.</p>
+  </div>
+</section>
+
+<!-- ============ THE LOOP ============ -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker pur">The one thing to remember</p>
+    <h2 class="ptitle lg">The Loop</h2>
+    <p class="small">Every section in this book ends with this. Same four steps every time, whatever the system is.</p>
+    <div class="flow" style="margin-top:8px;flex:1;justify-content:space-between">
+      <div class="flowbox">
+        <div class="fl">1 &middot; Find the system</div>
+        <div class="cb" style="font-size:11px;line-height:1.4;color:var(--ink-soft)">Which part of this is actually the problem? Time? Notes? Asking?</div>
+      </div>
+      <div class="arrow">&darr;</div>
+      <div class="flowbox">
+        <div class="fl">2 &middot; Diagnose</div>
+        <div class="cb" style="font-size:11px;line-height:1.4;color:var(--ink-soft)">Where exactly does it break? Not "I'm bad at studying." Something smaller and more specific.</div>
+      </div>
+      <div class="arrow">&darr;</div>
+      <div class="flowbox">
+        <div class="fl">3 &middot; Test the tools</div>
+        <div class="cb" style="font-size:11px;line-height:1.4;color:var(--ink-soft)">Pick one thing and actually run it. One week is enough to know something.</div>
+      </div>
+      <div class="arrow">&darr;</div>
+      <div class="flowbox" style="border-width:2px">
+        <div class="fl">4 &middot; Update</div>
+        <div class="cb" style="font-size:11px;line-height:1.4;color:var(--ink-soft)">Keep it, change it, or drop it. Then run the loop again on the next thing.</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <p class="tiny">Systems break. That is not the failure. Not noticing is.</p>
+  </div>
+</section>
+
+<!-- ============ WHAT I ALREADY DO 1 ============ -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker">Week one &middot; before we start anything</p>
+    <h2 class="ptitle">What I <em>already</em> do</h2>
+    <p class="small">Guess. You are not supposed to know yet. We come back to this at the end and the difference is the whole point.</p>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">When I need help, I</div><div class="lines" contenteditable data-k="v0a"></div></div>
+    <div class="qrow"><div class="ql">I keep track of what is due by</div><div class="lines" contenteditable data-k="v0b"></div></div>
+    <div class="qrow"><div class="ql">I stay on top of my time by</div><div class="lines" contenteditable data-k="v0c"></div></div>
+    <div class="qrow"><div class="ql">I organize my stuff by</div><div class="lines" contenteditable data-k="v0d"></div></div>
+    <div class="qrow"><div class="ql">My plan for a big assignment is</div><div class="lines" contenteditable data-k="v0e"></div></div>
+    <div class="qrow"><div class="ql">I study by</div><div class="lines" contenteditable data-k="v0f"></div></div>
+    <div class="qrow"><div class="ql">My notes look like</div><div class="lines" contenteditable data-k="v0g"></div></div>
+  </div>
+</section>
+
+<!-- ============ WHAT I ALREADY DO 2 ============ -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker">Keep going</p>
+    <h2 class="ptitle sm">What I already do, <em>part two</em></h2>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">Stress shows up for me as</div><div class="lines" contenteditable data-k="v0h"></div></div>
+    <div class="qrow"><div class="ql">When I do not understand something, I</div><div class="lines" contenteditable data-k="v0i"></div></div>
+    <div class="qrow"><div class="ql">When I get stuck, I</div><div class="lines" contenteditable data-k="v0j"></div></div>
+    <div class="qrow"><div class="ql">I ask a teacher for</div><div class="lines" contenteditable data-k="v0k"></div></div>
+    <div class="qrow"><div class="ql">When I make a mistake, I</div><div class="lines" contenteditable data-k="v0l"></div></div>
+    <div class="qrow"><div class="ql">The part of school that feels hardest right now is</div><div class="lines" contenteditable data-k="v0m"></div></div>
+    <div class="star">
+      <div class="slab">Sign it</div>
+      <div class="sq">Today's date, and one thing I want to be different by the end of this course</div>
+      <div class="lines" contenteditable data-k="v0sign"></div>
+    </div>
+  </div>
+</section>
+<!-- ======== ASKING 1 ======== -->
+<section class="page" data-sys="ask">
+  <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
+  <div class="body">
+    <h2 class="ptitle">Reasons people don't ask</h2>
+    <p class="small">Cross out the ones you have thought. Not the ones you agree with. The ones you have thought.</p>
+    <div class="scatter">
+      <span class="fear" style="left:0;top:0;transform:rotate(-2deg)">it's a dumb question</span>
+      <span class="fear" style="right:0;top:26px;transform:rotate(2deg)">they're busy</span>
+      <span class="fear" style="left:10px;top:52px;transform:rotate(1deg)">it means I'm in trouble</span>
+      <span class="fear" style="left:0;top:80px;transform:rotate(-1.5deg)">I'll look lazy</span>
+      <span class="fear" style="right:0;top:78px;transform:rotate(2deg)">I should know this</span>
+      <span class="fear" style="left:6px;top:110px;transform:rotate(1.5deg)">everyone else gets it</span>
+      <span class="fear" style="right:0;top:132px;transform:rotate(-1deg)">too late now</span>
+      <span class="fear" style="left:24px;top:146px;transform:rotate(2deg)">I'll be annoying</span>
+    </div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">The one that stops me most often</div><div class="lines" contenteditable data-k="s1a1"></div></div>
+    <div class="qrow"><div class="ql">Last time I didn't ask, what happened</div><div class="lines" contenteditable data-k="s1a2"></div></div>
+    <div class="qrow"><div class="ql">What I'd say to a friend who thought that</div><div class="lines" contenteditable data-k="s1a3"></div></div>
+    <div class="qrow"><div class="ql">One question I have right now that I haven't asked</div><div class="lines" contenteditable data-k="s1a4"></div></div>
+  </div>
+</section>
+
+<!-- ======== ASKING 2 ======== -->
+<section class="page" data-sys="ask">
+  <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
+  <div class="body">
+    <h2 class="ptitle">My Help Center</h2>
+    <p class="small">Real names. Fill in what you can.</p>
+    <div class="helpgrid">
+      <div class="hnode"><div class="nl">A teacher</div><div class="lines" contenteditable data-k="s1b1"></div></div>
+      <div class="hmid"><div class="spine"></div></div>
+      <div class="hnode"><div class="nl">My mentor</div><div class="lines" contenteditable data-k="s1b2"></div></div>
+      <div class="hnode"><div class="nl">A classmate</div><div class="lines" contenteditable data-k="s1b3"></div></div>
+      <div class="hmid"><div class="hub">ME</div></div>
+      <div class="hnode"><div class="nl">A friend</div><div class="lines" contenteditable data-k="s1b4"></div></div>
+      <div class="hnode"><div class="nl">Someone at home</div><div class="lines" contenteditable data-k="s1b5"></div></div>
+      <div class="hmid"><div class="spine"></div></div>
+      <div class="hnode"><div class="nl">An adult I trust</div><div class="lines" contenteditable data-k="s1b6"></div></div>
+    </div>
+    <div class="rulez"></div>
+    <p class="kicker pur">Places, not people</p>
+    <p class="tiny">Learning Services &middot; Counseling &middot; the Library &middot; Math Lab &middot; Writing support &middot; office hours</p>
+    <div class="lines" contenteditable data-k="s1b7" data-ph="one I have used"></div>
+    <div class="lines" contenteditable data-k="s1b8" data-ph="one I want to try"></div>
+  </div>
+</section>
+
+<!-- ======== ASKING 3 ======== -->
+<section class="page" data-sys="ask">
+  <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
+  <div class="body">
+    <p class="kicker">Three parts. That's the whole email.</p>
+    <h2 class="ptitle">Build one</h2>
+    <div class="card soft" style="margin-top:4px">
+      <div class="cb"><b>Greeting.</b> Something human. Hope your week is going well. Hope you had a good weekend.</div>
+    </div>
+    <div class="card soft">
+      <div class="cb"><b>The core.</b> I'm stuck on ___. Or: I need ___. Be specific enough that they can answer without writing back to ask what you meant.</div>
+    </div>
+    <div class="card soft">
+      <div class="cb"><b>The next step.</b> Ask for a real thing at a real time. Could I come by Thursday?</div>
+    </div>
+    <div class="rulez"></div>
+    <p class="kicker pur">Yours</p>
+    <div style="font-size:12.5px;line-height:2.05">
+      Hi <span class="fill" contenteditable data-k="s1c1" data-ph="name"></span>,<br>
+      <span class="fill wide" contenteditable data-k="s1c2" data-ph="greeting"></span><br>
+      <span class="fill wide" contenteditable data-k="s1c3" data-ph="the core"></span><br>
+      <span class="fill wide" contenteditable data-k="s1c4" data-ph="the next step"></span><br>
+      Thanks, <span class="fill" contenteditable data-k="s1c5" data-ph="you"></span>
+    </div>
+    <div class="star">
+      <div class="slab">Tonight</div>
+      <div class="sq">Send it. Who to?</div>
+      <div class="lines" contenteditable data-k="s1c6"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== ASKING 4 ======== -->
+<section class="page" data-sys="ask">
+  <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
+  <div class="body">
+    <h2 class="ptitle">Things you're <em>allowed</em> to ask for</h2>
+    <p class="small">Check the ones you didn't know you could ask for.</p>
+    <div class="chk"><span class="box" data-k="s1d1"></span><span>A different seat</span></div>
+    <div class="chk"><span class="box" data-k="s1d2"></span><span>The instructions again, in writing</span></div>
+    <div class="chk"><span class="box" data-k="s1d3"></span><span>To know what the test will look like</span></div>
+    <div class="chk"><span class="box" data-k="s1d4"></span><span>An extension, asked for before it's late</span></div>
+    <div class="chk"><span class="box" data-k="s1d5"></span><span>Why you got the grade you got</span></div>
+    <div class="chk"><span class="box" data-k="s1d6"></span><span>A quieter place to work</span></div>
+    <div class="chk"><span class="box" data-k="s1d7"></span><span>Time to think before answering out loud</span></div>
+    <div class="chk"><span class="box" data-k="s1d8"></span><span>A check that you're on the right track</span></div>
+    <div class="chk"><span class="box" data-k="s1d9"></span><span>An example of what good work looks like</span></div>
+    <div class="chk"><span class="box" data-k="s1d10"></span><span>To redo something</span></div>
+    <div class="rulez"></div>
+    <p class="kicker pur">Say it out loud version</p>
+    <div style="font-size:12px;line-height:1.95">
+      I wanted to check in about <span class="fill" contenteditable data-k="s1d11" data-ph="the thing"></span>.<br>
+      What's happening is <span class="fill wide" contenteditable data-k="s1d12"></span>.<br>
+      Would it be possible to <span class="fill wide" contenteditable data-k="s1d13" data-ph="the ask"></span>?
+    </div>
+  </div>
+</section>
+
+<!-- ======== ASKING 5 — LOOP ======== -->
+<section class="page" data-sys="ask">
+  <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed">
+        <div class="ls">1 &middot; Find the system</div>
+        <div class="lv">Asking</div>
+      </div>
+      <div class="loopstep">
+        <div class="ls">2 &middot; Diagnose</div>
+        <div class="lq">Where does asking break down for me?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s1e1"></div>
+      </div>
+      <div class="loopstep">
+        <div class="ls">3 &middot; Test the tools</div>
+        <div class="lq">One thing from this section I'll actually run this week</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s1e2"></div>
+      </div>
+      <div class="loopstep upd">
+        <div class="ls">4 &middot; Update</div>
+        <div class="lq">My asking system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s1e3" data-star="ask" data-ph="one line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ======== TIME 1 ======== -->
+<section class="page" data-sys="time">
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="body">
+    <h2 class="ptitle">Yesterday, in <em>squares</em></h2>
+    <p class="small">Each square is 30 minutes, 7am to 11pm. Fill in the ones that were already spoken for. School, practice, work, family, commute.</p>
+    <div class="grid24" id="tgrid"></div>
+    <div class="rulez"></div>
+    <p class="kicker pur">Now count the empty ones</p>
+    <div class="qrow"><div class="ql">Squares left over</div><div class="lines short" contenteditable data-k="s2a1" data-ph="how many"></div></div>
+    <div class="qrow"><div class="ql">That's how many hours</div><div class="lines short" contenteditable data-k="s2a2" data-ph="divide by 2"></div></div>
+    <div class="qrow"><div class="ql">Of those, hours I spend on things I actually enjoy</div><div class="lines short" contenteditable data-k="s2a3"></div></div>
+    <div class="qrow"><div class="ql">Which leaves this much for homework and extra work</div><div class="lines short" contenteditable data-k="s2a4"></div></div>
+  </div>
+</section>
+
+<!-- ======== TIME 2 — LOATHSOME TASK ======== -->
+<section class="page" data-sys="time">
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="body">
+    <p class="kicker">The rule</p>
+    <h2 class="ptitle lg">The Loathsome Task</h2>
+    <p class="lede">Do the one you hate most first. Everything after it is downhill, and you stop carrying it around all day.</p>
+    <div class="rulez thick"></div>
+    <p class="kicker pur">Three things you have to do this week</p>
+    <div class="qrow"><div class="ql">One</div><div class="lines" contenteditable data-k="s2b1"></div></div>
+    <div class="qrow"><div class="ql">Two</div><div class="lines" contenteditable data-k="s2b2"></div></div>
+    <div class="qrow"><div class="ql">Three</div><div class="lines" contenteditable data-k="s2b3"></div></div>
+    <div class="star" style="margin-top:6px">
+      <div class="slab">The loathsome one</div>
+      <div class="sq">Which of the three do you least want to do?</div>
+      <div class="lines" contenteditable data-k="s2b4"></div>
+    </div>
+    <div class="qrow" style="margin-top:8px"><div class="ql">When I'm doing it</div><div class="lines" contenteditable data-k="s2b5" data-ph="day and time"></div></div>
+    <div class="qrow"><div class="ql">What I get to do the second it's finished</div><div class="lines" contenteditable data-k="s2b6"></div></div>
+
+  </div>
+</section>
+
+<!-- ======== TIME 3 — PLANNING TOOLS ======== -->
+<section class="page" data-sys="time">
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="body tight">
+    <p class="kicker">Five planning tools &middot; rate the ones you try</p>
+    <h2 class="ptitle sm">Ways people actually plan</h2>
+    <div class="method">
+      <div class="mh"><span class="mn">01</span><span class="mt">Time blocking</span></div>
+      <div class="mw">Give each task an actual slot on an actual calendar. <b>Why it works:</b> a list tells you what, a block tells you when. Tasks die in the gap between those two.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s2c1"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">02</span><span class="mt">Backward planning</span></div>
+      <div class="mw">Start at the due date and walk backwards. What has to be true the day before? Three days before? <b>Why it works:</b> it finds the deadline behind the deadline, which is usually the real one.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s2c2"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">03</span><span class="mt">If-then planning</span></div>
+      <div class="mw">Write the plan as a sentence. <b>If</b> it's 4pm on Tuesday, <b>then</b> I open the lab notebook. <b>Why it works:</b> you decide once, in advance, so you're not renegotiating with yourself at 4pm.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s2c3"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">04</span><span class="mt">The two-minute rule</span></div>
+      <div class="mw">If it takes under two minutes, do it now instead of writing it down. <b>Why it works:</b> tracking a small task costs more attention than the task does.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s2c4"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">05</span><span class="mt">Name the first physical action</span></div>
+      <div class="mw">"Study bio" is not an action. "Open the packet to page 12" is. <b>Why it works:</b> your brain can't start a category, only a movement.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s2c5"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== TIME 4 — ESTIMATION LOG ======== -->
+<section class="page" data-sys="time">
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="body">
+    <h2 class="ptitle">Guess, then <em>check</em></h2>
+    <p class="small">Before you start something, write how long you think it will take. After, write how long it actually took. Do five.</p>
+    <div class="loghd"><span>Task</span><span>Guess</span><span>Real</span><span>Off by</span></div>
+    <div class="logrow"><span class="lines" contenteditable data-k="s2d1a"></span><span class="lines" contenteditable data-k="s2d1b"></span><span class="lines" contenteditable data-k="s2d1c"></span><span class="lines" contenteditable data-k="s2d1d"></span></div>
+    <div class="logrow"><span class="lines" contenteditable data-k="s2d2a"></span><span class="lines" contenteditable data-k="s2d2b"></span><span class="lines" contenteditable data-k="s2d2c"></span><span class="lines" contenteditable data-k="s2d2d"></span></div>
+    <div class="logrow"><span class="lines" contenteditable data-k="s2d3a"></span><span class="lines" contenteditable data-k="s2d3b"></span><span class="lines" contenteditable data-k="s2d3c"></span><span class="lines" contenteditable data-k="s2d3d"></span></div>
+    <div class="logrow"><span class="lines" contenteditable data-k="s2d4a"></span><span class="lines" contenteditable data-k="s2d4b"></span><span class="lines" contenteditable data-k="s2d4c"></span><span class="lines" contenteditable data-k="s2d4d"></span></div>
+    <div class="logrow"><span class="lines" contenteditable data-k="s2d5a"></span><span class="lines" contenteditable data-k="s2d5b"></span><span class="lines" contenteditable data-k="s2d5c"></span><span class="lines" contenteditable data-k="s2d5d"></span></div>
+    <div class="rulez"></div>
+    <p class="small">Almost everyone guesses low. Once you know your own number, you can plan around it.</p>
+    <div class="qrow"><div class="ql">I usually guess</div>
+      <div><span class="circ" data-k="s2d6">way low</span><span class="circ" data-k="s2d7">a little low</span><span class="circ" data-k="s2d8">about right</span><span class="circ" data-k="s2d9">high</span></div>
+    </div>
+    <div class="qrow"><div class="ql">So from now on I'll add</div><div class="lines" contenteditable data-k="s2d10" data-ph="this much cushion"></div></div>
+  </div>
+</section>
+
+<!-- ======== TIME 5 — LOOP ======== -->
+<section class="page" data-sys="time">
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Time</div></div>
+      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">Where does my time actually leak?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s2e1"></div></div>
+      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which planning tool I'm running this week</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s2e2"></div></div>
+      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My time system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s2e3" data-star="time" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== BREAK ======== -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <div class="brk">
+      <div class="bt">Brain Break</div>
+      <div class="bs">Write down a joke. Any joke. Then go tell it to your teacher.</div>
+      <div class="bbox" contenteditable data-k="brk1" data-ph="it does not have to be good"></div>
+    </div>
+  </div>
+</section>
+<!-- ======== ORG 1 ======== -->
+<section class="page" data-sys="org">
+  <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
+  <div class="body">
+    <h2 class="ptitle">Where things <em>actually</em> live</h2>
+    <p class="small">Not where they are supposed to live.</p>
+    <div class="qrow"><div class="ql">Backpack</div><div class="lines" contenteditable data-k="s3a1"></div></div>
+    <div class="qrow"><div class="ql">Laptop desktop</div><div class="lines" contenteditable data-k="s3a2"></div></div>
+    <div class="qrow"><div class="ql">Google Drive</div><div class="lines" contenteditable data-k="s3a3"></div></div>
+    <div class="qrow"><div class="ql">A pile somewhere at home</div><div class="lines" contenteditable data-k="s3a4"></div></div>
+    <div class="qrow"><div class="ql">Only in my head</div><div class="lines" contenteditable data-k="s3a5"></div></div>
+    <div class="rulez"></div>
+    <p class="small">Anything on the "only in my head" row has to be remembered all day, every day, for free. Writing it down anywhere at all gives that back.</p>
+    <div class="star">
+      <div class="slab">Pick one</div>
+      <div class="sq">One thing from the head row that's getting written down today</div>
+      <div class="lines" contenteditable data-k="s3a7"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== ORG 2 — THE SORT ======== -->
+<section class="page" data-sys="org">
+  <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
+  <div class="body">
+    <h2 class="ptitle">Sort this <em>your</em> way</h2>
+    <p class="small">Everything below belongs to one week. You decide the categories. Name each box, then put things in it. There is no correct answer and no two people will do this the same.</p>
+    <div class="wordbank">
+      <div class="wh">Word bank</div>
+      <div>
+        <span class="chip" data-k="c1">homework</span><span class="chip" data-k="c2">sports practice</span><span class="chip" data-k="c3">friends</span>
+        <span class="chip" data-k="c4">dinner with family</span><span class="chip" data-k="c5">therapy</span><span class="chip" data-k="c6">sleep</span>
+        <span class="chip" data-k="c7">chores</span><span class="chip" data-k="c8">phone</span><span class="chip" data-k="c9">a test</span>
+        <span class="chip" data-k="c10">club meeting</span><span class="chip" data-k="c11">commute</span><span class="chip" data-k="c12">a job</span>
+        <span class="chip" data-k="c13">long-term project</span><span class="chip" data-k="c14">time alone</span><span class="chip" data-k="c15">weekend plans</span>
+      </div>
+    </div>
+    <div class="twocol">
+      <div class="col"><div class="colhd ink"><span class="fill" contenteditable data-k="s3b1" data-ph="name this box"></span></div><div class="open plain" contenteditable data-k="s3b2"></div></div>
+      <div class="col"><div class="colhd ink"><span class="fill" contenteditable data-k="s3b3" data-ph="name this box"></span></div><div class="open plain" contenteditable data-k="s3b4"></div></div>
+    </div>
+    <div class="twocol" style="margin-top:7px">
+      <div class="col"><div class="colhd ink"><span class="fill" contenteditable data-k="s3b5" data-ph="name this box"></span></div><div class="open plain" contenteditable data-k="s3b6"></div></div>
+      <div class="col"><div class="colhd ink"><span class="fill" contenteditable data-k="s3b7" data-ph="name this box"></span></div><div class="open plain" contenteditable data-k="s3b8"></div></div>
+    </div>
+    <div class="qrow" style="flex:0 0 auto"><div class="ql">What rule did I sort by?</div><div class="lines" contenteditable data-k="s3b9" data-ph="urgency, energy, who it's for, something else"></div></div>
+  </div>
+</section>
+
+<!-- ======== ORG 3 — SYSTEMS ======== -->
+<section class="page" data-sys="org">
+  <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
+  <div class="body tight">
+    <p class="kicker">Five systems &middot; rate the ones you try</p>
+    <h2 class="ptitle sm">Systems worth stealing</h2>
+    <div class="method">
+      <div class="mh"><span class="mn">01</span><span class="mt">One true home</span></div>
+      <div class="mw">Every kind of thing gets exactly one place. Handouts always go in the same pocket. Essays always go in the same folder. <b>Why it works:</b> you stop deciding where things go, so you stop having to remember where they went.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s3c1"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">02</span><span class="mt">Drive folders by class, not by date</span></div>
+      <div class="mw">One folder per class, nothing loose in My Drive. Inside each: Notes, Assignments, Handouts. <b>Why it works:</b> you always know which of three places to look, instead of scrolling a wall of files.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s3c2"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">03</span><span class="mt">Name files so search finds them</span></div>
+      <div class="mw">Bio_Lab3_Osmosis rather than Untitled document (7). <b>Why it works:</b> search only works if the words you'd search for are actually in the name.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s3c3"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">04</span><span class="mt">Color-coded calendar</span></div>
+      <div class="mw">One color per kind of thing. Classes one color, practice another, due dates another. <b>Why it works:</b> you can read your whole week without reading any words.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s3c4"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">05</span><span class="mt">One capture spot</span></div>
+      <div class="mw">Every new thing goes into the same single list the moment you hear it. Sort it later. <b>Why it works:</b> five half-lists in five apps is the same as no list.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s3c5"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== ORG 4 — TEN SECOND TEST ======== -->
+<section class="page" data-sys="org">
+  <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
+  <div class="body">
+    <p class="kicker">Could you produce it in ten seconds? If not, check it.</p>
+    <h2 class="ptitle">The ten second test</h2>
+    <div class="chk"><span class="box" data-k="s3d1"></span><span>Last night's reading for any class</span></div>
+    <div class="chk"><span class="box" data-k="s3d2"></span><span>The rubric for the next big thing due</span></div>
+    <div class="chk"><span class="box" data-k="s3d3"></span><span>Your notes from the class before this one</span></div>
+    <div class="chk"><span class="box" data-k="s3d4"></span><span>The syllabus for any class at all</span></div>
+    <div class="chk"><span class="box" data-k="s3d5"></span><span>A pen that works</span></div>
+    <div class="chk"><span class="box" data-k="s3d6"></span><span>Your charger</span></div>
+    <div class="chk"><span class="box" data-k="s3d7"></span><span>The thing that needed a signature</span></div>
+    <div class="chk"><span class="box" data-k="s3d8"></span><span>Your student ID</span></div>
+    <div class="chk"><span class="box" data-k="s3d9"></span><span>The last essay you got back</span></div>
+    <div class="chk"><span class="box" data-k="s3d10"></span><span>A permission slip or form from this month</span></div>
+    <div class="chk"><span class="box" data-k="s3d11"></span><span>The date of your next test</span></div>
+    <div class="chk"><span class="box" data-k="s3d12"></span><span>Something you were supposed to bring today</span></div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">The thing I lose over and over</div><div class="lines" contenteditable data-k="s3d13" data-ph="it's usually one specific thing"></div></div>
+    <div class="qrow"><div class="ql">Its new one true home</div><div class="lines" contenteditable data-k="s3d14"></div></div>
+  </div>
+</section>
+
+<!-- ======== ORG 5 — LOOP ======== -->
+<section class="page" data-sys="org">
+  <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Organization</div></div>
+      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">What keeps going missing, and where does it go?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s3e1"></div></div>
+      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which system I'm setting up this week</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s3e2"></div></div>
+      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My organization system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s3e3" data-star="org" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+<!-- ======== STUDY 1 ======== -->
+<section class="page" data-sys="study">
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="body">
+    <h2 class="ptitle lg">"Studying" is <em>six</em> different jobs</h2>
+    <p class="small" style="max-width:74%">A test asks you to do one or two of these. Circle what your next test actually asks for.</p>
+    <div style="position:relative;height:118px;margin:4px 0;flex:0 0 auto">
+      <span class="circ" data-k="s4a1" style="position:absolute;left:6px;top:0">recall facts</span>
+      <span class="circ" data-k="s4a2" style="position:absolute;right:8px;top:16px">apply a procedure</span>
+      <span class="circ" data-k="s4a3" style="position:absolute;left:30px;top:38px">explain why</span>
+      <span class="circ" data-k="s4a4" style="position:absolute;right:20px;top:58px">compare two things</span>
+      <span class="circ" data-k="s4a5" style="position:absolute;left:0;top:78px">write under time pressure</span>
+      <span class="circ" data-k="s4a6" style="position:absolute;right:0;top:96px">read something new</span>
+    </div>
+    <div class="rulez"></div>
+    <p class="small">Re-reading your notes prepares you for none of them. It feels productive because it feels familiar, and familiar is not the same as known.</p>
+    <div class="qrow"><div class="ql">Next test</div>
+      <div style="font-size:12px;line-height:1.9"><span class="fill" contenteditable data-k="s4a7" data-ph="class"></span> on <span class="fill" contenteditable data-k="s4a8" data-ph="date"></span>, job is <span class="fill" contenteditable data-k="s4a9"></span></div></div>
+    <div class="qrow"><div class="ql">Then</div>
+      <div style="font-size:12px;line-height:1.9"><span class="fill" contenteditable data-k="s4a10" data-ph="class"></span> on <span class="fill" contenteditable data-k="s4a11" data-ph="date"></span>, job is <span class="fill" contenteditable data-k="s4a12"></span></div></div>
+    <div class="qrow"><div class="ql">And</div>
+      <div style="font-size:12px;line-height:1.9"><span class="fill" contenteditable data-k="s4a13" data-ph="class"></span> on <span class="fill" contenteditable data-k="s4a14" data-ph="date"></span>, job is <span class="fill" contenteditable data-k="s4a15"></span></div></div>
+  </div>
+</section>
+
+<!-- ======== STUDY 2 — FIVE METHODS ======== -->
+<section class="page" data-sys="study">
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="body tight">
+    <p class="kicker">Five study methods &middot; rate the ones you try</p>
+    <h2 class="ptitle sm">The ones with evidence behind them</h2>
+    <div class="method">
+      <div class="mh"><span class="mn">01</span><span class="mt">Retrieval practice</span></div>
+      <div class="mw">Close everything. Write what you remember on a blank page. Then open your notes and see what you missed. <b>Why it works:</b> pulling information out is what strengthens the memory. Putting it in again does much less.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s4b1"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">02</span><span class="mt">Spaced practice</span></div>
+      <div class="mw">Twenty minutes on three different nights instead of an hour the night before. <b>Why it works:</b> forgetting a little between sessions is what makes the next session count. Cramming skips that step entirely.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s4b2"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">03</span><span class="mt">Interleaving</span></div>
+      <div class="mw">Mix problem types instead of doing twenty of the same kind in a row. <b>Why it works:</b> on a real test nobody tells you which method to use. Mixing makes you practice choosing, not just executing.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s4b3"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">04</span><span class="mt">The Feynman technique</span></div>
+      <div class="mw">Explain it out loud in plain words, as if to someone younger. Where you stumble is the gap. Go back, then explain it again. <b>Why it works:</b> you cannot fake understanding out loud.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s4b4"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">05</span><span class="mt">Asking why</span></div>
+      <div class="mw">For every fact, ask why it is true and how it connects to the one before it. <b>Why it works:</b> facts with reasons attached are much harder to lose than facts on their own.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s4b5"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== STUDY 3 — POMODORO ======== -->
+<section class="page" data-sys="study">
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="body">
+    <div style="display:flex;align-items:center;gap:10px">
+      <svg style="width:34px;height:34px;color:var(--pur);flex:0 0 auto"><use href="#g-tomato"/></svg>
+      <h2 class="ptitle" style="margin:0">The Pomodoro</h2>
+    </div>
+    <p class="small" style="margin-top:8px">Named after a tomato-shaped kitchen timer. Twenty-five minutes of work, five minutes off, repeat. After four rounds, take a longer break.</p>
+    <div class="card soft">
+      <div class="cb"><b>The rule that makes it work:</b> during the twenty-five, you do one thing only. If something else comes into your head, write it on a scrap and go back. During the five, you actually stop.</div>
+    </div>
+    <p class="kicker pur">Run four rounds. Fill in a tomato for each one you finished.</p>
+    <div class="pomo">
+      <div class="pomocell" data-k="s4c1"><div class="pn">25 min</div><svg><use href="#g-tomato"/></svg></div>
+      <div class="pomocell" data-k="s4c2"><div class="pn">25 min</div><svg><use href="#g-tomato"/></svg></div>
+      <div class="pomocell" data-k="s4c3"><div class="pn">25 min</div><svg><use href="#g-tomato"/></svg></div>
+      <div class="pomocell" data-k="s4c4"><div class="pn">25 min</div><svg><use href="#g-tomato"/></svg></div>
+    </div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">What broke the first one</div><div class="lines" contenteditable data-k="s4c5"></div></div>
+    <div class="qrow"><div class="ql">Did I actually come back after the break</div>
+      <div><span class="circ" data-k="s4c6">every time</span><span class="circ" data-k="s4c7">sometimes</span><span class="circ" data-k="s4c8">no</span></div></div>
+    <div class="qrow"><div class="ql">25 minutes felt</div>
+      <div><span class="circ" data-k="s4c9">too short</span><span class="circ" data-k="s4c10">right</span><span class="circ" data-k="s4c11">too long</span></div></div>
+    <div class="qrow"><div class="ql">My number is actually</div><div class="lines" contenteditable data-k="s4c12" data-ph="minutes"></div></div>
+    <div class="qrow"><div class="ql">Where I'll do the next four</div><div class="lines" contenteditable data-k="s4c13" data-ph="place and time"></div></div>
+  </div>
+</section>
+
+<!-- ======== STUDY 4 — MATCH ======== -->
+<section class="page" data-sys="study">
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="body">
+    <h2 class="ptitle">Match the method to the <em>job</em></h2>
+    <p class="small">Which method for each? More than one right answer.</p>
+    <div class="qrow"><div class="ql">A vocab quiz on Friday</div><div class="lines" contenteditable data-k="s4d1"></div></div>
+    <div class="qrow"><div class="ql">A math test with mixed problem types</div><div class="lines" contenteditable data-k="s4d2"></div></div>
+    <div class="qrow"><div class="ql">An essay exam where you argue something</div><div class="lines" contenteditable data-k="s4d3"></div></div>
+    <div class="qrow"><div class="ql">A lab practical where you do a procedure</div><div class="lines" contenteditable data-k="s4d4"></div></div>
+    <div class="qrow"><div class="ql">A test on a unit you already half forgot</div><div class="lines" contenteditable data-k="s4d5"></div></div>
+    <div class="rulez"></div>
+    <p class="kicker pur">Now plan a real one</p>
+    <div class="flow">
+      <div class="flowbox"><div class="fl">Test</div><div class="lines" contenteditable data-k="s4d6" data-ph="class and date"></div></div>
+      <div class="flowbox"><div class="fl">Three nights before</div><div class="lines short" contenteditable data-k="s4d7"></div></div>
+      <div class="flowbox"><div class="fl">Night before</div><div class="lines short" contenteditable data-k="s4d9"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== STUDY 5 — LOOP ======== -->
+<section class="page" data-sys="study">
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Studying</div></div>
+      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">What am I doing that feels like studying but isn't working?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s4e1"></div></div>
+      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which method I'm running before the next test</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s4e2"></div></div>
+      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My studying system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s4e3" data-star="study" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== BREAK ======== -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <div class="brk">
+      <div class="bt">Brain Break</div>
+      <div class="bs">Draw the worst possible logo for a company that sells something nobody needs.</div>
+      <div class="bbox" contenteditable data-k="brk2" data-ph="name the company too"></div>
+    </div>
+  </div>
+</section>
+<!-- ======== NOTES 1 ======== -->
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
+  <div class="body">
+    <h2 class="ptitle">Same class, <em>two notebooks</em></h2>
+    <p class="small">Both students were in the room. Both are fine. They are just built for different jobs.</p>
+    <div class="sample" style="margin-bottom:7px">
+      <div class="sh">Notebook A</div>
+      The French Revolution started in 1789. Louis XVI was king. The Estates General met in May. The Bastille was stormed on July 14. The Declaration of the Rights of Man was written in August.
+    </div>
+    <div class="sample">
+      <div class="sh">Notebook B</div>
+      <b>Why 1789 and not earlier?</b> debt + bad harvest + Estates General finally called<br>
+      <b>Bastille = symbol, not strategy</b> only 7 prisoners inside<br>
+      <b>??</b> how do you get from Rights of Man to the Terror in four years. ask
+    </div>
+    <div class="rulez"></div>
+    <p class="small">A is a record. If you miss something, it's there. B is a thinking log. It has a question mark in it, which means there is somewhere to go tomorrow.</p>
+    <div class="qrow"><div class="ql">I write notes because</div><div class="lines" contenteditable data-k="s5a1"></div></div>
+    <div class="qrow"><div class="ql">Mine look more like</div>
+      <div><span class="circ" data-k="s5a2">A</span><span class="circ" data-k="s5a3">B</span><span class="circ" data-k="s5a4">neither</span><span class="circ" data-k="s5a5">depends on the class</span></div></div>
+  </div>
+</section>
+
+<!-- ======== NOTES 2 — CORNELL ======== -->
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
+  <div class="body">
+    <p class="kicker">Format 01</p>
+    <h2 class="ptitle sm">Cornell</h2>
+    <p class="small"><b>How it works:</b> split the page. Take normal notes on the right during class. After class, write questions on the left that your notes answer. Then write two sentences at the bottom summarizing the whole page.</p>
+    <p class="small"><b>Why it works:</b> the left column turns your notes into a quiz you can cover up and test yourself with. The bottom forces you to decide what actually mattered.</p>
+    <div class="cornell" style="margin-top:6px">
+      <div class="cq"><div class="clbl">Questions</div><div class="open plain" style="min-height:150px" contenteditable data-k="s5b1"></div></div>
+      <div class="cn"><div class="clbl">Notes</div><div class="open plain" style="min-height:150px" contenteditable data-k="s5b2"></div></div>
+    </div>
+    <div class="cornell-sum"><div class="clbl">Summary</div><div class="open plain" style="min-height:44px" contenteditable data-k="s5b3"></div></div>
+    <div class="mfoot" style="margin-top:8px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5b4"><i></i><i></i><i></i><i></i><i></i></span></div>
+  </div>
+</section>
+
+<!-- ======== NOTES 3 — OUTLINE + MAP ======== -->
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
+  <div class="body">
+    <p class="kicker">Format 02</p>
+    <h2 class="ptitle sm">Outlining</h2>
+    <p class="small"><b>How it works:</b> big idea flush left, supporting points indented under it, examples indented under those. <b>Why it works:</b> the indent itself carries meaning, so you can see what depends on what without reading.</p>
+    <div class="open plain nogrow" style="min-height:86px;border:1.5px solid var(--ink);padding:7px 9px" contenteditable data-k="s5c1" data-ph="try it" ></div>
+    <div class="mfoot" style="margin:6px 0 10px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5c2"><i></i><i></i><i></i><i></i><i></i></span></div>
+    <div class="rulez"></div>
+    <p class="kicker">Format 03</p>
+    <h2 class="ptitle sm">Mapping</h2>
+    <p class="small"><b>How it works:</b> main idea in the middle, branches out to related ideas, lines between anything that connects. <b>Why it works:</b> some material is not a list. Causes, effects, and relationships are easier to see as a shape than as bullets.</p>
+    <div class="open plain nogrow" style="min-height:96px;border:1.5px solid var(--ink);padding:7px 9px;background-image:none" contenteditable data-k="s5c3" data-ph="try it"></div>
+    <div class="mfoot" style="margin-top:6px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5c4"><i></i><i></i><i></i><i></i><i></i></span></div>
+  </div>
+</section>
+
+<!-- ======== NOTES 4 — Q&A + TWO COLUMN ======== -->
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
+  <div class="body">
+    <p class="kicker">Format 04</p>
+    <h2 class="ptitle sm">Question and answer</h2>
+    <p class="small"><b>How it works:</b> write everything as a question with the answer beside it. Flashcard style, straight from the lecture. <b>Why it works:</b> your notes are already retrieval practice, so studying is just covering one side.</p>
+    <div class="loghd" style="grid-template-columns:1fr 1fr"><span>Question</span><span>Answer</span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr"><span class="lines" contenteditable data-k="s5d1"></span><span class="lines" contenteditable data-k="s5d2"></span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr"><span class="lines" contenteditable data-k="s5d3"></span><span class="lines" contenteditable data-k="s5d4"></span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr"><span class="lines" contenteditable data-k="s5d5"></span><span class="lines" contenteditable data-k="s5d6"></span></div>
+    <div class="mfoot" style="margin:6px 0 10px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5d9"><i></i><i></i><i></i><i></i><i></i></span></div>
+    <div class="rulez"></div>
+    <p class="kicker">Format 05</p>
+    <h2 class="ptitle sm">What it said / what I think</h2>
+    <p class="small"><b>How it works:</b> left side is what was actually said. Right side is your reaction, your confusion, your connection to something else. <b>Why it works:</b> it keeps the record and the thinking separate, so you can tell later which was which.</p>
+    <div class="twocol" style="margin-top:5px">
+      <div class="col"><div class="colhd ink">What it said</div><div class="open plain" contenteditable data-k="s5d10"></div></div>
+      <div class="col"><div class="colhd">What I think</div><div class="open plain" contenteditable data-k="s5d11"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== NOTES 5 — LOOP ======== -->
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Note-Taking</div></div>
+      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">What happens when I go back to my notes a week later?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s5e1"></div></div>
+      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which format I'm running, and in which class</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s5e2"></div></div>
+      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My note-taking system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s5e3" data-star="notes" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+<!-- ======== STRESS 1 ======== -->
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
+  <div class="body">
+    <h2 class="ptitle">Mark your <em>normal</em></h2>
+    <p class="small">Where you usually sit on a regular Tuesday.</p>
+    <div class="gauge">
+      <div class="gaugebar" data-k="s6a1"></div>
+      <div class="gaugelbl"><span>flat</span><span>fine</span><span>too much</span></div>
+    </div>
+    <p class="small" style="margin-top:16px">Where you were during the last week that felt bad.</p>
+    <div class="gauge">
+      <div class="gaugebar" data-k="s6a2"></div>
+      <div class="gaugelbl"><span>flat</span><span>fine</span><span>too much</span></div>
+    </div>
+    <div class="rulez"></div>
+    <p class="lede">The distance between those two marks is the useful information, not the second mark on its own.</p>
+    <p class="small">Some stress is the system working. It is what makes you start the thing. The question is not whether it's at zero. The question is whether you can still work.</p>
+    <div class="qrow"><div class="ql">What moved me from the first mark to the second</div><div class="lines" contenteditable data-k="s6a3"></div></div>
+    <div class="qrow"><div class="ql">What eventually brought it back down</div><div class="lines" contenteditable data-k="s6a4"></div></div>
+  </div>
+</section>
+
+<!-- ======== STRESS 2 ======== -->
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
+  <div class="body">
+    <p class="kicker">Check every one you recognize</p>
+    <h2 class="ptitle">Stress has an <em>address</em></h2>
+    <div class="chk"><span class="box" data-k="s6b1"></span><span>Jaw or teeth</span></div>
+    <div class="chk"><span class="box" data-k="s6b2"></span><span>Shoulders up by my ears</span></div>
+    <div class="chk"><span class="box" data-k="s6b3"></span><span>Stomach</span></div>
+    <div class="chk"><span class="box" data-k="s6b4"></span><span>Chest feels tight or fast</span></div>
+    <div class="chk"><span class="box" data-k="s6b5"></span><span>Can't sit still</span></div>
+    <div class="chk"><span class="box" data-k="s6b6"></span><span>Suddenly very tired</span></div>
+    <div class="chk"><span class="box" data-k="s6b7"></span><span>Reading the same line over and over</span></div>
+    <div class="chk"><span class="box" data-k="s6b8"></span><span>Snapping at people who didn't do anything</span></div>
+    <div class="chk"><span class="box" data-k="s6b9"></span><span>Phone for two hours without deciding to</span></div>
+    <div class="chk"><span class="box" data-k="s6b10"></span><span>Cleaning something instead of doing the work</span></div>
+    <div class="chk"><span class="box" data-k="s6b11"></span><span>Not hungry, or hungry all the time</span></div>
+    <div class="chk"><span class="box" data-k="s6b12"></span><span>Lying in bed awake going over it</span></div>
+    <div class="star">
+      <div class="slab">The early one</div>
+      <div class="sq">Which of these shows up first, before you have even noticed you're stressed?</div>
+      <div class="lines" contenteditable data-k="s6b13"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== STRESS 3 — RESET MENU ======== -->
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
+  <div class="body tight">
+    <p class="kicker">Five resets &middot; rate the ones you try</p>
+    <h2 class="ptitle sm">Things that bring it down</h2>
+    <div class="method">
+      <div class="mh"><span class="mn">01</span><span class="mt">Box breathing</span></div>
+      <div class="mw">In for four, hold for four, out for four, hold for four. Four rounds. <b>Why it works:</b> a long, even out-breath is one of the few direct switches you have into your own nervous system.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c1"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">02</span><span class="mt">Five things you can see</span></div>
+      <div class="mw">Name five things you can see, four you can hear, three you can touch. <b>Why it works:</b> it gives your attention something concrete to hold while the spiral loses momentum.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c2"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">03</span><span class="mt">Brain dump</span></div>
+      <div class="mw">Every single thing you are worried about, on paper, in no order, for three minutes. <b>Why it works:</b> a lot of the load is the effort of holding it all at once. On paper it stops needing to be held.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c3"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">04</span><span class="mt">Move for ten minutes</span></div>
+      <div class="mw">Walk outside, take stairs, shoot around. Not as exercise. As a change of state. <b>Why it works:</b> stress is physical before it is mental, so it responds to physical things faster than to arguments.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c4"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">05</span><span class="mt">Say it to one person</span></div>
+      <div class="mw">Out loud, to someone real. Not for advice. Just to say it. <b>Why it works:</b> things almost always get smaller once they exist outside your own head.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c5"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== STRESS 4 ======== -->
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
+  <div class="body">
+    <h2 class="ptitle">Two lists</h2>
+    <p class="small">Nobody sees this page.</p>
+    <div class="twocol" style="margin-top:4px">
+      <div class="col">
+        <div class="colhd">Actually helps</div>
+        <div class="colsub">You come back feeling better and you can work.</div>
+        <div class="open plain" contenteditable data-k="s6d1"></div>
+      </div>
+      <div class="col">
+        <div class="colhd ink">Feels like it helps</div>
+        <div class="colsub">You do it every time and afterwards nothing has changed.</div>
+        <div class="open plain" contenteditable data-k="s6d2"></div>
+      </div>
+    </div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">One thing moving from right to left this month</div><div class="lines" contenteditable data-k="s6d3"></div></div>
+    <div class="qrow"><div class="ql">When it's bigger than a reset, I tell</div><div class="lines" contenteditable data-k="s6d4" data-ph="a person, by name"></div></div>
+  </div>
+</section>
+
+<!-- ======== STRESS 5 — LOOP ======== -->
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Stress</div></div>
+      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">What reliably tips me over, and how do I know it's happening?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s6e1"></div></div>
+      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which reset I'm trying, and when I'll use it</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s6e2"></div></div>
+      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My stress system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s6e3" data-star="stress" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== BREAK ======== -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <div class="brk">
+      <div class="bt">Brain Break</div>
+      <div class="bs">You have to name a new dorm building at this school. Give it a terrible name and a short explanation of who it honors.</div>
+      <div class="bbox" contenteditable data-k="brk3" data-ph="the more specific the better"></div>
+    </div>
+  </div>
+</section>
+<!-- ======== STUCK 1 ======== -->
+<section class="page" data-sys="stuck">
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="body">
+    <h2 class="ptitle">Stuck is not <em>one</em> thing</h2>
+    <p class="small">All four feel identical from the inside. They need completely different moves.</p>
+    <div class="card">
+      <div class="ch">Conceptual</div>
+      <div class="cb">I do not understand the idea. <b>Sounds like:</b> I have read this paragraph three times and I could not tell you what it says.</div>
+    </div>
+    <div class="card">
+      <div class="ch">Starting</div>
+      <div class="cb">I know what to do and I cannot begin. <b>Sounds like:</b> I know exactly what the essay is about. I have no idea how to write sentence one.</div>
+    </div>
+    <div class="card">
+      <div class="ch">Overload</div>
+      <div class="cb">Too many parts, no order. <b>Sounds like:</b> I have twelve things to do and somehow that has resulted in me doing zero.</div>
+    </div>
+    <div class="card">
+      <div class="ch">Looping</div>
+      <div class="cb">Same move, over and over, no progress. <b>Sounds like:</b> I keep deleting the same sentence and starting it again.</div>
+    </div>
+    <div class="qrow"><div class="ql">The one I get most</div>
+      <div><span class="circ" data-k="s7a1">conceptual</span><span class="circ" data-k="s7a2">starting</span><span class="circ" data-k="s7a3">overload</span><span class="circ" data-k="s7a4">looping</span></div></div>
+    <div class="qrow"><div class="ql">Where it usually happens</div><div class="lines" contenteditable data-k="s7a5" data-ph="which class, what time of day"></div></div>
+  </div>
+</section>
+
+<!-- ======== STUCK 2 — CASE ======== -->
+<section class="page" data-sys="stuck">
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="body">
+    <p class="kicker">Practice on somebody else first</p>
+    <h2 class="ptitle sm">The case</h2>
+    <div class="sample" style="font-size:11px;line-height:1.55">
+      There's a quiz tomorrow. Last night she spent 45 minutes rereading and highlighting the chapter, and it felt productive because everything looked familiar. Today she tried to explain the main causes out loud and blanked completely. Now she is stressed, short on time, and rereading the same pages again.
+    </div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">Which kind of stuck</div><div class="lines" contenteditable data-k="s7b1"></div></div>
+    <div class="qrow"><div class="ql">What is she doing that isn't working</div><div class="lines" contenteditable data-k="s7b2"></div></div>
+    <div class="qrow"><div class="ql">Why does it feel like it's working</div><div class="lines" contenteditable data-k="s7b3"></div></div>
+    <div class="qrow"><div class="ql">Better next move</div><div class="lines" contenteditable data-k="s7b4"></div></div>
+    <div class="rulez"></div>
+    <p class="kicker pur">Now you</p>
+    <div class="qrow"><div class="ql">A time this year I was properly stuck</div>
+      <div class="open plain nogrow" style="min-height:38px;border:none;padding:0" contenteditable data-k="s7b5"></div></div>
+    <div class="qrow"><div class="ql">How it ended, even if it ended badly</div><div class="lines" contenteditable data-k="s7b6"></div></div>
+  </div>
+</section>
+
+<!-- ======== STUCK 3 — C/I/A ======== -->
+<section class="page" data-sys="stuck">
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="body">
+    <h2 class="ptitle sm">Control, influence, accept</h2>
+    <p class="small">When you're stuck, some things you can change directly, some you can only nudge through other people, and some you cannot change today. Knowing which is which stops you from spending all your energy on the third kind.</p>
+    <div class="wordbank">
+      <div class="wh">Sort these</div>
+      <div>
+        <span class="chip" data-k="d1">the due date</span><span class="chip" data-k="d2">how early I start</span><span class="chip" data-k="d3">whether the teacher replies tonight</span>
+        <span class="chip" data-k="d4">how hard the material is</span><span class="chip" data-k="d5">which strategy I use</span><span class="chip" data-k="d6">my group finishing their part</span>
+        <span class="chip" data-k="d7">how much sleep I get</span><span class="chip" data-k="d8">what grade I already got</span><span class="chip" data-k="d9">whether I ask</span>
+      </div>
+    </div>
+    <div class="threecol">
+      <div class="col"><div class="colhd">Control</div><div class="colsub">I can just do this</div><div class="open plain" style="font-size:11px" contenteditable data-k="s7c1"></div></div>
+      <div class="col"><div class="colhd">Influence</div><div class="colsub">Through someone else</div><div class="open plain" style="font-size:11px" contenteditable data-k="s7c2"></div></div>
+      <div class="col"><div class="colhd">Accept</div><div class="colsub">Not today</div><div class="open plain" style="font-size:11px" contenteditable data-k="s7c3"></div></div>
+    </div>
+    <p class="tiny" style="margin-top:7px">Accepting is not giving up. It's deciding to stop fighting the one thing that will not move, so you have something left for the two that will.</p>
+  </div>
+</section>
+
+<!-- ======== STUCK 4 — UNSTICK MENU ======== -->
+<section class="page" data-sys="stuck">
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="body tight">
+    <p class="kicker">Five moves &middot; rate the ones you try</p>
+    <h2 class="ptitle sm">The unstick menu</h2>
+    <div class="method">
+      <div class="mh"><span class="mn">01</span><span class="mt">Find the last line that made sense</span></div>
+      <div class="mw"><b>For:</b> conceptual. Go back until you hit something you understood, then move forward one step. Now the problem is one line instead of the whole thing.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s7d1"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">02</span><span class="mt">Do a worse version</span></div>
+      <div class="mw"><b>For:</b> starting. Write the bad paragraph on purpose. Solve the easier version of the problem. You can fix it after it exists, but not before.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s7d2"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">03</span><span class="mt">Everything out, then pick one</span></div>
+      <div class="mw"><b>For:</b> overload. Dump all twelve things onto paper, then circle exactly one. Twelve things in your head is heavier than twelve things on a page.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s7d3"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">04</span><span class="mt">Change one physical thing</span></div>
+      <div class="mw"><b>For:</b> looping. Different room, paper instead of screen, standing instead of sitting. Interrupt the loop with your body when your head will not do it.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s7d4"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">05</span><span class="mt">The fifteen minute wall</span></div>
+      <div class="mw"><b>For:</b> all four. Fifteen minutes with no movement means it's time to ask, not to push harder. Set the timer before you start so the decision is already made.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s7d5"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== STUCK 5 — LOOP ======== -->
+<section class="page" data-sys="stuck">
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Getting Stuck</div></div>
+      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">Which kind of stuck do I get, and how do I know?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s7e1"></div></div>
+      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which move I'm running the next time it happens</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s7e2"></div></div>
+      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My getting-unstuck system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s7e3" data-star="stuck" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== BREAK ======== -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <div class="brk">
+      <div class="bt">Brain Break</div>
+      <div class="bs">Invent a holiday. When is it, what do people do, and what food is mandatory?</div>
+      <div class="bbox" contenteditable data-k="brk4" data-ph="the food matters most"></div>
+    </div>
+  </div>
+</section>
+<!-- ======== UPDATING 1 ======== -->
+<section class="page" data-sys="upd">
+  <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
+  <div class="body">
+    <h2 class="ptitle lg">Your brain is not <em>finished</em></h2>
+    <div class="rulez thick"></div>
+    <div class="card">
+      <div class="ch"><svg><use href="#g-upd"/></svg>It physically changes</div>
+      <div class="cb">Neuroplasticity. Your brain builds and strengthens connections based on what you do. It is not a fixed amount you were issued at birth.</div>
+    </div>
+    <div class="card">
+      <div class="ch"><svg><use href="#g-upd"/></svg>Practice thickens the path</div>
+      <div class="cb">Signals travel the same routes over and over, and the ones you use most become fastest. That is what it feels like when something goes from hard to automatic.</div>
+    </div>
+    <div class="card">
+      <div class="ch"><svg><use href="#g-upd"/></svg>Struggle is part of the mechanism</div>
+      <div class="cb">Difficulty is the signal that tells your brain to adapt. Work that never feels hard is not changing anything.</div>
+    </div>
+    <div class="card">
+      <div class="ch"><svg><use href="#g-upd"/></svg>It costs energy</div>
+      <div class="cb">Thinking hard is tiring for the same reason lifting is tiring. Being wiped after real work is not a sign you're bad at it.</div>
+    </div>
+    <div class="qrow"><div class="ql">Something I'm good at now that I used to be bad at</div><div class="lines" contenteditable data-k="s8a1"></div></div>
+    <div class="qrow"><div class="ql">What I actually did to get there</div><div class="lines" contenteditable data-k="s8a2"></div></div>
+  </div>
+</section>
+
+<!-- ======== UPDATING 2 ======== -->
+<section class="page" data-sys="upd">
+  <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
+  <div class="body">
+    <h2 class="ptitle">Mistakes are <em>data</em></h2>
+    <p class="small">A wrong answer tells you something a right answer cannot. It tells you exactly where the gap is. The only wasted mistake is the one you do not read.</p>
+    <div class="rulez"></div>
+    <p class="kicker pur">Three real ones from this year</p>
+    <div class="loghd" style="grid-template-columns:1fr 1fr 1fr"><span>What went wrong</span><span>What it told me</span><span>What I changed</span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr 1fr"><span class="lines" contenteditable data-k="s8b1"></span><span class="lines" contenteditable data-k="s8b2"></span><span class="lines" contenteditable data-k="s8b3"></span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr 1fr"><span class="lines" contenteditable data-k="s8b4"></span><span class="lines" contenteditable data-k="s8b5"></span><span class="lines" contenteditable data-k="s8b6"></span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr 1fr"><span class="lines" contenteditable data-k="s8b7"></span><span class="lines" contenteditable data-k="s8b8"></span><span class="lines" contenteditable data-k="s8b9"></span></div>
+    <div class="rulez"></div>
+    <p class="kicker pur">The next graded thing you get back</p>
+    <div class="qrow"><div class="ql">Before you look at the grade, look for</div><div class="lines" contenteditable data-k="s8b10" data-ph="the pattern in what you missed"></div></div>
+    <div class="qrow"><div class="ql">One question I'll ask about it</div><div class="lines" contenteditable data-k="s8b11"></div></div>
+  </div>
+</section>
+
+<!-- ======== UPDATING 3 ======== -->
+<section class="page" data-sys="upd">
+  <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
+  <div class="body">
+    <h2 class="ptitle sm">Which version am I running?</h2>
+    <p class="small">Circle the side that's true for you right now. Not on your best day. Right now.</p>
+    <div class="loghd" style="grid-template-columns:1fr 1fr"><span>Default</span><span>Updated</span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr;align-items:start">
+      <span class="circ" data-k="s8c1" style="font-size:11px">I'm either good at this or I'm not</span>
+      <span class="circ" data-k="s8c2" style="font-size:11px">I can get better with practice</span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr;align-items:start">
+      <span class="circ" data-k="s8c3" style="font-size:11px">I avoid things I might fail</span>
+      <span class="circ" data-k="s8c4" style="font-size:11px">Hard things are where the growth is</span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr;align-items:start">
+      <span class="circ" data-k="s8c5" style="font-size:11px">Feedback feels like an attack</span>
+      <span class="circ" data-k="s8c6" style="font-size:11px">Feedback is information I asked for</span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr;align-items:start">
+      <span class="circ" data-k="s8c7" style="font-size:11px">Not understanding is embarrassing</span>
+      <span class="circ" data-k="s8c8" style="font-size:11px">Not understanding means ask</span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr;align-items:start">
+      <span class="circ" data-k="s8c9" style="font-size:11px">If it's hard, it's not for me</span>
+      <span class="circ" data-k="s8c10" style="font-size:11px">If it's hard, it's working</span></div>
+    <div class="qrow"><div class="ql">On my best day I'm mostly</div><div class="lines short" contenteditable data-k="s8c11"></div></div>
+    <div class="qrow"><div class="ql">On my worst day I'm mostly</div><div class="lines short" contenteditable data-k="s8c12"></div></div>
+    <div class="qrow"><div class="ql">The class where I flip to Default fastest</div><div class="lines short" contenteditable data-k="s8c13"></div></div>
+  </div>
+</section>
+
+<!-- ======== UPDATING 4 ======== -->
+<section class="page" data-sys="upd">
+  <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
+  <div class="body">
+    <h2 class="ptitle">Don't wait for the <em>failure</em></h2>
+    <p class="lede">Most people update after something goes wrong. You can also just go looking for the hard thing on purpose, before it comes looking for you.</p>
+    <div class="rulez"></div>
+    <p class="kicker pur">Three things you've been avoiding because you might be bad at them</p>
+    <div class="qrow"><div class="ql">One</div><div class="lines" contenteditable data-k="s8d1"></div></div>
+    <div class="qrow"><div class="ql">Two</div><div class="lines" contenteditable data-k="s8d2"></div></div>
+    <div class="qrow"><div class="ql">Three</div><div class="lines" contenteditable data-k="s8d3"></div></div>
+    <div class="star">
+      <div class="slab">Pick the hard one</div>
+      <div class="sq">Which are you doing anyway, and when</div>
+      <div class="lines" contenteditable data-k="s8d4"></div>
+    </div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">The question to ask instead of "am I good at this"</div>
+      <div style="font-family:var(--disp);font-weight:700;font-size:17px;line-height:1.15;color:var(--pur-deep);padding:4px 0">How can I grow from this?</div></div>
+  </div>
+</section>
+
+<!-- ======== UPDATING 5 — LOOP ======== -->
+<section class="page" data-sys="upd">
+  <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Updating</div></div>
+      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">Where do I decide too fast that I'm just not a person who can do this?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s8e1"></div></div>
+      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">The hard thing I'm doing on purpose this month</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s8e2"></div></div>
+      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My updating system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s8e3" data-star="upd" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== LETTER ======== -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker">Week seven</p>
+    <h2 class="ptitle">A letter to you, <em>later</em></h2>
+    <p class="small">Write to whoever opens this book next. Junior year you. Twenty-five year old you. Whoever. Tell them what you figured out and what you would warn them about.</p>
+    <div class="open" contenteditable data-k="letter" data-ph="Dear me,"></div>
+  </div>
+</section>
+
+<!-- ======== MY OS v1 ======== -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker pur">The page that leaves this room</p>
+    <h2 class="ptitle lg">My OS, <em>v1</em></h2>
+    <p class="small">Pulled from the purple box at the end of every section. Change any of them. It is your build.</p>
+    <div class="rulez"></div>
+    <div class="osrow"><svg><use href="#g-ask"/></svg><div class="osl">Asking</div><div class="osv empty" data-mirror="ask" data-ph="from System 01" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-time"/></svg><div class="osl">Time</div><div class="osv empty" data-mirror="time" data-ph="from System 02" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-org"/></svg><div class="osl">Organization</div><div class="osv empty" data-mirror="org" data-ph="from System 03" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-study"/></svg><div class="osl">Studying</div><div class="osv empty" data-mirror="study" data-ph="from System 04" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-notes"/></svg><div class="osl">Notes</div><div class="osv empty" data-mirror="notes" data-ph="from System 05" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-stress"/></svg><div class="osl">Stress</div><div class="osv empty" data-mirror="stress" data-ph="from System 06" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-stuck"/></svg><div class="osl">Getting Stuck</div><div class="osv empty" data-mirror="stuck" data-ph="from System 07" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-upd"/></svg><div class="osl">Updating</div><div class="osv empty" data-mirror="upd" data-ph="from System 08" contenteditable></div></div>
+    <div class="rulez"></div>
+    <p class="small">v1 is not the finished version. It is the first one you wrote down on purpose. There will be a v2, and you will be the one who writes it.</p>
+    <div class="qrow"><div class="ql">Signed</div><div class="lines" contenteditable data-k="v1sign" data-ph="name and date"></div></div>
+  </div>
+</section>
+
+<!-- ======== BACK COVER ======== -->
+<section class="page cover" data-sys="">
+  <div style="flex:1;display:flex;align-items:center">
+    <div style="font-family:var(--disp);font-weight:700;font-size:22px;line-height:1.12;color:var(--paper)">
+      Systems break.<br>
+      <span style="color:var(--pur)">That's not the failure.</span><br>
+      Not noticing is.
+    </div>
+  </div>
+  <div class="colophon">
+    Metacognition &middot; Grade 9<br>
+    San Francisco University High School<br>
+    Seven weeks &middot; ungraded &middot; yours
+  </div>
+</section>
+</div>
+
+<script>
+(function(){
+  const src=document.getElementById('pages');
+  const pages=Array.from(src.querySelectorAll('.page'));
+  const spread=document.getElementById('spread');
+  const counter=document.getElementById('counter');
+  const railEl=document.getElementById('rail');
+  const savedEl=document.getElementById('saved');
+  const KEY='hsos_v1';
+
+  /* ---------- build generated graphics ---------- */
+  const tgrid=src.querySelector('#tgrid');
+  if(tgrid){
+    const labels=['7a','','8a','','9a','','10a','','11a','','12p','','1p','','2p','','3p','','4p','','5p','','6p','','7p','','8p','','9p','','10p',''];
+    labels.forEach((h,i)=>{
+      const d=document.createElement('div');
+      d.className='cell'; d.dataset.k='tg'+i;
+      if(h){const s=document.createElement('span');s.textContent=h;d.appendChild(s);}
+      tgrid.appendChild(d);
+    });
+  }
+  src.querySelectorAll('.gaugebar').forEach(g=>{
+    for(let i=0;i<12;i++){const d=document.createElement('div');d.dataset.i=i;g.appendChild(d);}
+  });
+  const map=src.querySelector('#helpmap');
+  if(map){
+    ['left:16%;top:12%;width:64px;transform:rotate(34deg)',
+     'right:16%;top:12%;width:64px;transform:rotate(146deg)',
+     'left:14%;top:47%;width:62px;transform:rotate(2deg)',
+     'right:14%;top:47%;width:62px;transform:rotate(178deg)',
+     'left:16%;bottom:24%;width:64px;transform:rotate(-34deg)',
+     'right:16%;bottom:24%;width:64px;transform:rotate(-146deg)'
+    ].forEach(s=>{const d=document.createElement('div');d.className='spoke';d.setAttribute('style',s);map.appendChild(d);});
+  }
+
+  /* ---------- storage ---------- */
+  let state={};
+  function load(){
+    try{const raw=localStorage.getItem(KEY);if(raw)state=JSON.parse(raw)||{};}
+    catch(e){state={};savedEl.textContent='not saving here';}
+  }
+  let t=null;
+  function save(){
+    try{
+      localStorage.setItem(KEY,JSON.stringify(state));
+      savedEl.textContent='saved';
+      clearTimeout(t); t=setTimeout(()=>savedEl.textContent='',1400);
+    }catch(e){savedEl.textContent='not saving here';}
+  }
+  function restore(){
+    src.querySelectorAll('[contenteditable][data-k]').forEach(el=>{
+      const v=state[el.dataset.k]; if(v){el.textContent=v;el.classList.remove('empty');}
+    });
+    src.querySelectorAll('.box[data-k]').forEach(el=>{
+      if(state[el.dataset.k]) el.parentElement.classList.add('on');
+    });
+    src.querySelectorAll('.circ[data-k],.chip[data-k]').forEach(el=>{
+      if(state[el.dataset.k]) el.classList.add('on');
+    });
+    src.querySelectorAll('.cell[data-k]').forEach(el=>{
+      if(state[el.dataset.k]) el.classList.add('on');
+    });
+    src.querySelectorAll('.pomocell[data-k]').forEach(el=>{
+      if(state[el.dataset.k]) el.classList.add('on');
+    });
+    src.querySelectorAll('.rate[data-k]').forEach(el=>{
+      const n=state[el.dataset.k]||0;
+      Array.from(el.children).forEach((i,idx)=>i.classList.toggle('on',idx<n));
+    });
+    src.querySelectorAll('.gaugebar[data-k]').forEach(el=>{
+      const n=state[el.dataset.k];
+      if(n!==undefined&&el.children[n]) el.children[n].classList.add('on');
+    });
+    src.querySelectorAll('.fear').forEach((el,i)=>{
+      if(state['fear'+i]) el.classList.add('on');
+    });
+    syncMirror();
+  }
+
+  /* ---------- spreads + nav ---------- */
+  const spreads=[[0]];
+  for(let i=1;i<pages.length;i+=2) spreads.push(pages[i+1]?[i,i+1]:[i]);
+
+  const systems=[['ask','#g-ask'],['time','#g-time'],['org','#g-org'],['study','#g-study'],
+                 ['notes','#g-notes'],['stress','#g-stress'],['stuck','#g-stuck'],['upd','#g-upd']];
+  systems.forEach(([key,icon])=>{
+    const b=document.createElement('button');
+    b.innerHTML='<svg><use href="'+icon+'"/></svg>';
+    b.title=key; b.dataset.sys=key;
+    b.addEventListener('click',()=>{
+      const p=pages.findIndex(x=>x.dataset.sys===key);
+      go(spreads.findIndex(sp=>sp.includes(p)));
+    });
+    railEl.appendChild(b);
+  });
+
+  let cur=0;
+  function go(n){
+    cur=Math.max(0,Math.min(spreads.length-1,n));
+    spread.innerHTML='';
+    const set=spreads[cur];
+    set.forEach((pi,idx)=>{
+      const p=pages[pi];
+      p.classList.remove('verso','recto','solo');
+      p.classList.add(set.length===1?'solo':(idx===0?'verso':'recto'));
+      spread.appendChild(p);
+    });
+    counter.textContent=(set[0]+1)+(set[1]?'\u2013'+(set[1]+1):'')+' / '+pages.length;
+    document.getElementById('prev').disabled=cur===0;
+    document.getElementById('next').disabled=cur===spreads.length-1;
+    const active=set.map(i=>pages[i].dataset.sys).filter(Boolean);
+    railEl.querySelectorAll('button').forEach(b=>b.classList.toggle('on',active.includes(b.dataset.sys)));
+  }
+  document.getElementById('prev').addEventListener('click',()=>go(cur-1));
+  document.getElementById('next').addEventListener('click',()=>go(cur+1));
+  document.addEventListener('keydown',e=>{
+    if(document.activeElement&&document.activeElement.isContentEditable)return;
+    if(e.key==='ArrowRight')go(cur+1);
+    if(e.key==='ArrowLeft')go(cur-1);
+  });
+
+  /* ---------- interactions ---------- */
+  document.addEventListener('click',e=>{
+    const chk=e.target.closest('.chk');
+    if(chk){
+      chk.classList.toggle('on');
+      const b=chk.querySelector('.box');
+      if(b&&b.dataset.k){state[b.dataset.k]=chk.classList.contains('on')?1:0;save();}
+      return;
+    }
+    const circ=e.target.closest('.circ');
+    if(circ){circ.classList.toggle('on');
+      if(circ.dataset.k){state[circ.dataset.k]=circ.classList.contains('on')?1:0;save();}return;}
+    const chip=e.target.closest('.chip');
+    if(chip){chip.classList.toggle('on');
+      if(chip.dataset.k){state[chip.dataset.k]=chip.classList.contains('on')?1:0;save();}return;}
+    const fear=e.target.closest('.fear');
+    if(fear){fear.classList.toggle('on');
+      const all=Array.from(src.querySelectorAll('.fear'));
+      state['fear'+all.indexOf(fear)]=fear.classList.contains('on')?1:0;save();return;}
+    const cell=e.target.closest('.cell');
+    if(cell){cell.classList.toggle('on');
+      state[cell.dataset.k]=cell.classList.contains('on')?1:0;save();return;}
+    const pomo=e.target.closest('.pomocell');
+    if(pomo){pomo.classList.toggle('on');
+      state[pomo.dataset.k]=pomo.classList.contains('on')?1:0;save();return;}
+    const dot=e.target.closest('.rate i');
+    if(dot){
+      const r=dot.parentElement, kids=Array.from(r.children), n=kids.indexOf(dot)+1;
+      const val=(state[r.dataset.k]===n)?0:n;
+      state[r.dataset.k]=val;
+      kids.forEach((i,idx)=>i.classList.toggle('on',idx<val));
+      save();return;
+    }
+    const gc=e.target.closest('.gaugebar>div');
+    if(gc){
+      const bar=gc.parentElement;
+      Array.from(bar.children).forEach(c=>c.classList.remove('on'));
+      gc.classList.add('on');
+      state[bar.dataset.k]=parseInt(gc.dataset.i);save();return;
+    }
+  });
+
+  /* ---------- typing ---------- */
+  const PH={ask:'from System 01',time:'from System 02',org:'from System 03',study:'from System 04',
+            notes:'from System 05',stress:'from System 06',stuck:'from System 07',upd:'from System 08'};
+  function syncMirror(){
+    src.querySelectorAll('[data-mirror]').forEach(el=>{
+      if(el.dataset.touched)return;
+      const v=state['star_'+el.dataset.mirror];
+      if(v){el.textContent=v;el.classList.remove('empty');}
+      else{el.textContent='';el.classList.add('empty');}
+    });
+  }
+  src.addEventListener('input',e=>{
+    const el=e.target;
+    if(!el.isContentEditable)return;
+    if(el.dataset.k){state[el.dataset.k]=el.textContent;}
+    if(el.dataset.star){state['star_'+el.dataset.star]=el.textContent.trim();syncMirror();}
+    if(el.dataset.mirror){
+      el.dataset.touched='1';
+      el.classList.toggle('empty',!el.textContent.trim());
+      state['mir_'+el.dataset.mirror]=el.textContent;
+    }
+    save();
+  });
+
+  /* ---------- buttons ---------- */
+  function flatten(){
+    pages.forEach(p=>{p.classList.remove('verso','recto','solo');src.appendChild(p);});
+    src.hidden=false;
+  }
+  window.addEventListener('beforeprint',flatten);
+  window.addEventListener('afterprint',()=>{src.hidden=true;go(cur);});
+  document.getElementById('pdfbtn').addEventListener('click',()=>{
+    flatten();
+    window.print();
+  });
+  document.getElementById('clearbtn').addEventListener('click',()=>{
+    if(!confirm('Erase everything you have written in this booklet on this device?'))return;
+    state={};
+    try{localStorage.removeItem(KEY);}catch(e){}
+    location.reload();
+  });
+
+  load();restore();go(0);
+})();
+</script>
+</body>
+</html>
