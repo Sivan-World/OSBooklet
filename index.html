@@ -339,6 +339,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
 
 /* ============ DRAG SORT ============ */
 .dropgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0}
+.dropgrid.tall .dropzone{background-image:repeating-linear-gradient(transparent,transparent 17px,rgba(207,199,176,.5) 17px,rgba(207,199,176,.5) 18px)}
+.dropgrid.tall .chip,.bankzone.tight .chip{font-size:8.5px;padding:2px 5px;border-width:1px}
 .dropbox{border:1.5px solid var(--ink);padding:5px 7px;display:flex;flex-direction:column;min-height:0}
 .dropbox.over{background:var(--pur-tint);border-color:var(--pur)}
 .dropbox .dbh{border-bottom:1px solid var(--rule);padding-bottom:3px;margin-bottom:4px;flex:0 0 auto}
@@ -351,6 +353,69 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
 .chip.sel{background:var(--pur);border-color:var(--pur);color:#fff}
 .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .bankzone{display:flex;flex-wrap:wrap;gap:3px}
+
+/* ============ MATCH ROWS ============ */
+.matchlist{display:flex;flex-direction:column;gap:5px;flex:0 0 auto}
+.matchrow{display:grid;grid-template-columns:1fr 128px;gap:8px;align-items:center}
+.matchrow .mlbl{font-size:11px;line-height:1.28}
+.matchrow .dropbox{min-height:28px;justify-content:center}
+.matchrow .dropzone{min-height:20px}
+
+/* ============ SCOREBOARD ============ */
+.scoreboard{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;
+  border:1.5px solid var(--ink);padding:8px 11px;margin-top:9px;flex:0 0 auto}
+.sbside{text-align:center}
+.sbn{font-family:var(--disp);font-weight:800;font-size:26px;line-height:1}
+.sbr{color:var(--pur-deep)}
+.sbt{font-family:var(--mono);font-size:6px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);margin-top:1px}
+.sbbar{height:9px;background:var(--ink);position:relative;overflow:hidden}
+.sbbar span{position:absolute;right:0;top:0;bottom:0;width:0;background:var(--pur);transition:width .18s ease}
+
+/* ============ ESTIMATE BAR ============ */
+.estbar{border:1.5px solid var(--ink);padding:7px 9px;margin:8px 0 7px;flex:0 0 auto}
+.ebh{font-family:var(--mono);font-size:6.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:5px}
+.ebtrack{position:relative}
+.ebmid{position:absolute;left:50%;top:0;bottom:0;width:1.5px;background:var(--rule)}
+.ebrows{display:flex;flex-direction:column;gap:3px}
+.ebrow{height:9px;position:relative}
+.ebrow i{position:absolute;top:0;bottom:0;background:var(--pur);min-width:2px}
+.ebrow.none i{background:var(--rule-soft);left:calc(50% - 1px);width:2px}
+.eblbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:5.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+
+/* ============ PLAN YOUR DAY ============ */
+.capgrid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+.capgrid .fill{min-width:0;width:100%;font-size:11px}
+.dayhd{display:grid;grid-template-columns:34px 1fr 1fr;gap:4px;font-family:var(--mono);font-size:6px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--pur-deep);margin:7px 0 3px;padding-bottom:2px;
+  border-bottom:1.5px solid var(--pur)}
+.dayrow{display:grid;grid-template-columns:34px 1fr 1fr;gap:4px;align-items:stretch;margin-bottom:3px}
+.dayrow .dh{font-family:var(--mono);font-size:7px;letter-spacing:.05em;color:var(--ink-soft);align-self:center}
+.slot{border:1px solid var(--rule);min-height:21px;padding:2px 5px;font-size:10.5px;font-style:italic;line-height:1.5;outline:none}
+.slot:focus{border-color:var(--pur);background:rgba(216,84,220,.09)}
+.slot.full{background:var(--pur-tint);border-color:var(--pur-deep)}
+
+/* ============ ENERGY BUDGET ============ */
+.budgetlist{display:flex;flex-direction:column;gap:1px;margin:7px 0 2px}
+.bgrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:4px 0;border-bottom:1px solid var(--rule-soft)}
+.bgrow .fill{min-width:0;width:100%;font-size:11.5px}
+.budget{margin:9px 0 6px;flex:0 0 auto}
+.btrack{position:relative;height:22px;border:1.5px solid var(--ink);overflow:hidden}
+.btrack::before{content:"";position:absolute;left:66.6%;right:0;top:0;bottom:0;
+  background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(27,26,23,.11) 5px 10px)}
+.bfill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--pur);transition:width .16s ease}
+.bfill.over{background:repeating-linear-gradient(135deg,var(--pur) 0 6px,var(--ink) 6px 12px)}
+.bline{position:absolute;left:66.6%;top:-2px;bottom:-2px;width:2px;background:var(--ink);z-index:2}
+.blbl{position:relative;height:11px;font-family:var(--mono);font-size:6.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+.blbl .bnum{position:absolute;left:0}
+.blbl .bcap{position:absolute;left:66.6%;transform:translateX(-50%);white-space:nowrap}
+.blbl .bnum{color:var(--pur-deep);font-weight:500}
+
+/* ============ EVERYTHING I TRIED ============ */
+.triedwrap{display:flex;flex-wrap:wrap;gap:3px;align-content:flex-start;flex:1;min-height:0;margin:4px 0}
+.chip.keep{font-size:9px;padding:2.5px 6px;border-width:1px}
+.chip.keep[data-s="1"]{background:var(--pur);border-color:var(--pur);color:#fff}
+.chip.keep[data-s="2"]{color:#A99E8A;border-color:var(--rule);text-decoration:line-through}
 
 /* ============ THE LOCK ============ */
 .lock{border:2px solid var(--ink);padding:9px 11px;margin:6px 0;flex:0 0 auto}
@@ -375,6 +440,17 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
 .brk .bbox{width:100%;flex:0 0 auto;height:44%;border:1.5px dashed var(--rule);outline:none;padding:8px;font-size:12px;font-style:italic;line-height:1.6;text-align:left}
 .brk .bbox:empty::before{content:attr(data-ph);color:#B4A990;font-style:normal;font-size:9px;font-family:var(--mono)}
 .brk .bbox:focus{border-color:var(--pur)}
+
+/* ============ SECTION DIVIDERS ============ */
+.divider{
+  background:var(--ink);background-image:none;color:var(--paper);
+  padding:0;justify-content:center;overflow:hidden;
+}
+.dvtab{position:absolute;left:0;width:34px;height:54px;background:var(--pur)}
+.dvbody{padding:0 28px 0 62px;display:flex;flex-direction:column;gap:16px;z-index:1}
+.dvglyph{width:50px;height:50px;color:var(--pur)}
+.dvnum{font-family:var(--mono);font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:#948877}
+.dvname{font-family:var(--disp);font-weight:800;font-size:40px;line-height:.88;letter-spacing:-.035em;margin:0;color:var(--paper)}
 
 /* ============ COVER ============ */
 .cover{background:var(--ink);color:var(--paper);justify-content:flex-start;background-image:none}
@@ -416,7 +492,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     padding:0.42in 0.38in 0.4in;background-image:none;
   }
   .page:last-child{page-break-after:auto}
-  .cover{background:#1B1A17 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cover,.divider{background:#1B1A17 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .tbtns,.lockin button{display:none !important}
   .tprint{display:block !important}
   .timer .tdisp{font-size:20px}
@@ -491,7 +567,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
 </footer>
 
 <div id="pages" hidden>
-<!-- ============ COVER ============ -->
+
 <section class="page cover" data-sys="">
   <div>
     <div class="sub">San Francisco University High School<br>Grade 9 &middot; Metacognition</div>
@@ -507,26 +583,27 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ============ CONTENTS ============ -->
 <section class="page" data-sys="">
   <div class="body nomark">
     <p class="kicker">Eight systems, six pages each</p>
     <h2 class="ptitle">What's in here</h2>
     <div class="rulez thick"></div>
     <div class="osrow"><svg><use href="#g-ask"/></svg><div class="osl">01 Asking</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Help-seeking, emails, and asking for what you need</div></div>
-    <div class="osrow"><svg><use href="#g-time"/></svg><div class="osl">02 Time</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Where it goes, planning tools, and the loathsome task</div></div>
-    <div class="osrow"><svg><use href="#g-org"/></svg><div class="osl">03 Organization</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Where things live and systems worth stealing</div></div>
-    <div class="osrow"><svg><use href="#g-study"/></svg><div class="osl">04 Studying</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Five methods with evidence, and the Pomodoro</div></div>
-    <div class="osrow"><svg><use href="#g-notes"/></svg><div class="osl">05 Notes</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Five formats, with space to try each one</div></div>
-    <div class="osrow"><svg><use href="#g-stress"/></svg><div class="osl">06 Stress</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Signals, resets, and the brain dump</div></div>
-    <div class="osrow"><svg><use href="#g-stuck"/></svg><div class="osl">07 Getting Stuck</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Four kinds of stuck and what to do about each</div></div>
+    <div class="osrow"><svg><use href="#g-stuck"/></svg><div class="osl">02 Getting Stuck</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Four kinds of stuck and what to do about each</div></div>
+    <div class="osrow"><svg><use href="#g-study"/></svg><div class="osl">03 Studying</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Five methods with evidence, and the Pomodoro</div></div>
+    <div class="osrow"><svg><use href="#g-notes"/></svg><div class="osl">04 Note-Taking</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Five formats, with space to try each one</div></div>
+    <div class="osrow"><svg><use href="#g-time"/></svg><div class="osl">05 Time</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Where it goes, planning tools, and the loathsome task</div></div>
+    <div class="osrow"><svg><use href="#g-org"/></svg><div class="osl">06 Organization</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Where things live and systems worth stealing</div></div>
+    <div class="osrow"><svg><use href="#g-stress"/></svg><div class="osl">07 Stress</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Signals, resets, and the brain dump</div></div>
     <div class="osrow"><svg><use href="#g-upd"/></svg><div class="osl">08 Updating</div><div class="osv" style="border:none;font-style:normal;font-size:11px">How your brain changes, and a lock you probably can't crack</div></div>
     <div class="rulez"></div>
-    <p class="small">Every section ends the same way, with The Loop. Between sections there are Brain Breaks, which are not about any of this.</p>
   </div>
 </section>
 
-<!-- ============ HOW TO USE ============ -->
+<section class="page" data-sys="">
+  <div class="body nomark"></div>
+</section>
+
 <section class="page" data-sys="">
   <div class="body nomark">
     <p class="kicker">Start here</p>
@@ -535,7 +612,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     <div class="rulez"></div>
     <div class="card">
       <div class="ch"><svg><use href="#g-notes"/></svg>There is no right amount of writing</div>
-      <div class="cb">Some pages you will fill edge to edge. Some you will leave alone. Both are fine. Nobody collects this.</div>
+      <div class="cb">Some pages you will fill edge to edge. Some you will leave alone. Both are fine.</div>
     </div>
     <div class="card">
       <div class="ch"><svg><use href="#g-star"/></svg>Except for the purple boxes</div>
@@ -554,7 +631,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ============ THE LOOP ============ -->
 <section class="page" data-sys="">
   <div class="body nomark">
     <p class="kicker pur">The one thing to remember</p>
@@ -586,7 +662,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ============ WHAT I ALREADY DO 1 ============ -->
 <section class="page" data-sys="">
   <div class="body nomark">
     <p class="kicker">Week one &middot; before we start anything</p>
@@ -603,7 +678,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ============ WHAT I ALREADY DO 2 ============ -->
 <section class="page" data-sys="">
   <div class="body nomark">
     <p class="kicker">Keep going</p>
@@ -622,7 +696,16 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     </div>
   </div>
 </section>
-<!-- ======== ASKING 1 ======== -->
+
+<section class="page divider" data-sys="ask">
+  <div class="dvtab" style="top:9%"></div>
+  <div class="dvbody">
+    <svg class="dvglyph"><use href="#g-ask"/></svg>
+    <div class="dvnum">System 01</div>
+    <h2 class="dvname">Asking</h2>
+  </div>
+</section>
+
 <section class="page" data-sys="ask">
   <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
   <div class="body">
@@ -646,7 +729,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ASKING 2 ======== -->
 <section class="page" data-sys="ask">
   <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
   <div class="body">
@@ -671,7 +753,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ASKING 3 ======== -->
 <section class="page" data-sys="ask">
   <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
   <div class="body">
@@ -703,22 +784,20 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ASKING 4 ======== -->
 <section class="page" data-sys="ask">
   <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
   <div class="body">
     <h2 class="ptitle">Things you're <em>allowed</em> to ask for</h2>
-    <p class="small">Check the ones you didn't know you could ask for.</p>
-    <div class="chk"><span class="box" data-k="s1d1"></span><span>A different seat</span></div>
-    <div class="chk"><span class="box" data-k="s1d2"></span><span>The instructions again, in writing</span></div>
-    <div class="chk"><span class="box" data-k="s1d3"></span><span>To know what the test will look like</span></div>
-    <div class="chk"><span class="box" data-k="s1d4"></span><span>An extension, asked for before it's late</span></div>
-    <div class="chk"><span class="box" data-k="s1d5"></span><span>Why you got the grade you got</span></div>
-    <div class="chk"><span class="box" data-k="s1d6"></span><span>A quieter place to work</span></div>
-    <div class="chk"><span class="box" data-k="s1d7"></span><span>Time to think before answering out loud</span></div>
-    <div class="chk"><span class="box" data-k="s1d8"></span><span>A check that you're on the right track</span></div>
-    <div class="chk"><span class="box" data-k="s1d9"></span><span>An example of what good work looks like</span></div>
-    <div class="chk"><span class="box" data-k="s1d10"></span><span>To redo something</span></div>
+    <p class="small">Drag each into how hard it feels for <em>you</em>, not how reasonable it is.</p>
+    <div class="wordbank">
+      <div class="wh">Things you're allowed to ask for</div>
+      <div class="bankzone tight" data-grp="ak"><span class="chip" data-grp="ak" data-k="a1" draggable="true">a different seat</span><span class="chip" data-grp="ak" data-k="a2" draggable="true">instructions in writing</span><span class="chip" data-grp="ak" data-k="a3" draggable="true">what the test looks like</span><span class="chip" data-grp="ak" data-k="a4" draggable="true">an extension, early</span><span class="chip" data-grp="ak" data-k="a5" draggable="true">why I got this grade</span><span class="chip" data-grp="ak" data-k="a6" draggable="true">a quieter place to work</span><span class="chip" data-grp="ak" data-k="a7" draggable="true">time to think first</span><span class="chip" data-grp="ak" data-k="a8" draggable="true">a check that I'm on track</span><span class="chip" data-grp="ak" data-k="a9" draggable="true">an example of good work</span><span class="chip" data-grp="ak" data-k="a10" draggable="true">to redo something</span></div>
+    </div>
+    <div class="dropgrid tall" style="grid-template-columns:1fr 1fr 1fr;gap:5px">
+      <div class="dropbox" data-grp="ak" data-box="1"><div class="dbh"><div class="colhd" style="border:none;margin:0;padding:0">Easy for me to ask</div></div><div class="dropzone" data-grp="ak"></div></div>
+      <div class="dropbox" data-grp="ak" data-box="2"><div class="dbh"><div class="colhd" style="border:none;margin:0;padding:0">Takes a breath</div></div><div class="dropzone" data-grp="ak"></div></div>
+      <div class="dropbox" data-grp="ak" data-box="3"><div class="dbh"><div class="colhd" style="border:none;margin:0;padding:0">I would not ask this</div></div><div class="dropzone" data-grp="ak"></div></div>
+    </div>
     <div class="rulez"></div>
     <p class="kicker pur">Say it out loud version</p>
     <div style="font-size:12px;line-height:1.95">
@@ -729,7 +808,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ASKING 5 — LIVE ======== -->
 <section class="page" data-sys="ask">
   <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
   <div class="body">
@@ -756,7 +834,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ASKING 5 — LOOP ======== -->
 <section class="page" data-sys="ask">
   <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
   <div class="body">
@@ -785,9 +862,28 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     </div>
   </div>
 </section>
-<!-- ======== TIME 1 ======== -->
+
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <div class="brk">
+      <div class="bt">Brain Break</div>
+      <div class="bs">Write down a joke. Any joke. Then go tell it to your teacher.</div>
+      <div class="bbox" contenteditable data-k="brk1" data-ph="it does not have to be good"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page divider" data-sys="time">
+  <div class="dvtab" style="top:20%"></div>
+  <div class="dvbody">
+    <svg class="dvglyph"><use href="#g-time"/></svg>
+    <div class="dvnum">System 02</div>
+    <h2 class="dvname">Time<br>Management</h2>
+  </div>
+</section>
+
 <section class="page" data-sys="time">
-  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time Management</div>
   <div class="body">
     <h2 class="ptitle">Yesterday, in <em>squares</em></h2>
     <p class="small">Each square is 30 minutes, 7am to 11pm. Fill in the ones that were already spoken for. School, practice, work, family, commute.</p>
@@ -801,9 +897,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== TIME 2 — LOATHSOME TASK ======== -->
 <section class="page" data-sys="time">
-  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time Management</div>
   <div class="body">
     <p class="kicker">The rule</p>
     <h2 class="ptitle lg">The Loathsome Task</h2>
@@ -824,9 +919,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== TIME 3 — PLANNING TOOLS ======== -->
 <section class="page" data-sys="time">
-  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time Management</div>
   <div class="body tight">
     <p class="kicker">Five planning tools &middot; rate the ones you try</p>
     <h2 class="ptitle sm">Ways people actually plan</h2>
@@ -858,9 +952,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== TIME 4 — ESTIMATION LOG ======== -->
 <section class="page" data-sys="time">
-  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time Management</div>
   <div class="body">
     <h2 class="ptitle">Guess, then <em>check</em></h2>
     <p class="small">Before you start something, write how long you think it will take. After, write how long it actually took. Do five.</p>
@@ -870,7 +963,11 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     <div class="logrow"><span class="lines" contenteditable data-k="s2d3a"></span><span class="lines" contenteditable data-k="s2d3b"></span><span class="lines" contenteditable data-k="s2d3c"></span><span class="lines" contenteditable data-k="s2d3d"></span></div>
     <div class="logrow"><span class="lines" contenteditable data-k="s2d4a"></span><span class="lines" contenteditable data-k="s2d4b"></span><span class="lines" contenteditable data-k="s2d4c"></span><span class="lines" contenteditable data-k="s2d4d"></span></div>
     <div class="logrow"><span class="lines" contenteditable data-k="s2d5a"></span><span class="lines" contenteditable data-k="s2d5b"></span><span class="lines" contenteditable data-k="s2d5c"></span><span class="lines" contenteditable data-k="s2d5d"></span></div>
-    <div class="rulez"></div>
+    <div class="estbar" data-rows="s2d1,s2d2,s2d3,s2d4,s2d5">
+      <div class="ebh">Guess vs real &middot; fills in as you log them</div>
+      <div class="ebtrack"><div class="ebmid"></div><div class="ebrows"></div></div>
+      <div class="eblbl"><span>guessed high</span><span>spot on</span><span>guessed low</span></div>
+    </div>
     <p class="small">Almost everyone guesses low. Once you know your own number, you can plan around it.</p>
     <div class="qrow"><div class="ql">I usually guess</div>
       <div><span class="circ" data-k="s2d6">way low</span><span class="circ" data-k="s2d7">a little low</span><span class="circ" data-k="s2d8">about right</span><span class="circ" data-k="s2d9">high</span></div>
@@ -879,38 +976,42 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== TIME 5 — LIVE ======== -->
 <section class="page" data-sys="time">
-  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time Management</div>
   <div class="body">
-    <p class="kicker">Do it right now</p>
-    <h2 class="ptitle">The Ten Minute Start</h2>
-    <p class="small">Pick the thing you least want to start. Write it down. Start the timer. Work for ten minutes. When it ends you are allowed to stop, no guilt, no argument.</p>
-    <div class="qrow"><div class="ql">The thing</div><div class="lines" contenteditable data-k="s2f1"></div></div>
-    <div class="qrow"><div class="ql">The first physical action</div><div class="lines" contenteditable data-k="s2f2" data-ph="open what, to what page"></div></div>
-    <div class="timer" data-sec="600">
-      <div><div class="tlbl">Ten minutes, then you're free</div><div class="tdisp">10:00</div></div>
-      <div class="tprint">Set a timer for ten minutes</div>
-      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
+    <p class="kicker">Today, not a typical day. Today.</p>
+    <h2 class="ptitle">Plan Your Day</h2>
+    <div class="wordbank" style="padding:6px 8px">
+      <div class="wh">Everything I actually have</div>
+      <div class="capgrid">
+        <span class="fill" contenteditable data-k="s2p1" data-ph="homework"></span>
+        <span class="fill" contenteditable data-k="s2p2" data-ph="practice"></span>
+        <span class="fill" contenteditable data-k="s2p3" data-ph="rehearsal"></span>
+        <span class="fill" contenteditable data-k="s2p4" data-ph="dinner"></span>
+        <span class="fill" contenteditable data-k="s2p5" data-ph="a job"></span>
+        <span class="fill" contenteditable data-k="s2p6" data-ph="anything else"></span>
+      </div>
     </div>
-    <div class="rulez"></div>
-    <p class="kicker pur">The only question that matters</p>
-    <div class="qrow"><div class="ql">When the timer ended, I</div>
-      <div><span class="circ" data-k="s2f3">kept going</span><span class="circ" data-k="s2f4">stopped</span><span class="circ" data-k="s2f5">never started</span></div></div>
-    <div class="qrow"><div class="ql">How much I actually got done in ten minutes</div><div class="lines" contenteditable data-k="s2f6"></div></div>
-    <div class="qrow"><div class="ql">What I thought would happen before I started</div><div class="lines" contenteditable data-k="s2f7"></div></div>
-    <p class="tiny">Most people keep going. Not because ten minutes is magic, but because starting was the entire problem.</p>
+    <div class="dayhd"><span></span><span>:00</span><span>:30</span></div>
+    <div class="dayrow"><span class="dh">3pm</span><span class="slot" contenteditable data-k="d300"></span><span class="slot" contenteditable data-k="d330"></span></div>
+    <div class="dayrow"><span class="dh">4pm</span><span class="slot" contenteditable data-k="d400"></span><span class="slot" contenteditable data-k="d430"></span></div>
+    <div class="dayrow"><span class="dh">5pm</span><span class="slot" contenteditable data-k="d500"></span><span class="slot" contenteditable data-k="d530"></span></div>
+    <div class="dayrow"><span class="dh">6pm</span><span class="slot" contenteditable data-k="d600"></span><span class="slot" contenteditable data-k="d630"></span></div>
+    <div class="dayrow"><span class="dh">7pm</span><span class="slot" contenteditable data-k="d700"></span><span class="slot" contenteditable data-k="d730"></span></div>
+    <div class="dayrow"><span class="dh">8pm</span><span class="slot" contenteditable data-k="d800"></span><span class="slot" contenteditable data-k="d830"></span></div>
+    <div class="dayrow"><span class="dh">9pm</span><span class="slot" contenteditable data-k="d900"></span><span class="slot" contenteditable data-k="d930"></span></div>
+    <div class="qrow"><div class="ql">What didn't fit</div><div class="lines short" contenteditable data-k="s2p7"></div></div>
+    <div class="qrow"><div class="ql">What I'd move if I had to</div><div class="lines short" contenteditable data-k="s2p8"></div></div>
   </div>
 </section>
 
-<!-- ======== TIME 5 — LOOP ======== -->
 <section class="page" data-sys="time">
-  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time Management</div>
   <div class="body">
     <p class="kicker pur">Close the section</p>
     <h2 class="ptitle">The Loop</h2>
     <div class="loopwrap">
-      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Time</div></div>
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Time Management</div></div>
       <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">Where does my time actually leak?</div>
         <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s2e1"></div></div>
       <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which planning tool I'm running this week</div>
@@ -921,22 +1022,30 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== BREAK ======== -->
 <section class="page" data-sys="">
   <div class="body nomark">
     <div class="brk">
       <div class="bt">Brain Break</div>
-      <div class="bs">Write down a joke. Any joke. Then go tell it to your teacher.</div>
-      <div class="bbox" contenteditable data-k="brk1" data-ph="it does not have to be good"></div>
+      <div class="bs">Dance break. Everybody up. No sitting this one out lol.</div>
+      <div class="bbox" contenteditable data-k="brkdance" data-ph="rate your own performance out of ten and justify it"></div>
     </div>
   </div>
 </section>
-<!-- ======== ORG 1 ======== -->
+
+<section class="page divider" data-sys="org">
+  <div class="dvtab" style="top:31%"></div>
+  <div class="dvbody">
+    <svg class="dvglyph"><use href="#g-org"/></svg>
+    <div class="dvnum">System 03</div>
+    <h2 class="dvname">Organization</h2>
+  </div>
+</section>
+
 <section class="page" data-sys="org">
   <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
   <div class="body">
     <h2 class="ptitle">Where things <em>actually</em> live</h2>
-    <p class="small">Not where they are supposed to live.</p>
+    <p class="small">Where do all of your things exist? Not where they are supposed to be.</p>
     <div class="qrow"><div class="ql">Backpack</div><div class="lines" contenteditable data-k="s3a1"></div></div>
     <div class="qrow"><div class="ql">Laptop desktop</div><div class="lines" contenteditable data-k="s3a2"></div></div>
     <div class="qrow"><div class="ql">Google Drive</div><div class="lines" contenteditable data-k="s3a3"></div></div>
@@ -952,7 +1061,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ORG 2 — THE SORT ======== -->
 <section class="page" data-sys="org">
   <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
   <div class="body">
@@ -984,7 +1092,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ORG 3 — SYSTEMS ======== -->
 <section class="page" data-sys="org">
   <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
   <div class="body tight">
@@ -1018,12 +1125,11 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ORG 4 — TEN SECOND TEST ======== -->
 <section class="page" data-sys="org">
   <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
   <div class="body">
-    <p class="kicker">Could you produce it in ten seconds? If not, check it.</p>
-    <h2 class="ptitle">The ten second test</h2>
+    <p class="kicker">Check anything you could not put your hands on right now</p>
+    <h2 class="ptitle">Can you find this in <em>ten seconds</em>?</h2>
     <div class="chk"><span class="box" data-k="s3d1"></span><span>Last night's reading for any class</span></div>
     <div class="chk"><span class="box" data-k="s3d2"></span><span>The rubric for the next big thing due</span></div>
     <div class="chk"><span class="box" data-k="s3d3"></span><span>Your notes from the class before this one</span></div>
@@ -1042,7 +1148,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ORG 5 — LIVE ======== -->
 <section class="page" data-sys="org">
   <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
   <div class="body">
@@ -1068,7 +1173,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== ORG 5 — LOOP ======== -->
 <section class="page" data-sys="org">
   <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
   <div class="body">
@@ -1085,9 +1189,165 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     </div>
   </div>
 </section>
-<!-- ======== STUDY 1 ======== -->
+
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <div class="brk">
+      <div class="bt">Brain Break</div>
+      <div class="bs">Invent a holiday. When is it, what do people do, and what food is mandatory?</div>
+      <div class="bbox" contenteditable data-k="brk4" data-ph="the food matters most"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page divider" data-sys="notes">
+  <div class="dvtab" style="top:42%"></div>
+  <div class="dvbody">
+    <svg class="dvglyph"><use href="#g-notes"/></svg>
+    <div class="dvnum">System 04</div>
+    <h2 class="dvname">Note-<br>Taking</h2>
+  </div>
+</section>
+
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 04 &middot; Note-Taking</div>
+  <div class="body">
+    <h2 class="ptitle">Same class, <em>two notebooks</em></h2>
+    <p class="small">Both students were in the room. Both are fine. They are just built for different jobs.</p>
+    <div class="sample" style="margin-bottom:7px">
+      <div class="sh">Notebook A</div>
+      The French Revolution started in 1789. Louis XVI was king. The Estates General met in May. The Bastille was stormed on July 14. The Declaration of the Rights of Man was written in August.
+    </div>
+    <div class="sample">
+      <div class="sh">Notebook B</div>
+      <b>Why 1789 and not earlier?</b> debt + bad harvest + Estates General finally called<br>
+      <b>Bastille = symbol, not strategy</b> only 7 prisoners inside<br>
+      <b>??</b> how do you get from Rights of Man to the Terror in four years. ask
+    </div>
+    <div class="rulez"></div>
+    <p class="small">A is a record. If you miss something, it's there. B is a thinking log. It has a question mark in it, which means there is somewhere to go tomorrow.</p>
+    <div class="qrow"><div class="ql">I write notes because</div><div class="lines" contenteditable data-k="s5a1"></div></div>
+    <div class="qrow"><div class="ql">Mine look more like</div>
+      <div><span class="circ" data-k="s5a2">A</span><span class="circ" data-k="s5a3">B</span><span class="circ" data-k="s5a4">neither</span><span class="circ" data-k="s5a5">depends on the class</span></div></div>
+  </div>
+</section>
+
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 04 &middot; Note-Taking</div>
+  <div class="body">
+    <p class="kicker">Format 01</p>
+    <h2 class="ptitle sm">Cornell</h2>
+    <p class="small">Walter Pauk built this at Cornell in the 1950s. It is four steps, not one.</p>
+    <p class="small"><b>1. Record.</b> In class, notes go in the wide right column only. <b>2. Reduce.</b> Soon after, fill the narrow left column with cues: keywords and questions your notes answer. <b>3. Summarize.</b> At the bottom, the whole page in your own words. <b>4. Recite.</b> Cover the right column, look only at the cues, say the answers out loud, then check.</p>
+    <p class="small"><b>Why it works:</b> step four is the part people skip, and it is the only part that is retrieval practice. The other three exist to make step four possible.</p>
+    <div class="cornell" style="margin-top:6px">
+      <div class="cq"><div class="clbl">Cues</div><div class="open plain" style="min-height:132px" contenteditable data-k="s5b1"></div></div>
+      <div class="cn"><div class="clbl">Notes</div><div class="open plain" style="min-height:132px" contenteditable data-k="s5b2"></div></div>
+    </div>
+    <div class="cornell-sum"><div class="clbl">Summary, in my own words</div><div class="open plain" style="min-height:44px" contenteditable data-k="s5b3"></div></div>
+    <div class="mfoot" style="margin-top:8px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5b4"><i></i><i></i><i></i><i></i><i></i></span></div>
+  </div>
+</section>
+
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 04 &middot; Note-Taking</div>
+  <div class="body">
+    <p class="kicker">Format 02</p>
+    <h2 class="ptitle sm">Outlining</h2>
+    <p class="small"><b>How it works:</b> big idea flush left, supporting points indented under it, examples indented under those. <b>Why it works:</b> the indent itself carries meaning, so you can see what depends on what without reading.</p>
+    <div class="open plain nogrow" style="min-height:86px;border:1.5px solid var(--ink);padding:7px 9px" contenteditable data-k="s5c1" data-ph="try it" ></div>
+    <div class="mfoot" style="margin:6px 0 10px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5c2"><i></i><i></i><i></i><i></i><i></i></span></div>
+    <div class="rulez"></div>
+    <p class="kicker">Format 03</p>
+    <h2 class="ptitle sm">Mapping</h2>
+    <p class="small"><b>How it works:</b> main idea in the middle, branches out to related ideas, lines between anything that connects. <b>Why it works:</b> some material is not a list. Causes, effects, and relationships are easier to see as a shape than as bullets.</p>
+    <div class="open plain nogrow" style="min-height:96px;border:1.5px solid var(--ink);padding:7px 9px;background-image:none" contenteditable data-k="s5c3" data-ph="try it"></div>
+    <div class="mfoot" style="margin-top:6px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5c4"><i></i><i></i><i></i><i></i><i></i></span></div>
+  </div>
+</section>
+
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 04 &middot; Note-Taking</div>
+  <div class="body">
+    <p class="kicker">Format 04</p>
+    <h2 class="ptitle sm">Question and answer</h2>
+    <p class="small"><b>How it works:</b> write everything as a question with the answer beside it. Flashcard style, straight from the lecture. <b>Why it works:</b> your notes are already retrieval practice, so studying is just covering one side.</p>
+    <div class="loghd" style="grid-template-columns:1fr 1fr"><span>Question</span><span>Answer</span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr"><span class="lines" contenteditable data-k="s5d1"></span><span class="lines" contenteditable data-k="s5d2"></span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr"><span class="lines" contenteditable data-k="s5d3"></span><span class="lines" contenteditable data-k="s5d4"></span></div>
+    <div class="logrow" style="grid-template-columns:1fr 1fr"><span class="lines" contenteditable data-k="s5d5"></span><span class="lines" contenteditable data-k="s5d6"></span></div>
+    <div class="mfoot" style="margin:6px 0 10px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5d9"><i></i><i></i><i></i><i></i><i></i></span></div>
+    <div class="rulez"></div>
+    <p class="kicker">Format 05</p>
+    <h2 class="ptitle sm">What it said / what I think</h2>
+    <p class="small"><b>How it works:</b> left side is what was actually said. Right side is your reaction, your confusion, your connection to something else. <b>Why it works:</b> it keeps the record and the thinking separate, so you can tell later which was which.</p>
+    <div class="twocol" style="margin-top:5px">
+      <div class="col"><div class="colhd ink">What it said</div><div class="open plain" contenteditable data-k="s5d10"></div></div>
+      <div class="col"><div class="colhd">What I think</div><div class="open plain" contenteditable data-k="s5d11"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 04 &middot; Note-Taking</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Note-Taking</div></div>
+      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">What happens when I go back to my notes a week later?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s5e1"></div></div>
+      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which format I'm running, and in which class</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s5e2"></div></div>
+      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My note-taking system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s5e3" data-star="notes" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker pur">Four systems down, four to go</p>
+    <h2 class="ptitle lg">Halfway</h2>
+    <p class="small">Flip back through what you have written so far. Not to grade it. Just to see it.</p>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">One thing I actually tried outside this room</div><div class="lines" contenteditable data-k="hw1"></div></div>
+    <div class="qrow"><div class="ql">Did it work</div>
+      <div><span class="circ" data-k="hw2">yes</span><span class="circ" data-k="hw3">sort of</span><span class="circ" data-k="hw4">no</span><span class="circ" data-k="hw5">haven't tried yet</span></div></div>
+    <div class="qrow"><div class="ql">Which of the first four systems is most broken for me</div>
+      <div><span class="circ" data-k="hw6">asking</span><span class="circ" data-k="hw7">getting stuck</span><span class="circ" data-k="hw8">studying</span><span class="circ" data-k="hw9">note-taking</span></div></div>
+    <div class="qrow"><div class="ql">A page I skipped that I want to go back to</div><div class="lines" contenteditable data-k="hw10"></div></div>
+    <div class="star">
+      <div class="slab">Between now and the end</div>
+      <div class="sq">One thing I am going to change and actually keep doing</div>
+      <div class="lines" contenteditable data-k="hw11"></div>
+    </div>
+    <div class="spacer"></div>
+    <p class="tiny">Come back to this page in week seven and see whether you did it.</p>
+  </div>
+</section>
+
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <div class="brk">
+      <div class="bt">Brain Break</div>
+      <div class="bs">Draw the worst possible logo for a company that sells something nobody needs.</div>
+      <div class="bbox" contenteditable data-k="brk2" data-ph="name the company too"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page divider" data-sys="study">
+  <div class="dvtab" style="top:53%"></div>
+  <div class="dvbody">
+    <svg class="dvglyph"><use href="#g-study"/></svg>
+    <div class="dvnum">System 05</div>
+    <h2 class="dvname">Studying</h2>
+  </div>
+</section>
+
 <section class="page" data-sys="study">
-  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 05 &middot; Studying</div>
   <div class="body">
     <h2 class="ptitle lg">"Studying" is <em>six</em> different jobs</h2>
     <p class="small" style="max-width:74%">A test asks you to do one or two of these. Circle what your next test actually asks for.</p>
@@ -1110,9 +1370,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== STUDY 2 — FIVE METHODS ======== -->
 <section class="page" data-sys="study">
-  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 05 &middot; Studying</div>
   <div class="body tight">
     <p class="kicker">Five study methods &middot; rate the ones you try</p>
     <h2 class="ptitle sm">The ones with evidence behind them</h2>
@@ -1144,9 +1403,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== STUDY 3 — POMODORO ======== -->
 <section class="page" data-sys="study">
-  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 05 &middot; Studying</div>
   <div class="body">
     <div style="display:flex;align-items:center;gap:10px">
       <svg style="width:34px;height:34px;color:var(--pur);flex:0 0 auto"><use href="#g-tomato"/></svg>
@@ -1174,30 +1432,30 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== STUDY 4 — MATCH ======== -->
 <section class="page" data-sys="study">
-  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 05 &middot; Studying</div>
   <div class="body">
     <h2 class="ptitle">Match the method to the <em>job</em></h2>
-    <p class="small">Which method for each? More than one right answer.</p>
-    <div class="qrow"><div class="ql">A vocab quiz on Friday</div><div class="lines" contenteditable data-k="s4d1"></div></div>
-    <div class="qrow"><div class="ql">A math test with mixed problem types</div><div class="lines" contenteditable data-k="s4d2"></div></div>
-    <div class="qrow"><div class="ql">An essay exam where you argue something</div><div class="lines" contenteditable data-k="s4d3"></div></div>
-    <div class="qrow"><div class="ql">A lab practical where you do a procedure</div><div class="lines" contenteditable data-k="s4d4"></div></div>
-    <div class="qrow"><div class="ql">A test on a unit you already half forgot</div><div class="lines" contenteditable data-k="s4d5"></div></div>
-    <div class="rulez"></div>
-    <p class="kicker pur">Now plan a real one</p>
-    <div class="flow">
-      <div class="flowbox"><div class="fl">Test</div><div class="lines" contenteditable data-k="s4d6" data-ph="class and date"></div></div>
-      <div class="flowbox"><div class="fl">Three nights before</div><div class="lines short" contenteditable data-k="s4d7"></div></div>
-      <div class="flowbox"><div class="fl">Night before</div><div class="lines short" contenteditable data-k="s4d9"></div></div>
+    <p class="small">Drag a method onto each job. Five methods, five jobs, but they do not pair up neatly. Some jobs want the same method and one method fits nowhere well.</p>
+    <div class="wordbank">
+      <div class="wh">Methods</div>
+      <div class="bankzone" data-grp="mm"><span class="chip" data-grp="mm" data-k="m1" draggable="true">Retrieval practice</span><span class="chip" data-grp="mm" data-k="m2" draggable="true">Spaced practice</span><span class="chip" data-grp="mm" data-k="m3" draggable="true">Interleaving</span><span class="chip" data-grp="mm" data-k="m4" draggable="true">Feynman</span><span class="chip" data-grp="mm" data-k="m5" draggable="true">Asking why</span></div>
     </div>
+    <div class="matchlist">
+      <div class="matchrow"><div class="mlbl">A vocab quiz on Friday</div><div class="dropbox" data-grp="mm" data-box="1" style="border-width:1.5px;padding:3px 5px"><div class="dropzone" data-grp="mm"></div></div></div>
+      <div class="matchrow"><div class="mlbl">A math test with mixed problem types</div><div class="dropbox" data-grp="mm" data-box="2" style="border-width:1.5px;padding:3px 5px"><div class="dropzone" data-grp="mm"></div></div></div>
+      <div class="matchrow"><div class="mlbl">An essay exam where you argue something</div><div class="dropbox" data-grp="mm" data-box="3" style="border-width:1.5px;padding:3px 5px"><div class="dropzone" data-grp="mm"></div></div></div>
+      <div class="matchrow"><div class="mlbl">A lab practical where you do a procedure</div><div class="dropbox" data-grp="mm" data-box="4" style="border-width:1.5px;padding:3px 5px"><div class="dropzone" data-grp="mm"></div></div></div>
+      <div class="matchrow"><div class="mlbl">A test on a unit you already half forgot</div><div class="dropbox" data-grp="mm" data-box="5" style="border-width:1.5px;padding:3px 5px"><div class="dropzone" data-grp="mm"></div></div></div>
+    </div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">The one I'm least sure about</div><div class="lines" contenteditable data-k="s4d6"></div></div>
+    <div class="qrow"><div class="ql">Why I picked what I picked for it</div><div class="lines" contenteditable data-k="s4d7"></div></div>
   </div>
 </section>
 
-<!-- ======== STUDY 5 — LIVE ======== -->
 <section class="page" data-sys="study">
-  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 05 &middot; Studying</div>
   <div class="body">
     <p class="kicker">Retrieval practice, for real, right now</p>
     <h2 class="ptitle">The Blank Page Test</h2>
@@ -1220,9 +1478,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== STUDY 5 — LOOP ======== -->
 <section class="page" data-sys="study">
-  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 05 &middot; Studying</div>
   <div class="body">
     <p class="kicker pur">Close the section</p>
     <h2 class="ptitle">The Loop</h2>
@@ -1238,326 +1495,27 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== BREAK ======== -->
 <section class="page" data-sys="">
   <div class="body nomark">
     <div class="brk">
       <div class="bt">Brain Break</div>
-      <div class="bs">Draw the worst possible logo for a company that sells something nobody needs.</div>
-      <div class="bbox" contenteditable data-k="brk2" data-ph="name the company too"></div>
-    </div>
-  </div>
-</section>
-<!-- ============ HALFWAY ============ -->
-<section class="page" data-sys="">
-  <div class="body nomark">
-    <p class="kicker pur">Four systems down, four to go</p>
-    <h2 class="ptitle lg">Halfway</h2>
-    <p class="small">Flip back through what you have written so far. Not to grade it. Just to see it.</p>
-    <div class="rulez"></div>
-    <div class="qrow"><div class="ql">One thing I actually tried outside this room</div><div class="lines" contenteditable data-k="hw1"></div></div>
-    <div class="qrow"><div class="ql">Did it work</div>
-      <div><span class="circ" data-k="hw2">yes</span><span class="circ" data-k="hw3">sort of</span><span class="circ" data-k="hw4">no</span><span class="circ" data-k="hw5">haven't tried yet</span></div></div>
-    <div class="qrow"><div class="ql">Which of the first four systems is most broken for me</div>
-      <div><span class="circ" data-k="hw6">asking</span><span class="circ" data-k="hw7">time</span><span class="circ" data-k="hw8">organization</span><span class="circ" data-k="hw9">studying</span></div></div>
-    <div class="qrow"><div class="ql">A page I skipped that I want to go back to</div><div class="lines" contenteditable data-k="hw10"></div></div>
-    <div class="star">
-      <div class="slab">Between now and the end</div>
-      <div class="sq">One thing I am going to change and actually keep doing</div>
-      <div class="lines" contenteditable data-k="hw11"></div>
-    </div>
-    <div class="spacer"></div>
-    <p class="tiny">Come back to this page in week seven and see whether you did it.</p>
-  </div>
-</section>
-
-<!-- ======== NOTES 1 ======== -->
-<section class="page" data-sys="notes">
-  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
-  <div class="body">
-    <h2 class="ptitle">Same class, <em>two notebooks</em></h2>
-    <p class="small">Both students were in the room. Both are fine. They are just built for different jobs.</p>
-    <div class="sample" style="margin-bottom:7px">
-      <div class="sh">Notebook A</div>
-      The French Revolution started in 1789. Louis XVI was king. The Estates General met in May. The Bastille was stormed on July 14. The Declaration of the Rights of Man was written in August.
-    </div>
-    <div class="sample">
-      <div class="sh">Notebook B</div>
-      <b>Why 1789 and not earlier?</b> debt + bad harvest + Estates General finally called<br>
-      <b>Bastille = symbol, not strategy</b> only 7 prisoners inside<br>
-      <b>??</b> how do you get from Rights of Man to the Terror in four years. ask
-    </div>
-    <div class="rulez"></div>
-    <p class="small">A is a record. If you miss something, it's there. B is a thinking log. It has a question mark in it, which means there is somewhere to go tomorrow.</p>
-    <div class="qrow"><div class="ql">I write notes because</div><div class="lines" contenteditable data-k="s5a1"></div></div>
-    <div class="qrow"><div class="ql">Mine look more like</div>
-      <div><span class="circ" data-k="s5a2">A</span><span class="circ" data-k="s5a3">B</span><span class="circ" data-k="s5a4">neither</span><span class="circ" data-k="s5a5">depends on the class</span></div></div>
-  </div>
-</section>
-
-<!-- ======== NOTES 2 — CORNELL ======== -->
-<section class="page" data-sys="notes">
-  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
-  <div class="body">
-    <p class="kicker">Format 01</p>
-    <h2 class="ptitle sm">Cornell</h2>
-    <p class="small">Walter Pauk built this at Cornell in the 1950s. It is four steps, not one.</p>
-    <p class="small"><b>1. Record.</b> In class, notes go in the wide right column only. <b>2. Reduce.</b> Soon after, fill the narrow left column with cues: keywords and questions your notes answer. <b>3. Summarize.</b> At the bottom, the whole page in your own words. <b>4. Recite.</b> Cover the right column, look only at the cues, say the answers out loud, then check.</p>
-    <p class="small"><b>Why it works:</b> step four is the part people skip, and it is the only part that is retrieval practice. The other three exist to make step four possible.</p>
-    <div class="cornell" style="margin-top:6px">
-      <div class="cq"><div class="clbl">Cues</div><div class="open plain" style="min-height:132px" contenteditable data-k="s5b1"></div></div>
-      <div class="cn"><div class="clbl">Notes</div><div class="open plain" style="min-height:132px" contenteditable data-k="s5b2"></div></div>
-    </div>
-    <div class="cornell-sum"><div class="clbl">Summary, in my own words</div><div class="open plain" style="min-height:44px" contenteditable data-k="s5b3"></div></div>
-    <div class="mfoot" style="margin-top:8px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5b4"><i></i><i></i><i></i><i></i><i></i></span></div>
-  </div>
-</section>
-
-<!-- ======== NOTES 3 — OUTLINE + MAP ======== -->
-<section class="page" data-sys="notes">
-  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
-  <div class="body">
-    <p class="kicker">Format 02</p>
-    <h2 class="ptitle sm">Outlining</h2>
-    <p class="small"><b>How it works:</b> big idea flush left, supporting points indented under it, examples indented under those. <b>Why it works:</b> the indent itself carries meaning, so you can see what depends on what without reading.</p>
-    <div class="open plain nogrow" style="min-height:86px;border:1.5px solid var(--ink);padding:7px 9px" contenteditable data-k="s5c1" data-ph="try it" ></div>
-    <div class="mfoot" style="margin:6px 0 10px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5c2"><i></i><i></i><i></i><i></i><i></i></span></div>
-    <div class="rulez"></div>
-    <p class="kicker">Format 03</p>
-    <h2 class="ptitle sm">Mapping</h2>
-    <p class="small"><b>How it works:</b> main idea in the middle, branches out to related ideas, lines between anything that connects. <b>Why it works:</b> some material is not a list. Causes, effects, and relationships are easier to see as a shape than as bullets.</p>
-    <div class="open plain nogrow" style="min-height:96px;border:1.5px solid var(--ink);padding:7px 9px;background-image:none" contenteditable data-k="s5c3" data-ph="try it"></div>
-    <div class="mfoot" style="margin-top:6px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5c4"><i></i><i></i><i></i><i></i><i></i></span></div>
-  </div>
-</section>
-
-<!-- ======== NOTES 4 — Q&A + TWO COLUMN ======== -->
-<section class="page" data-sys="notes">
-  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
-  <div class="body">
-    <p class="kicker">Format 04</p>
-    <h2 class="ptitle sm">Question and answer</h2>
-    <p class="small"><b>How it works:</b> write everything as a question with the answer beside it. Flashcard style, straight from the lecture. <b>Why it works:</b> your notes are already retrieval practice, so studying is just covering one side.</p>
-    <div class="loghd" style="grid-template-columns:1fr 1fr"><span>Question</span><span>Answer</span></div>
-    <div class="logrow" style="grid-template-columns:1fr 1fr"><span class="lines" contenteditable data-k="s5d1"></span><span class="lines" contenteditable data-k="s5d2"></span></div>
-    <div class="logrow" style="grid-template-columns:1fr 1fr"><span class="lines" contenteditable data-k="s5d3"></span><span class="lines" contenteditable data-k="s5d4"></span></div>
-    <div class="logrow" style="grid-template-columns:1fr 1fr"><span class="lines" contenteditable data-k="s5d5"></span><span class="lines" contenteditable data-k="s5d6"></span></div>
-    <div class="mfoot" style="margin:6px 0 10px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5d9"><i></i><i></i><i></i><i></i><i></i></span></div>
-    <div class="rulez"></div>
-    <p class="kicker">Format 05</p>
-    <h2 class="ptitle sm">What it said / what I think</h2>
-    <p class="small"><b>How it works:</b> left side is what was actually said. Right side is your reaction, your confusion, your connection to something else. <b>Why it works:</b> it keeps the record and the thinking separate, so you can tell later which was which.</p>
-    <div class="twocol" style="margin-top:5px">
-      <div class="col"><div class="colhd ink">What it said</div><div class="open plain" contenteditable data-k="s5d10"></div></div>
-      <div class="col"><div class="colhd">What I think</div><div class="open plain" contenteditable data-k="s5d11"></div></div>
+      <div class="bs">Design a flag for your table group. It has to include one animal and one shape, and no words at all.</div>
+      <div class="bbox" contenteditable data-k="brk5" data-ph="be ready to defend it"></div>
     </div>
   </div>
 </section>
 
-<!-- ======== NOTES 5 — LIVE ======== -->
-<section class="page" data-sys="notes">
-  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
-  <div class="body">
-    <p class="kicker">Same content, two formats, back to back</p>
-    <h2 class="ptitle sm">The Format Race</h2>
-    <p class="small">Your teacher will read the same short passage twice. Take notes on it in a different format each time. Two minutes each.</p>
-    <div class="timer" data-sec="120">
-      <div><div class="tlbl">Round timer</div><div class="tdisp">2:00</div></div>
-      <div class="tprint">Two minutes per round</div>
-      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
-    </div>
-    <div class="twocol">
-      <div class="col">
-        <div class="colhd ink">Round 1 &middot; <span class="fill" contenteditable data-k="s5f1" data-ph="format"></span></div>
-        <div class="open plain" contenteditable data-k="s5f2"></div>
-      </div>
-      <div class="col">
-        <div class="colhd">Round 2 &middot; <span class="fill" contenteditable data-k="s5f3" data-ph="format"></span></div>
-        <div class="open plain" contenteditable data-k="s5f4"></div>
-      </div>
-    </div>
-    <div class="rulez"></div>
-    <p class="kicker pur">Now cover them both and try to say the passage back</p>
-    <div class="qrow"><div class="ql">Which set of notes helped more</div>
-      <div><span class="circ" data-k="s5f5">round 1</span><span class="circ" data-k="s5f6">round 2</span><span class="circ" data-k="s5f7">same</span></div></div>
-    <div class="qrow"><div class="ql">Why, specifically</div><div class="lines" contenteditable data-k="s5f8"></div></div>
+<section class="page divider" data-sys="stuck">
+  <div class="dvtab" style="top:64%"></div>
+  <div class="dvbody">
+    <svg class="dvglyph"><use href="#g-stuck"/></svg>
+    <div class="dvnum">System 06</div>
+    <h2 class="dvname">Getting<br>Stuck</h2>
   </div>
 </section>
 
-<!-- ======== NOTES 5 — LOOP ======== -->
-<section class="page" data-sys="notes">
-  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
-  <div class="body">
-    <p class="kicker pur">Close the section</p>
-    <h2 class="ptitle">The Loop</h2>
-    <div class="loopwrap">
-      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Note-Taking</div></div>
-      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">What happens when I go back to my notes a week later?</div>
-        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s5e1"></div></div>
-      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which format I'm running, and in which class</div>
-        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s5e2"></div></div>
-      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My note-taking system, version one</div>
-        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s5e3" data-star="notes" data-ph="one line"></div></div>
-    </div>
-  </div>
-</section>
-<!-- ======== STRESS 1 ======== -->
-<section class="page" data-sys="stress">
-  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
-  <div class="body">
-    <h2 class="ptitle">Mark your <em>normal</em></h2>
-    <p class="small">Where you usually sit on a regular Tuesday.</p>
-    <div class="gauge">
-      <div class="gaugebar" data-k="s6a1"></div>
-      <div class="gaugelbl"><span>flat</span><span>fine</span><span>too much</span></div>
-    </div>
-    <p class="small" style="margin-top:16px">Where you were during the last week that felt bad.</p>
-    <div class="gauge">
-      <div class="gaugebar" data-k="s6a2"></div>
-      <div class="gaugelbl"><span>flat</span><span>fine</span><span>too much</span></div>
-    </div>
-    <div class="rulez"></div>
-    <p class="lede">The distance between those two marks is the useful information, not the second mark on its own.</p>
-    <p class="small">Some stress is the system working. It is what makes you start the thing. The question is not whether it's at zero. The question is whether you can still work.</p>
-    <div class="qrow"><div class="ql">What moved me from the first mark to the second</div><div class="lines" contenteditable data-k="s6a3"></div></div>
-    <div class="qrow"><div class="ql">What eventually brought it back down</div><div class="lines" contenteditable data-k="s6a4"></div></div>
-  </div>
-</section>
-
-<!-- ======== STRESS 2 ======== -->
-<section class="page" data-sys="stress">
-  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
-  <div class="body">
-    <p class="kicker">Check every one you recognize</p>
-    <h2 class="ptitle">Stress has an <em>address</em></h2>
-    <div class="chk"><span class="box" data-k="s6b1"></span><span>Jaw or teeth</span></div>
-    <div class="chk"><span class="box" data-k="s6b2"></span><span>Shoulders up by my ears</span></div>
-    <div class="chk"><span class="box" data-k="s6b3"></span><span>Stomach</span></div>
-    <div class="chk"><span class="box" data-k="s6b4"></span><span>Chest feels tight or fast</span></div>
-    <div class="chk"><span class="box" data-k="s6b5"></span><span>Can't sit still</span></div>
-    <div class="chk"><span class="box" data-k="s6b6"></span><span>Suddenly very tired</span></div>
-    <div class="chk"><span class="box" data-k="s6b7"></span><span>Reading the same line over and over</span></div>
-    <div class="chk"><span class="box" data-k="s6b8"></span><span>Snapping at people who didn't do anything</span></div>
-    <div class="chk"><span class="box" data-k="s6b9"></span><span>Phone for two hours without deciding to</span></div>
-    <div class="chk"><span class="box" data-k="s6b10"></span><span>Cleaning something instead of doing the work</span></div>
-    <div class="chk"><span class="box" data-k="s6b11"></span><span>Not hungry, or hungry all the time</span></div>
-    <div class="chk"><span class="box" data-k="s6b12"></span><span>Lying in bed awake going over it</span></div>
-    <div class="star">
-      <div class="slab">The early one</div>
-      <div class="sq">Which of these shows up first, before you have even noticed you're stressed?</div>
-      <div class="lines" contenteditable data-k="s6b13"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ======== STRESS 3 — RESET MENU ======== -->
-<section class="page" data-sys="stress">
-  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
-  <div class="body tight">
-    <p class="kicker">Five resets &middot; rate the ones you try</p>
-    <h2 class="ptitle sm">Things that bring it down</h2>
-    <div class="method">
-      <div class="mh"><span class="mn">01</span><span class="mt">Box breathing</span></div>
-      <div class="mw">In for four, hold for four, out for four, hold for four. Four rounds. <b>Why it works:</b> a long, even out-breath is one of the few direct switches you have into your own nervous system.</div>
-      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c1"><i></i><i></i><i></i><i></i><i></i></span></div>
-    </div>
-    <div class="method">
-      <div class="mh"><span class="mn">02</span><span class="mt">Five things you can see</span></div>
-      <div class="mw">Name five things you can see, four you can hear, three you can touch. <b>Why it works:</b> it gives your attention something concrete to hold while the spiral loses momentum.</div>
-      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c2"><i></i><i></i><i></i><i></i><i></i></span></div>
-    </div>
-    <div class="method">
-      <div class="mh"><span class="mn">03</span><span class="mt">Brain dump</span></div>
-      <div class="mw">Every single thing you are worried about, on paper, in no order, for three minutes. <b>Why it works:</b> a lot of the load is the effort of holding it all at once. On paper it stops needing to be held.</div>
-      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c3"><i></i><i></i><i></i><i></i><i></i></span></div>
-    </div>
-    <div class="method">
-      <div class="mh"><span class="mn">04</span><span class="mt">Move for ten minutes</span></div>
-      <div class="mw">Walk outside, take stairs, shoot around. Not as exercise. As a change of state. <b>Why it works:</b> stress is physical before it is mental, so it responds to physical things faster than to arguments.</div>
-      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c4"><i></i><i></i><i></i><i></i><i></i></span></div>
-    </div>
-    <div class="method">
-      <div class="mh"><span class="mn">05</span><span class="mt">Say it to one person</span></div>
-      <div class="mw">Out loud, to someone real. Not for advice. Just to say it. <b>Why it works:</b> things almost always get smaller once they exist outside your own head.</div>
-      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c5"><i></i><i></i><i></i><i></i><i></i></span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ======== STRESS 4 ======== -->
-<section class="page" data-sys="stress">
-  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
-  <div class="body">
-    <h2 class="ptitle">Two lists</h2>
-    <p class="small">Nobody sees this page.</p>
-    <div class="twocol" style="margin-top:4px">
-      <div class="col">
-        <div class="colhd">Actually helps</div>
-        <div class="colsub">You come back feeling better and you can work.</div>
-        <div class="open plain" contenteditable data-k="s6d1"></div>
-      </div>
-      <div class="col">
-        <div class="colhd ink">Feels like it helps</div>
-        <div class="colsub">You do it every time and afterwards nothing has changed.</div>
-        <div class="open plain" contenteditable data-k="s6d2"></div>
-      </div>
-    </div>
-    <div class="rulez"></div>
-    <div class="qrow"><div class="ql">One thing moving from right to left this month</div><div class="lines" contenteditable data-k="s6d3"></div></div>
-    <div class="qrow"><div class="ql">When it's bigger than a reset, I tell</div><div class="lines" contenteditable data-k="s6d4" data-ph="a person, by name"></div></div>
-  </div>
-</section>
-
-<!-- ======== STRESS 5 — LIVE ======== -->
-<section class="page" data-sys="stress">
-  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
-  <div class="body">
-    <p class="kicker">Three minutes. No order, no spelling, no stopping.</p>
-    <h2 class="ptitle lg">The Brain Dump</h2>
-    <p class="small">Every single thing you are carrying. Assignments, people, the thing you said, the thing you didn't. Nobody reads this page.</p>
-    <div class="timer" data-sec="180">
-      <div><div class="tlbl">Keep the pen moving</div><div class="tdisp">3:00</div></div>
-      <div class="tprint">Set a timer for three minutes</div>
-      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
-    </div>
-    <div class="open" contenteditable data-k="s6f1" data-ph="start anywhere"></div>
-    <div class="rulez"></div>
-    <div class="qrow"><div class="ql">Circle the ones that are actually mine to fix. How many</div><div class="lines short" contenteditable data-k="s6f2"></div></div>
-    <div class="qrow"><div class="ql">One I can finish in under ten minutes</div><div class="lines" contenteditable data-k="s6f3"></div></div>
-  </div>
-</section>
-
-<!-- ======== STRESS 5 — LOOP ======== -->
-<section class="page" data-sys="stress">
-  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
-  <div class="body">
-    <p class="kicker pur">Close the section</p>
-    <h2 class="ptitle">The Loop</h2>
-    <div class="loopwrap">
-      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Stress</div></div>
-      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">What reliably tips me over, and how do I know it's happening?</div>
-        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s6e1"></div></div>
-      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which reset I'm trying, and when I'll use it</div>
-        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s6e2"></div></div>
-      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My stress system, version one</div>
-        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s6e3" data-star="stress" data-ph="one line"></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ======== BREAK ======== -->
-<section class="page" data-sys="">
-  <div class="body nomark">
-    <div class="brk">
-      <div class="bt">Brain Break</div>
-      <div class="bs">You have to name a new dorm building at this school. Give it a terrible name and a short explanation of who it honors.</div>
-      <div class="bbox" contenteditable data-k="brk3" data-ph="the more specific the better"></div>
-    </div>
-  </div>
-</section>
-<!-- ======== STUCK 1 ======== -->
 <section class="page" data-sys="stuck">
-  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 06 &middot; Getting Stuck</div>
   <div class="body">
     <h2 class="ptitle">Stuck is not <em>one</em> thing</h2>
     <p class="small">All four feel identical from the inside. They need completely different moves.</p>
@@ -1583,9 +1541,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== STUCK 2 — CASE ======== -->
 <section class="page" data-sys="stuck">
-  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 06 &middot; Getting Stuck</div>
   <div class="body">
     <p class="kicker">Practice on somebody else first</p>
     <h2 class="ptitle sm">The case</h2>
@@ -1605,32 +1562,26 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== STUCK 3 — C/I/A ======== -->
 <section class="page" data-sys="stuck">
-  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 06 &middot; Getting Stuck</div>
   <div class="body">
     <h2 class="ptitle sm">Control, influence, accept</h2>
     <p class="small">When you're stuck, some things you can change directly, some you can only nudge through other people, and some you cannot change today. Knowing which is which stops you from spending all your energy on the third kind.</p>
     <div class="wordbank">
-      <div class="wh">Sort these</div>
-      <div>
-        <span class="chip" data-k="d1">the due date</span><span class="chip" data-k="d2">how early I start</span><span class="chip" data-k="d3">whether the teacher replies tonight</span>
-        <span class="chip" data-k="d4">how hard the material is</span><span class="chip" data-k="d5">which strategy I use</span><span class="chip" data-k="d6">my group finishing their part</span>
-        <span class="chip" data-k="d7">how much sleep I get</span><span class="chip" data-k="d8">what grade I already got</span><span class="chip" data-k="d9">whether I ask</span>
-      </div>
+      <div class="wh">Drag each one into a column</div>
+      <div class="bankzone" data-grp="cia"><span class="chip" data-grp="cia" data-k="d1" draggable="true">the due date</span><span class="chip" data-grp="cia" data-k="d2" draggable="true">how early I start</span><span class="chip" data-grp="cia" data-k="d3" draggable="true">whether they reply tonight</span><span class="chip" data-grp="cia" data-k="d4" draggable="true">how hard it is</span><span class="chip" data-grp="cia" data-k="d5" draggable="true">which strategy I use</span><span class="chip" data-grp="cia" data-k="d6" draggable="true">my group's part</span><span class="chip" data-grp="cia" data-k="d7" draggable="true">how much sleep I get</span><span class="chip" data-grp="cia" data-k="d8" draggable="true">the grade I already got</span><span class="chip" data-grp="cia" data-k="d9" draggable="true">whether I ask</span></div>
     </div>
-    <div class="threecol">
-      <div class="col"><div class="colhd">Control</div><div class="colsub">I can just do this</div><div class="open plain" style="font-size:11px" contenteditable data-k="s7c1"></div></div>
-      <div class="col"><div class="colhd">Influence</div><div class="colsub">Through someone else</div><div class="open plain" style="font-size:11px" contenteditable data-k="s7c2"></div></div>
-      <div class="col"><div class="colhd">Accept</div><div class="colsub">Not today</div><div class="open plain" style="font-size:11px" contenteditable data-k="s7c3"></div></div>
+    <div class="dropgrid" style="grid-template-columns:1fr 1fr 1fr;gap:6px">
+      <div class="dropbox" data-grp="cia" data-box="1"><div class="dbh"><div class="colhd" style="border:none;margin:0;padding:0">Control</div><div class="colsub" style="margin:1px 0 0">I can just do this</div></div><div class="dropzone" data-grp="cia"></div></div>
+      <div class="dropbox" data-grp="cia" data-box="2"><div class="dbh"><div class="colhd" style="border:none;margin:0;padding:0">Influence</div><div class="colsub" style="margin:1px 0 0">Through someone else</div></div><div class="dropzone" data-grp="cia"></div></div>
+      <div class="dropbox" data-grp="cia" data-box="3"><div class="dbh"><div class="colhd" style="border:none;margin:0;padding:0">Accept</div><div class="colsub" style="margin:1px 0 0">Not today</div></div><div class="dropzone" data-grp="cia"></div></div>
     </div>
     <p class="tiny" style="margin-top:7px">Accepting is not giving up. It's deciding to stop fighting the one thing that will not move, so you have something left for the two that will.</p>
   </div>
 </section>
 
-<!-- ======== STUCK 4 — UNSTICK MENU ======== -->
 <section class="page" data-sys="stuck">
-  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 06 &middot; Getting Stuck</div>
   <div class="body tight">
     <p class="kicker">Five moves &middot; rate the ones you try</p>
     <h2 class="ptitle sm">The unstick menu</h2>
@@ -1662,9 +1613,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== STUCK 5 — LIVE ======== -->
 <section class="page" data-sys="stuck">
-  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 06 &middot; Getting Stuck</div>
   <div class="body">
     <p class="kicker">Start this the next time you're stuck, not now</p>
     <h2 class="ptitle">The Fifteen Minute Wall</h2>
@@ -1685,9 +1635,26 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== STUCK 5 — LOOP ======== -->
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 06 &middot; Getting Stuck</div>
+  <div class="body">
+    <p class="kicker">Three minutes. No order, no spelling, no stopping.</p>
+    <h2 class="ptitle lg">The Brain Dump</h2>
+    <p class="small">Every single thing you are carrying. Assignments, people, the thing you said, the thing you didn't.</p>
+    <div class="timer" data-sec="180">
+      <div><div class="tlbl">Keep the pen moving</div><div class="tdisp">3:00</div></div>
+      <div class="tprint">Set a timer for three minutes</div>
+      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
+    </div>
+    <div class="open" contenteditable data-k="s6f1" data-ph="start anywhere"></div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">Circle the ones that are actually mine to fix. How many</div><div class="lines short" contenteditable data-k="s6f2"></div></div>
+    <div class="qrow"><div class="ql">One I can finish in under ten minutes</div><div class="lines" contenteditable data-k="s6f3"></div></div>
+  </div>
+</section>
+
 <section class="page" data-sys="stuck">
-  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 06 &middot; Getting Stuck</div>
   <div class="body">
     <p class="kicker pur">Close the section</p>
     <h2 class="ptitle">The Loop</h2>
@@ -1703,17 +1670,177 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== BREAK ======== -->
+<section class="page divider" data-sys="stress">
+  <div class="dvtab" style="top:75%"></div>
+  <div class="dvbody">
+    <svg class="dvglyph"><use href="#g-stress"/></svg>
+    <div class="dvnum">System 07</div>
+    <h2 class="dvname">Stress</h2>
+  </div>
+</section>
+
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 07 &middot; Stress</div>
+  <div class="body">
+    <h2 class="ptitle">Mark your <em>normal</em></h2>
+    <p class="small">Where you usually sit on a regular Tuesday.</p>
+    <div class="gauge">
+      <div class="gaugebar" data-k="s6a1"></div>
+      <div class="gaugelbl"><span>flat</span><span>fine</span><span>too much</span></div>
+    </div>
+    <p class="small" style="margin-top:16px">Where you were the last time you had a test coming up.</p>
+    <div class="gauge">
+      <div class="gaugebar" data-k="s6a2"></div>
+      <div class="gaugelbl"><span>flat</span><span>fine</span><span>too much</span></div>
+    </div>
+    <div class="rulez"></div>
+    <p class="lede">The distance between those two marks is the useful information, not the second mark on its own.</p>
+    <p class="small">Some stress is the system working. It is what makes you start the thing. The question is not whether it's at zero. The question is whether you can still work.</p>
+    <div class="qrow"><div class="ql">What moved me from the first mark to the second</div><div class="lines" contenteditable data-k="s6a3"></div></div>
+    <div class="qrow"><div class="ql">What eventually brought it back down</div><div class="lines" contenteditable data-k="s6a4"></div></div>
+  </div>
+</section>
+
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 07 &middot; Stress</div>
+  <div class="body">
+    <p class="kicker">Check every one you recognize</p>
+    <h2 class="ptitle">Stress has an <em>address</em></h2>
+    <div class="chk"><span class="box" data-k="s6b1"></span><span>Jaw or teeth</span></div>
+    <div class="chk"><span class="box" data-k="s6b2"></span><span>Shoulders up by my ears</span></div>
+    <div class="chk"><span class="box" data-k="s6b3"></span><span>Stomach</span></div>
+    <div class="chk"><span class="box" data-k="s6b4"></span><span>Chest feels tight or fast</span></div>
+    <div class="chk"><span class="box" data-k="s6b5"></span><span>Can't sit still</span></div>
+    <div class="chk"><span class="box" data-k="s6b6"></span><span>Suddenly very tired</span></div>
+    <div class="chk"><span class="box" data-k="s6b7"></span><span>Reading the same line over and over</span></div>
+    <div class="chk"><span class="box" data-k="s6b8"></span><span>Snapping at people who didn't do anything</span></div>
+    <div class="chk"><span class="box" data-k="s6b9"></span><span>Phone for two hours without deciding to</span></div>
+    <div class="chk"><span class="box" data-k="s6b10"></span><span>Cleaning something instead of doing the work</span></div>
+    <div class="chk"><span class="box" data-k="s6b11"></span><span>Not hungry, or hungry all the time</span></div>
+    <div class="chk"><span class="box" data-k="s6b12"></span><span>Lying in bed awake going over it</span></div>
+    <div class="star">
+      <div class="slab">The early one</div>
+      <div class="sq">Which of these shows up first, before you have even noticed you're stressed?</div>
+      <div class="lines" contenteditable data-k="s6b13"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 07 &middot; Stress</div>
+  <div class="body tight">
+    <p class="kicker">Five resets &middot; rate the ones you try</p>
+    <h2 class="ptitle sm">Things that bring it down</h2>
+    <div class="method">
+      <div class="mh"><span class="mn">01</span><span class="mt">Box breathing</span></div>
+      <div class="mw">In for four, hold for four, out for four, hold for four. Four rounds. <b>Why it works:</b> a long, even out-breath is one of the few direct switches you have into your own nervous system.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c1"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">02</span><span class="mt">Five things you can see</span></div>
+      <div class="mw">Name five things you can see, four you can hear, three you can touch. <b>Why it works:</b> it gives your attention something concrete to hold while the spiral loses momentum.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c2"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">03</span><span class="mt">Brain dump</span></div>
+      <div class="mw">Every single thing you are worried about, on paper, in no order, for three minutes. <b>Why it works:</b> a lot of the load is the effort of holding it all at once. On paper it stops needing to be held.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c3"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">04</span><span class="mt">Move for ten minutes</span></div>
+      <div class="mw">Walk outside, take stairs, shoot around. Not as exercise. As a change of state. <b>Why it works:</b> stress is physical before it is mental, so it responds to physical things faster than to arguments.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c4"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="method">
+      <div class="mh"><span class="mn">05</span><span class="mt">Say it to one person</span></div>
+      <div class="mw">Out loud, to someone real. Not for advice. Just to say it. <b>Why it works:</b> things almost always get smaller once they exist outside your own head.</div>
+      <div class="mfoot"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s6c5"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 07 &middot; Stress</div>
+  <div class="body">
+    <h2 class="ptitle">Two lists</h2>
+    <div class="twocol" style="margin-top:4px">
+      <div class="col">
+        <div class="colhd">Actually helps</div>
+        <div class="colsub">You come back feeling better and you can work.</div>
+        <div class="open plain" contenteditable data-k="s6d1"></div>
+      </div>
+      <div class="col">
+        <div class="colhd ink">Feels like it helps</div>
+        <div class="colsub">You do it every time and afterwards nothing has changed.</div>
+        <div class="open plain" contenteditable data-k="s6d2"></div>
+      </div>
+    </div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">One thing moving from right to left this month</div><div class="lines" contenteditable data-k="s6d3"></div></div>
+    <div class="qrow"><div class="ql">When it's bigger than a reset, I tell</div><div class="lines" contenteditable data-k="s6d4" data-ph="a person, by name"></div></div>
+  </div>
+</section>
+
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 07 &middot; Stress</div>
+  <div class="body">
+    <p class="kicker">Six things, twenty points</p>
+    <h2 class="ptitle">The Energy Budget</h2>
+    <p class="small">Write what is in your week. Then spend energy on each one, up to five points. You have twenty points to spend and you are allowed to go over.</p>
+    <div class="budgetlist">
+      <div class="bgrow"><span class="fill" contenteditable data-k="s7e1" data-ph="school and homework"></span><span class="rate energy" data-k="be1"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="bgrow"><span class="fill" contenteditable data-k="s7e2" data-ph="sports or activities"></span><span class="rate energy" data-k="be2"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="bgrow"><span class="fill" contenteditable data-k="s7e3" data-ph="people and family"></span><span class="rate energy" data-k="be3"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="bgrow"><span class="fill" contenteditable data-k="s7e4" data-ph=""></span><span class="rate energy" data-k="be4"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="bgrow"><span class="fill" contenteditable data-k="s7e5" data-ph=""></span><span class="rate energy" data-k="be5"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="bgrow"><span class="fill" contenteditable data-k="s7e6" data-ph=""></span><span class="rate energy" data-k="be6"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="budget" data-rows="be1,be2,be3,be4,be5,be6">
+      <div class="btrack"><div class="bfill"></div><div class="bline"></div></div>
+      <div class="blbl"><span class="bnum">0 spent</span><span class="bcap">budget 20</span></div>
+    </div>
+    <p class="small" id="bmsg">The arithmetic does not always work. That is the useful part.</p>
+    <div class="qrow"><div class="ql">Which one is taking more than it gives back</div><div class="lines short" contenteditable data-k="s7e7"></div></div>
+    <div class="qrow"><div class="ql">Which one is getting nothing</div><div class="lines short" contenteditable data-k="s7e8"></div></div>
+  </div>
+</section>
+
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 07 &middot; Stress</div>
+  <div class="body">
+    <p class="kicker pur">Close the section</p>
+    <h2 class="ptitle">The Loop</h2>
+    <div class="loopwrap">
+      <div class="loopstep fixed"><div class="ls">1 &middot; Find the system</div><div class="lv">Stress</div></div>
+      <div class="loopstep"><div class="ls">2 &middot; Diagnose</div><div class="lq">What reliably tips me over, and how do I know it's happening?</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s6e1"></div></div>
+      <div class="loopstep"><div class="ls">3 &middot; Test the tools</div><div class="lq">Which reset I'm trying, and when I'll use it</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s6e2"></div></div>
+      <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My stress system, version one</div>
+        <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s6e3" data-star="stress" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+
 <section class="page" data-sys="">
   <div class="body nomark">
     <div class="brk">
       <div class="bt">Brain Break</div>
-      <div class="bs">Invent a holiday. When is it, what do people do, and what food is mandatory?</div>
-      <div class="bbox" contenteditable data-k="brk4" data-ph="the food matters most"></div>
+      <div class="bs">Headphones on. Listen to your favorite song all the way through. No skipping, no scrolling while it plays.</div>
+      <div class="bbox" contenteditable data-k="brksong" data-ph="what song, and why that one"></div>
     </div>
   </div>
 </section>
-<!-- ======== UPDATING 1 ======== -->
+
+<section class="page divider" data-sys="upd">
+  <div class="dvtab" style="top:86%"></div>
+  <div class="dvbody">
+    <svg class="dvglyph"><use href="#g-upd"/></svg>
+    <div class="dvnum">System 08</div>
+    <h2 class="dvname">Updating</h2>
+  </div>
+</section>
+
 <section class="page" data-sys="upd">
   <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
   <div class="body">
@@ -1740,7 +1867,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== UPDATING 2 ======== -->
 <section class="page" data-sys="upd">
   <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
   <div class="body">
@@ -1759,12 +1885,11 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== UPDATING 3 ======== -->
 <section class="page" data-sys="upd">
   <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
   <div class="body">
     <h2 class="ptitle sm">Which version am I running?</h2>
-    <p class="small">Circle the side that's true for you right now. Not on your best day. Right now.</p>
+    <p class="small">Circle whichever side is true right now. Not on your best day.</p>
     <div class="loghd" style="grid-template-columns:1fr 1fr"><span>Default</span><span>Updated</span></div>
     <div class="logrow" style="grid-template-columns:1fr 1fr;align-items:start">
       <span class="circ" data-k="s8c1" style="font-size:11px">I'm either good at this or I'm not</span>
@@ -1781,13 +1906,15 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     <div class="logrow" style="grid-template-columns:1fr 1fr;align-items:start">
       <span class="circ" data-k="s8c9" style="font-size:11px">If it's hard, it's not for me</span>
       <span class="circ" data-k="s8c10" style="font-size:11px">If it's hard, it's working</span></div>
-    <div class="qrow"><div class="ql">On my best day I'm mostly</div><div class="lines short" contenteditable data-k="s8c11"></div></div>
-    <div class="qrow"><div class="ql">On my worst day I'm mostly</div><div class="lines short" contenteditable data-k="s8c12"></div></div>
+    <div class="scoreboard" data-left="s8c1,s8c3,s8c5,s8c7,s8c9" data-right="s8c2,s8c4,s8c6,s8c8,s8c10">
+      <div class="sbside"><div class="sbn sbl">0</div><div class="sbt">Default</div></div>
+      <div class="sbbar"><span></span></div>
+      <div class="sbside"><div class="sbn sbr">0</div><div class="sbt">Updated</div></div>
+    </div>
     <div class="qrow"><div class="ql">The class where I flip to Default fastest</div><div class="lines short" contenteditable data-k="s8c13"></div></div>
   </div>
 </section>
 
-<!-- ======== UPDATING 4 ======== -->
 <section class="page" data-sys="upd">
   <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
   <div class="body">
@@ -1809,7 +1936,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== UPDATING 5 — THE LOCK ======== -->
 <section class="page" data-sys="upd">
   <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
   <div class="body tight">
@@ -1834,7 +1960,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== UPDATING 6 — THE DEBRIEF ======== -->
 <section class="page" data-sys="upd">
   <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
   <div class="body">
@@ -1852,12 +1977,11 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     <div class="rulez"></div>
     <button class="btn revealbtn" data-target="#lockans" style="font-family:var(--mono);font-size:7px;letter-spacing:.11em;text-transform:uppercase;background:none;border:1.5px solid var(--ink);padding:7px 10px;cursor:pointer;color:var(--ink)">Show the answer</button>
     <div id="lockans" hidden style="margin-top:7px">
-      <p class="tiny" style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--pur-deep)">042. Line four kills 7, 3 and 8. Line one then has to mean the 2, in place. Work outward from there.</p>
+      <p class="tiny" style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--pur-deep)">042</p>
     </div>
   </div>
 </section>
 
-<!-- ======== UPDATING 5 — LOOP ======== -->
 <section class="page" data-sys="upd">
   <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
   <div class="body">
@@ -1875,18 +1999,22 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== BREAK ======== -->
 <section class="page" data-sys="">
   <div class="body nomark">
-    <div class="brk">
-      <div class="bt">Brain Break</div>
-      <div class="bs">Design a flag for your table group. It has to include one animal and one shape, and no words at all.</div>
-      <div class="bbox" contenteditable data-k="brk5" data-ph="be ready to defend it"></div>
+    <p class="kicker pur">Week seven</p>
+    <h2 class="ptitle">Everything I tried</h2>
+    <p class="small">Every tool you actually ran this term. Write down the ones you remember trying.</p>
+    <div class="open" contenteditable data-k="triedlist"></div>
+    <div class="star">
+      <div class="slab">The three that survive</div>
+      <div class="sq">Out of everything you kept, the three you will still be doing in a year</div>
+      <div class="lines short" contenteditable data-k="tr1"></div>
+      <div class="lines short" contenteditable data-k="tr2"></div>
+      <div class="lines short" contenteditable data-k="tr3"></div>
     </div>
   </div>
 </section>
 
-<!-- ======== LETTER ======== -->
 <section class="page" data-sys="">
   <div class="body nomark">
     <p class="kicker">Week seven</p>
@@ -1896,20 +2024,38 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== MY OS v1 ======== -->
 <section class="page" data-sys="">
   <div class="body nomark">
-    <p class="kicker pur">The page that leaves this room</p>
-    <h2 class="ptitle lg">My OS, <em>v1</em></h2>
-    <p class="small">Pulled from the purple box at the end of every section. Change any of them. It is your build.</p>
+    <p class="kicker">Week one, before any of this</p>
+    <h2 class="ptitle lg">My OS, <em>v0</em></h2>
+    <p class="small">Copied from what you wrote on your very first day. This is what you were already doing, mostly without deciding to. Nothing here is wrong. It is just what you had before you looked at it.</p>
+    <div class="rulez thick"></div>
+    <div class="osrow"><svg><use href="#g-ask"/></svg><div class="osl">Asking</div><div class="osv empty" data-echo="v0a" data-ph="left blank in week one"></div></div>
+    <div class="osrow"><svg><use href="#g-stuck"/></svg><div class="osl">Getting Stuck</div><div class="osv empty" data-echo="v0j" data-ph="left blank in week one"></div></div>
+    <div class="osrow"><svg><use href="#g-study"/></svg><div class="osl">Studying</div><div class="osv empty" data-echo="v0f" data-ph="left blank in week one"></div></div>
+    <div class="osrow"><svg><use href="#g-notes"/></svg><div class="osl">Note-Taking</div><div class="osv empty" data-echo="v0g" data-ph="left blank in week one"></div></div>
+    <div class="osrow"><svg><use href="#g-time"/></svg><div class="osl">Time</div><div class="osv empty" data-echo="v0c" data-ph="left blank in week one"></div></div>
+    <div class="osrow"><svg><use href="#g-org"/></svg><div class="osl">Organization</div><div class="osv empty" data-echo="v0d" data-ph="left blank in week one"></div></div>
+    <div class="osrow"><svg><use href="#g-stress"/></svg><div class="osl">Stress</div><div class="osv empty" data-echo="v0h" data-ph="left blank in week one"></div></div>
+    <div class="osrow"><svg><use href="#g-upd"/></svg><div class="osl">Updating</div><div class="osv empty" data-echo="v0l" data-ph="left blank in week one"></div></div>
     <div class="rulez"></div>
+    <p class="small">Now turn the page.</p>
+  </div>
+</section>
+
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker pur">Week seven &middot; the page that leaves this room</p>
+    <h2 class="ptitle lg">My OS, <em>v1</em></h2>
+    <p class="small">Your first real model of yourself, built out of the purple boxes. Not what you were already doing. What you know now, after seven weeks of actually testing it. Change anything here. It is your build.</p>
+    <div class="rulez thick"></div>
     <div class="osrow"><svg><use href="#g-ask"/></svg><div class="osl">Asking</div><div class="osv empty" data-mirror="ask" data-ph="from System 01" contenteditable></div></div>
-    <div class="osrow"><svg><use href="#g-time"/></svg><div class="osl">Time</div><div class="osv empty" data-mirror="time" data-ph="from System 02" contenteditable></div></div>
-    <div class="osrow"><svg><use href="#g-org"/></svg><div class="osl">Organization</div><div class="osv empty" data-mirror="org" data-ph="from System 03" contenteditable></div></div>
-    <div class="osrow"><svg><use href="#g-study"/></svg><div class="osl">Studying</div><div class="osv empty" data-mirror="study" data-ph="from System 04" contenteditable></div></div>
-    <div class="osrow"><svg><use href="#g-notes"/></svg><div class="osl">Notes</div><div class="osv empty" data-mirror="notes" data-ph="from System 05" contenteditable></div></div>
-    <div class="osrow"><svg><use href="#g-stress"/></svg><div class="osl">Stress</div><div class="osv empty" data-mirror="stress" data-ph="from System 06" contenteditable></div></div>
-    <div class="osrow"><svg><use href="#g-stuck"/></svg><div class="osl">Getting Stuck</div><div class="osv empty" data-mirror="stuck" data-ph="from System 07" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-stuck"/></svg><div class="osl">Getting Stuck</div><div class="osv empty" data-mirror="stuck" data-ph="from System 02" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-study"/></svg><div class="osl">Studying</div><div class="osv empty" data-mirror="study" data-ph="from System 03" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-notes"/></svg><div class="osl">Note-Taking</div><div class="osv empty" data-mirror="notes" data-ph="from System 04" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-time"/></svg><div class="osl">Time</div><div class="osv empty" data-mirror="time" data-ph="from System 05" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-org"/></svg><div class="osl">Organization</div><div class="osv empty" data-mirror="org" data-ph="from System 06" contenteditable></div></div>
+    <div class="osrow"><svg><use href="#g-stress"/></svg><div class="osl">Stress</div><div class="osv empty" data-mirror="stress" data-ph="from System 07" contenteditable></div></div>
     <div class="osrow"><svg><use href="#g-upd"/></svg><div class="osl">Updating</div><div class="osv empty" data-mirror="upd" data-ph="from System 08" contenteditable></div></div>
     <div class="rulez"></div>
     <p class="small">v1 is not the finished version. It is the first one you wrote down on purpose. There will be a v2, and you will be the one who writes it.</p>
@@ -1917,7 +2063,6 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
-<!-- ======== BACK COVER ======== -->
 <section class="page cover" data-sys="">
   <div style="flex:1;display:flex;align-items:center">
     <div style="font-family:var(--disp);font-weight:700;font-size:22px;line-height:1.12;color:var(--paper)">
@@ -1927,11 +2072,11 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     </div>
   </div>
   <div class="colophon">
-    Metacognition &middot; Grade 9<br>
-    San Francisco University High School<br>
-    Seven weeks &middot; yours
+    Metacognition<br>
+    San Francisco University High School
   </div>
 </section>
+
 </div>
 
 <script>
@@ -1945,7 +2090,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   const KEY='hsos_v1';
 
   /* ---------- build generated graphics ---------- */
-  const tgrid=src.querySelector('#tgrid');
+  const tgrid=document.querySelector('#tgrid');
   if(tgrid){
     const labels=['7a','','8a','','9a','','10a','','11a','','12p','','1p','','2p','','3p','','4p','','5p','','6p','','7p','','8p','','9p','','10p',''];
     labels.forEach((h,i)=>{
@@ -1955,10 +2100,10 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
       tgrid.appendChild(d);
     });
   }
-  src.querySelectorAll('.gaugebar').forEach(g=>{
+  document.querySelectorAll('.gaugebar').forEach(g=>{
     for(let i=0;i<12;i++){const d=document.createElement('div');d.dataset.i=i;g.appendChild(d);}
   });
-  const map=src.querySelector('#helpmap');
+  const map=document.querySelector('#helpmap');
   if(map){
     ['left:16%;top:12%;width:64px;transform:rotate(34deg)',
      'right:16%;top:12%;width:64px;transform:rotate(146deg)',
@@ -2016,57 +2161,60 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     }catch(e){savedEl.textContent='not saving here';}
   }
   function restore(){
-    src.querySelectorAll('[contenteditable][data-k]').forEach(el=>{
+    document.querySelectorAll('[contenteditable][data-k]').forEach(el=>{
       const v=state[el.dataset.k];
       el.textContent = v || '';
       if(v) el.classList.remove('empty');
     });
-    src.querySelectorAll('.chk').forEach(c=>c.classList.remove('on'));
-    src.querySelectorAll('.circ,.chip,.cell,.pomocell,.fear').forEach(c=>c.classList.remove('on'));
-    src.querySelectorAll('.gaugebar>div').forEach(c=>c.classList.remove('on'));
-    src.querySelectorAll('.box[data-k]').forEach(el=>{
+    document.querySelectorAll('.chk').forEach(c=>c.classList.remove('on'));
+    document.querySelectorAll('.circ,.chip,.cell,.pomocell,.fear').forEach(c=>c.classList.remove('on'));
+    document.querySelectorAll('.gaugebar>div').forEach(c=>c.classList.remove('on'));
+    document.querySelectorAll('.box[data-k]').forEach(el=>{
       if(state[el.dataset.k]) el.parentElement.classList.add('on');
     });
-    src.querySelectorAll('.circ[data-k]').forEach(el=>{
+    document.querySelectorAll('.circ[data-k]').forEach(el=>{
       if(state[el.dataset.k]) el.classList.add('on');
     });
-    src.querySelectorAll('.chip[data-k]').forEach(el=>{
+    document.querySelectorAll('.chip[data-k]').forEach(el=>{
       if(el.dataset.grp)return;
       if(state[el.dataset.k]) el.classList.add('on');
     });
-    src.querySelectorAll('.chip[data-grp]').forEach(el=>{
+    document.querySelectorAll('.chip[data-grp]').forEach(el=>{
       const dest=state['sort_'+el.dataset.grp+'_'+el.dataset.k];
       if(dest){
-        const z=src.querySelector('.dropbox[data-box="'+dest+'"][data-grp="'+el.dataset.grp+'"] .dropzone');
+        const z=document.querySelector('.dropbox[data-box="'+dest+'"][data-grp="'+el.dataset.grp+'"] .dropzone');
         if(z)z.appendChild(el);
       }
     });
-    src.querySelectorAll('.cell[data-k]').forEach(el=>{
+    document.querySelectorAll('.cell[data-k]').forEach(el=>{
       if(state[el.dataset.k]) el.classList.add('on');
     });
-    src.querySelectorAll('.pomocell[data-k]').forEach(el=>{
+    document.querySelectorAll('.pomocell[data-k]').forEach(el=>{
       if(state[el.dataset.k]) el.classList.add('on');
     });
-    src.querySelectorAll('.rate[data-k]').forEach(el=>{
+    document.querySelectorAll('.chip.keep').forEach(el=>{
+      const s=state['keep_'+el.dataset.k]; if(s) el.dataset.s=s;
+    });
+    document.querySelectorAll('.rate[data-k]').forEach(el=>{
       const n=state[el.dataset.k]||0;
       Array.from(el.children).forEach((i,idx)=>i.classList.toggle('on',idx<n));
     });
-    src.querySelectorAll('.gaugebar[data-k]').forEach(el=>{
+    document.querySelectorAll('.gaugebar[data-k]').forEach(el=>{
       const n=state[el.dataset.k];
       if(n!==undefined&&el.children[n]) el.children[n].classList.add('on');
     });
-    src.querySelectorAll('.fear').forEach((el,i)=>{
+    document.querySelectorAll('.fear').forEach((el,i)=>{
       if(state['fear'+i]) el.classList.add('on');
     });
-    syncMirror();
+    syncMirror();paintScores();paintEst();paintBudget();paintSlots();
   }
 
   /* ---------- spreads + nav ---------- */
   const spreads=[[0]];
   for(let i=1;i<pages.length;i+=2) spreads.push(pages[i+1]?[i,i+1]:[i]);
 
-  const systems=[['ask','#g-ask'],['time','#g-time'],['org','#g-org'],['study','#g-study'],
-                 ['notes','#g-notes'],['stress','#g-stress'],['stuck','#g-stuck'],['upd','#g-upd']];
+  const systems=[['ask','#g-ask'],['stuck','#g-stuck'],['study','#g-study'],['notes','#g-notes'],
+                 ['time','#g-time'],['org','#g-org'],['stress','#g-stress'],['upd','#g-upd']];
   systems.forEach(([key,icon])=>{
     const b=document.createElement('button');
     b.innerHTML='<svg><use href="'+icon+'"/></svg>';
@@ -2094,6 +2242,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     document.getElementById('next').disabled=cur===spreads.length-1;
     const active=set.map(i=>pages[i].dataset.sys).filter(Boolean);
     railEl.querySelectorAll('button').forEach(b=>b.classList.toggle('on',active.includes(b.dataset.sys)));
+    syncMirror();paintScores();paintEst();paintBudget();paintSlots();
   }
   document.getElementById('prev').addEventListener('click',()=>go(cur-1));
   document.getElementById('next').addEventListener('click',()=>go(cur+1));
@@ -2105,7 +2254,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
 
   /* ---------- live timers ---------- */
   function fmt(s){const m=Math.floor(s/60),r=s%60;return m+':'+String(r).padStart(2,'0');}
-  src.querySelectorAll('.timer').forEach(tm=>{
+  document.querySelectorAll('.timer').forEach(tm=>{
     const total=parseInt(tm.dataset.sec||'60',10);
     const disp=tm.querySelector('.tdisp');
     let left=total, id=null;
@@ -2138,11 +2287,11 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     state['sort_'+grp+'_'+chip.dataset.k] = box ? box.dataset.box : '';
     save();
   }
-  src.querySelectorAll('.chip[draggable]').forEach(c=>{
+  document.querySelectorAll('.chip[draggable]').forEach(c=>{
     c.addEventListener('dragstart',e=>{picked=c;e.dataTransfer.setData('text/plain','x');});
     c.addEventListener('dragend',()=>{picked=null;});
   });
-  src.querySelectorAll('.dropzone,.bankzone').forEach(z=>{
+  document.querySelectorAll('.dropzone,.bankzone').forEach(z=>{
     z.addEventListener('dragover',e=>{e.preventDefault();const b=z.closest('.dropbox');if(b)b.classList.add('over');});
     z.addEventListener('dragleave',()=>{const b=z.closest('.dropbox');if(b)b.classList.remove('over');});
     z.addEventListener('drop',e=>{
@@ -2151,8 +2300,71 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     });
   });
 
+  /* ---------- live scoreboard ---------- */
+  function paintScores(){
+    document.querySelectorAll('.scoreboard').forEach(sb=>{
+      const L=sb.dataset.left.split(','), R=sb.dataset.right.split(',');
+      const l=L.filter(k=>state[k]).length, r=R.filter(k=>state[k]).length;
+      sb.querySelector('.sbl').textContent=l;
+      sb.querySelector('.sbr').textContent=r;
+      const tot=l+r;
+      sb.querySelector('.sbbar span').style.width = tot ? (r/tot*100)+'%' : '0';
+    });
+  }
+
+  /* ---------- guess vs real bar ---------- */
+  function num(v){const m=String(v||'').match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):null;}
+  function paintEst(){
+    document.querySelectorAll('.estbar').forEach(eb=>{
+      const rows=eb.dataset.rows.split(','), host=eb.querySelector('.ebrows');
+      host.innerHTML='';
+      rows.forEach(r=>{
+        const g=num(state[r+'b']), a=num(state[r+'c']);
+        const d=document.createElement('div'); d.className='ebrow';
+        const i=document.createElement('i');
+        if(g===null||a===null||g<=0){d.classList.add('none');}
+        else{
+          const ratio=Math.max(-1,Math.min(1,(a-g)/Math.max(g,1)));
+          const w=Math.abs(ratio)*50;
+          if(ratio>=0){i.style.left='50%';i.style.width=w+'%';}
+          else{i.style.right='50%';i.style.width=w+'%';}
+        }
+        d.appendChild(i); host.appendChild(d);
+      });
+    });
+  }
+
+  /* ---------- energy budget ---------- */
+  function paintBudget(){
+    document.querySelectorAll('.budget').forEach(bd=>{
+      const rows=bd.dataset.rows.split(',');
+      const total=rows.reduce((s,k)=>s+(parseInt(state[k]||0,10)),0);
+      const fill=bd.querySelector('.bfill');
+      fill.style.width=Math.min(100,total/30*100)+'%';
+      fill.classList.toggle('over',total>20);
+      bd.querySelector('.bnum').textContent=total+' spent';
+      const pg=bd.closest('.page'), msg=pg&&pg.querySelector('#bmsg');
+      if(msg) msg.textContent = total>20
+        ? 'You are '+(total-20)+' over. Nothing here is optional to you, and the arithmetic still does not work. That is the useful part.'
+        : 'The arithmetic does not always work. That is the useful part.';
+    });
+  }
+
+  /* ---------- day planner slots ---------- */
+  function paintSlots(){
+    document.querySelectorAll('.slot').forEach(s=>s.classList.toggle('full',!!s.textContent.trim()));
+  }
+
+  /* ---------- keep / drop chips ---------- */
+  document.addEventListener('click',e=>{
+    const k=e.target.closest('.chip.keep');
+    if(!k) return;
+    const s=((parseInt(k.dataset.s||'0',10))+1)%3;
+    k.dataset.s=s; state['keep_'+k.dataset.k]=s; save();
+  });
+
   /* ---------- the lock ---------- */
-  src.querySelectorAll('.lock[data-answer]').forEach(lk=>{
+  document.querySelectorAll('.lock[data-answer]').forEach(lk=>{
     const inp=lk.querySelector('input'), msg=lk.querySelector('.lockmsg'),
           tally=lk.querySelector('.tally'), key=lk.dataset.tally;
     function tries(){return parseInt(state[key]||'0',10);}
@@ -2167,9 +2379,9 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     inp.addEventListener('keydown',e=>{if(e.key==='Enter')lk.querySelector('.lockgo').click();});
     showTally();
   });
-  src.querySelectorAll('.revealbtn').forEach(b=>{
+  document.querySelectorAll('.revealbtn').forEach(b=>{
     b.addEventListener('click',()=>{
-      const t=src.querySelector(b.dataset.target);
+      const t=document.querySelector(b.dataset.target);
       if(t){t.hidden=!t.hidden;b.textContent=t.hidden?'Show the answer':'Hide the answer';}
     });
   });
@@ -2185,7 +2397,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     }
     const circ=e.target.closest('.circ');
     if(circ){circ.classList.toggle('on');
-      if(circ.dataset.k){state[circ.dataset.k]=circ.classList.contains('on')?1:0;save();}return;}
+      if(circ.dataset.k){state[circ.dataset.k]=circ.classList.contains('on')?1:0;save();paintScores();}return;}
     const zone=e.target.closest('.dropzone,.bankzone');
     if(zone&&picked&&picked.dataset.grp===zone.dataset.grp&&!e.target.closest('.chip')){
       placeChip(picked,zone);picked=null;return;
@@ -2200,7 +2412,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
       if(chip.dataset.k){state[chip.dataset.k]=chip.classList.contains('on')?1:0;save();}return;}
     const fear=e.target.closest('.fear');
     if(fear){fear.classList.toggle('on');
-      const all=Array.from(src.querySelectorAll('.fear'));
+      const all=Array.from(document.querySelectorAll('.fear'));
       state['fear'+all.indexOf(fear)]=fear.classList.contains('on')?1:0;save();return;}
     const cell=e.target.closest('.cell');
     if(cell){cell.classList.toggle('on');
@@ -2214,7 +2426,8 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
       const val=(state[r.dataset.k]===n)?0:n;
       state[r.dataset.k]=val;
       kids.forEach((i,idx)=>i.classList.toggle('on',idx<val));
-      save();return;
+      save(); if(r.classList.contains('energy')) paintBudget();
+      return;
     }
     const gc=e.target.closest('.gaugebar>div');
     if(gc){
@@ -2226,20 +2439,28 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   });
 
   /* ---------- typing ---------- */
-  const PH={ask:'from System 01',time:'from System 02',org:'from System 03',study:'from System 04',
-            notes:'from System 05',stress:'from System 06',stuck:'from System 07',upd:'from System 08'};
+  const PH={ask:'from System 01',stuck:'from System 02',study:'from System 03',notes:'from System 04',
+            time:'from System 05',org:'from System 06',stress:'from System 07',upd:'from System 08'};
+  function syncEcho(){
+    document.querySelectorAll('[data-echo]').forEach(el=>{
+      const v=(state[el.dataset.echo]||'').trim();
+      el.textContent=v; el.classList.toggle('empty',!v);
+    });
+  }
   function syncMirror(){
-    src.querySelectorAll('[data-mirror]').forEach(el=>{
+    syncEcho();
+    document.querySelectorAll('[data-mirror]').forEach(el=>{
       if(el.dataset.touched)return;
       const v=state['star_'+el.dataset.mirror];
       if(v){el.textContent=v;el.classList.remove('empty');}
       else{el.textContent='';el.classList.add('empty');}
     });
   }
-  src.addEventListener('input',e=>{
+  document.addEventListener('input',e=>{
     const el=e.target;
     if(!el.isContentEditable)return;
-    if(el.dataset.k){state[el.dataset.k]=el.textContent;}
+    if(el.dataset.k){state[el.dataset.k]=el.textContent;syncEcho();paintEst();
+      if(el.classList.contains('slot'))el.classList.toggle('full',!!el.textContent.trim());}
     if(el.dataset.star){state['star_'+el.dataset.star]=el.textContent.trim();syncMirror();}
     if(el.dataset.mirror){
       el.dataset.touched='1';
