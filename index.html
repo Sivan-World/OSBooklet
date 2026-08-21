@@ -48,6 +48,14 @@ header.bar .btn{
 header.bar .btn:hover{border-color:var(--pur);color:var(--pur)}
 header.bar .btn.go{border-color:var(--pur);color:var(--pur)}
 .saved{color:#6F6759;font-size:8px}
+.warn{
+  flex:0 0 auto;display:none;gap:10px;align-items:center;padding:9px 16px;
+  background:#4A1B4D;color:#F6DEF8;border-bottom:1px solid #6B2A70;
+  font-family:var(--serif);font-size:12.5px;line-height:1.4;
+}
+.warn.show{display:flex}
+.warn b{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--pur);flex:0 0 auto}
+.warn a{color:#fff;font-weight:600}
 
 .rail{display:flex;gap:3px}
 .rail button{
@@ -305,7 +313,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
 .loopstep{border:1.5px solid var(--ink);padding:7px 9px;display:flex;flex-direction:column}
 .loopstep.fixed{background:var(--ink);color:var(--paper);flex:0 0 auto}
 .loopstep:not(.fixed){flex:1 1 0;min-height:0}
-.loopstep .open{flex:1 1 auto}
+.loopstep .open{flex:1 1 auto;border:none;padding:2px 0 0;background-image:repeating-linear-gradient(transparent,transparent 19px,rgba(207,199,176,.55) 19px,rgba(207,199,176,.55) 20px)}
 .loopstep .ls{font-family:var(--mono);font-size:6.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:3px}
 .loopstep.fixed .ls{color:var(--pur)}
 .loopstep .lq{font-size:10.5px;line-height:1.35;color:var(--ink-soft);margin-bottom:3px}
@@ -313,6 +321,52 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
 .loopstep .lv{font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:-.01em}
 .loopstep.upd{background:var(--pur-tint);border-color:var(--pur);border-left-width:4px}
 .loopstep.upd .ls::before{content:"★ ";}
+
+/* ============ LIVE TIMER ============ */
+.timer{border:1.5px solid var(--ink);padding:8px 10px;display:flex;align-items:center;gap:9px;margin:7px 0;flex:0 0 auto}
+.timer .tdisp{font-family:var(--mono);font-size:25px;font-weight:500;letter-spacing:-.02em;line-height:1;flex:1}
+.timer .tlbl{font-family:var(--mono);font-size:6px;letter-spacing:.12em;text-transform:uppercase;color:var(--pur-deep);margin-bottom:2px}
+.timer.run{background:var(--pur-tint);border-color:var(--pur)}
+.timer.done{background:var(--pur);border-color:var(--pur)}
+.timer.done .tdisp,.timer.done .tlbl{color:#fff}
+.tbtns{display:flex;gap:4px;flex:0 0 auto}
+.tbtns button{font-family:var(--mono);font-size:6.5px;letter-spacing:.1em;text-transform:uppercase;
+  background:none;border:1.5px solid var(--ink);padding:6px 8px;cursor:pointer;color:var(--ink)}
+.tbtns button:hover{background:var(--ink);color:var(--paper)}
+.timer.done .tbtns button{border-color:#fff;color:#fff}
+.timer.done .tbtns button:hover{background:#fff;color:var(--pur)}
+.tprint{display:none;font-family:var(--mono);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--pur-deep)}
+
+/* ============ DRAG SORT ============ */
+.dropgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;min-height:0}
+.dropbox{border:1.5px solid var(--ink);padding:5px 7px;display:flex;flex-direction:column;min-height:0}
+.dropbox.over{background:var(--pur-tint);border-color:var(--pur)}
+.dropbox .dbh{border-bottom:1px solid var(--rule);padding-bottom:3px;margin-bottom:4px;flex:0 0 auto}
+.dropbox .dbh .fill{min-width:0;width:100%;font-size:11px;border-bottom:none}
+.dropzone{flex:1;display:flex;flex-wrap:wrap;gap:3px;align-content:flex-start;min-height:30px}
+.chip{
+  display:inline-block;padding:3px 7px;font-size:10px;cursor:pointer;
+  border:1.5px solid var(--ink);background:var(--paper);line-height:1.25;
+}
+.chip.sel{background:var(--pur);border-color:var(--pur);color:#fff}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.bankzone{display:flex;flex-wrap:wrap;gap:3px}
+
+/* ============ THE LOCK ============ */
+.lock{border:2px solid var(--ink);padding:9px 11px;margin:6px 0;flex:0 0 auto}
+.clue{display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:center;padding:4.5px 0;border-bottom:1px solid var(--rule-soft)}
+.clue:last-of-type{border-bottom:0}
+.clue .cd{font-family:var(--mono);font-size:18px;font-weight:700;letter-spacing:.14em}
+.clue .cx{font-size:10px;line-height:1.32;color:var(--ink-soft)}
+.lockin{display:flex;gap:7px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.lockin input{font-family:var(--mono);font-size:19px;width:82px;text-align:center;letter-spacing:.18em;
+  border:1.5px solid var(--ink);background:transparent;padding:5px 3px;color:var(--ink);border-radius:0}
+.lockin button{font-family:var(--mono);font-size:6.5px;letter-spacing:.1em;text-transform:uppercase;
+  background:none;border:1.5px solid var(--ink);padding:7px 9px;cursor:pointer;color:var(--ink)}
+.lockin button:hover{background:var(--ink);color:var(--paper)}
+.lockmsg{font-family:var(--mono);font-size:7.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+.lockmsg.yes{color:var(--pur-deep);font-weight:700}
+.tally{font-family:var(--mono);font-size:6.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--pur-deep)}
 
 /* ============ BREAK PAGES ============ */
 .brk{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
@@ -363,6 +417,9 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   }
   .page:last-child{page-break-after:auto}
   .cover{background:#1B1A17 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tbtns,.lockin button{display:none !important}
+  .tprint{display:block !important}
+  .timer .tdisp{font-size:20px}
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
 }
 </style>
@@ -414,10 +471,15 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   <span id="edition">digital edition</span>
   <span class="sp"></span>
   <span class="saved" id="saved"></span>
+  <button class="btn" id="backupbtn">Back up</button>
+  <button class="btn" id="restorebtn">Restore</button>
   <button class="btn" id="clearbtn">Clear</button>
   <button class="btn go" id="pdfbtn">Save as PDF</button>
+  <input type="file" id="restorefile" accept="application/json,.json" hidden>
   <nav class="rail" id="rail" aria-label="Jump to section"></nav>
 </header>
+
+<div class="warn" id="warn"><b>Heads up</b><span id="warntext"></span></div>
 
 <main class="stage"><div class="spread" id="spread"></div></main>
 
@@ -445,6 +507,25 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
+<!-- ============ CONTENTS ============ -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker">Eight systems, six pages each</p>
+    <h2 class="ptitle">What's in here</h2>
+    <div class="rulez thick"></div>
+    <div class="osrow"><svg><use href="#g-ask"/></svg><div class="osl">01 Asking</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Help-seeking, emails, and asking for what you need</div></div>
+    <div class="osrow"><svg><use href="#g-time"/></svg><div class="osl">02 Time</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Where it goes, planning tools, and the loathsome task</div></div>
+    <div class="osrow"><svg><use href="#g-org"/></svg><div class="osl">03 Organization</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Where things live and systems worth stealing</div></div>
+    <div class="osrow"><svg><use href="#g-study"/></svg><div class="osl">04 Studying</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Five methods with evidence, and the Pomodoro</div></div>
+    <div class="osrow"><svg><use href="#g-notes"/></svg><div class="osl">05 Notes</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Five formats, with space to try each one</div></div>
+    <div class="osrow"><svg><use href="#g-stress"/></svg><div class="osl">06 Stress</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Signals, resets, and the brain dump</div></div>
+    <div class="osrow"><svg><use href="#g-stuck"/></svg><div class="osl">07 Getting Stuck</div><div class="osv" style="border:none;font-style:normal;font-size:11px">Four kinds of stuck and what to do about each</div></div>
+    <div class="osrow"><svg><use href="#g-upd"/></svg><div class="osl">08 Updating</div><div class="osv" style="border:none;font-style:normal;font-size:11px">How your brain changes, and a lock you probably can't crack</div></div>
+    <div class="rulez"></div>
+    <p class="small">Every section ends the same way, with The Loop. Between sections there are Brain Breaks, which are not about any of this.</p>
+  </div>
+</section>
+
 <!-- ============ HOW TO USE ============ -->
 <section class="page" data-sys="">
   <div class="body nomark">
@@ -454,7 +535,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     <div class="rulez"></div>
     <div class="card">
       <div class="ch"><svg><use href="#g-notes"/></svg>There is no right amount of writing</div>
-      <div class="cb">Some pages you will fill edge to edge. Some you will leave alone. Both are fine. Nobody grades this and nobody collects it.</div>
+      <div class="cb">Some pages you will fill edge to edge. Some you will leave alone. Both are fine. Nobody collects this.</div>
     </div>
     <div class="card">
       <div class="ch"><svg><use href="#g-star"/></svg>Except for the purple boxes</div>
@@ -648,6 +729,33 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
+<!-- ======== ASKING 5 — LIVE ======== -->
+<section class="page" data-sys="ask">
+  <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
+  <div class="body">
+    <p class="kicker">Do it right now, in class</p>
+    <h2 class="ptitle">The Two Minute Email</h2>
+    <p class="small">Use the email you built on the last page. Start the timer, open your school email, write it, send it. Two minutes is the whole budget.</p>
+    <div class="timer" data-sec="120">
+      <div><div class="tlbl">Write and send</div><div class="tdisp">2:00</div></div>
+      <div class="tprint">Set a timer for two minutes</div>
+      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
+    </div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">Did it send before the timer ran out</div>
+      <div><span class="circ" data-k="s1f1">yes</span><span class="circ" data-k="s1f2">no, needed longer</span><span class="circ" data-k="s1f3">didn't send it</span></div></div>
+    <div class="qrow"><div class="ql">How long I'd been putting this off</div>
+      <div><span class="circ" data-k="s1f4">days</span><span class="circ" data-k="s1f5">a week</span><span class="circ" data-k="s1f6">longer</span><span class="circ" data-k="s1f7">wasn't</span></div></div>
+    <div class="qrow"><div class="ql">So the email took</div><div class="lines short" contenteditable data-k="s1f8" data-ph="minutes"></div></div>
+    <div class="qrow"><div class="ql">And the not-sending-it took</div><div class="lines short" contenteditable data-k="s1f9" data-ph="days"></div></div>
+    <div class="star">
+      <div class="slab">The gap</div>
+      <div class="sq">Write those two numbers next to each other and say something honest about it</div>
+      <div class="lines" contenteditable data-k="s1f10"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ======== ASKING 5 — LOOP ======== -->
 <section class="page" data-sys="ask">
   <div class="sysmark"><svg><use href="#g-ask"/></svg>System 01 &middot; Asking</div>
@@ -771,6 +879,30 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
+<!-- ======== TIME 5 — LIVE ======== -->
+<section class="page" data-sys="time">
+  <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
+  <div class="body">
+    <p class="kicker">Do it right now</p>
+    <h2 class="ptitle">The Ten Minute Start</h2>
+    <p class="small">Pick the thing you least want to start. Write it down. Start the timer. Work for ten minutes. When it ends you are allowed to stop, no guilt, no argument.</p>
+    <div class="qrow"><div class="ql">The thing</div><div class="lines" contenteditable data-k="s2f1"></div></div>
+    <div class="qrow"><div class="ql">The first physical action</div><div class="lines" contenteditable data-k="s2f2" data-ph="open what, to what page"></div></div>
+    <div class="timer" data-sec="600">
+      <div><div class="tlbl">Ten minutes, then you're free</div><div class="tdisp">10:00</div></div>
+      <div class="tprint">Set a timer for ten minutes</div>
+      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
+    </div>
+    <div class="rulez"></div>
+    <p class="kicker pur">The only question that matters</p>
+    <div class="qrow"><div class="ql">When the timer ended, I</div>
+      <div><span class="circ" data-k="s2f3">kept going</span><span class="circ" data-k="s2f4">stopped</span><span class="circ" data-k="s2f5">never started</span></div></div>
+    <div class="qrow"><div class="ql">How much I actually got done in ten minutes</div><div class="lines" contenteditable data-k="s2f6"></div></div>
+    <div class="qrow"><div class="ql">What I thought would happen before I started</div><div class="lines" contenteditable data-k="s2f7"></div></div>
+    <p class="tiny">Most people keep going. Not because ten minutes is magic, but because starting was the entire problem.</p>
+  </div>
+</section>
+
 <!-- ======== TIME 5 — LOOP ======== -->
 <section class="page" data-sys="time">
   <div class="sysmark"><svg><use href="#g-time"/></svg>System 02 &middot; Time</div>
@@ -825,24 +957,28 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
   <div class="body">
     <h2 class="ptitle">Sort this <em>your</em> way</h2>
-    <p class="small">Everything below belongs to one week. You decide the categories. Name each box, then put things in it. There is no correct answer and no two people will do this the same.</p>
+    <p class="small">Everything below belongs to one week. You decide the categories. Name each box, then drag things into it. No correct answer, and no two people will do this the same.</p>
     <div class="wordbank">
       <div class="wh">Word bank</div>
-      <div>
-        <span class="chip" data-k="c1">homework</span><span class="chip" data-k="c2">sports practice</span><span class="chip" data-k="c3">friends</span>
-        <span class="chip" data-k="c4">dinner with family</span><span class="chip" data-k="c5">therapy</span><span class="chip" data-k="c6">sleep</span>
-        <span class="chip" data-k="c7">chores</span><span class="chip" data-k="c8">phone</span><span class="chip" data-k="c9">a test</span>
-        <span class="chip" data-k="c10">club meeting</span><span class="chip" data-k="c11">commute</span><span class="chip" data-k="c12">a job</span>
-        <span class="chip" data-k="c13">long-term project</span><span class="chip" data-k="c14">time alone</span><span class="chip" data-k="c15">weekend plans</span>
+      <div class="bankzone" data-grp="wk"><span class="chip" data-grp="wk" data-k="c1" draggable="true">homework</span><span class="chip" data-grp="wk" data-k="c2" draggable="true">sports practice</span><span class="chip" data-grp="wk" data-k="c3" draggable="true">friends</span><span class="chip" data-grp="wk" data-k="c4" draggable="true">dinner with family</span><span class="chip" data-grp="wk" data-k="c5" draggable="true">therapy</span><span class="chip" data-grp="wk" data-k="c6" draggable="true">sleep</span><span class="chip" data-grp="wk" data-k="c7" draggable="true">chores</span><span class="chip" data-grp="wk" data-k="c8" draggable="true">phone</span><span class="chip" data-grp="wk" data-k="c9" draggable="true">a test</span><span class="chip" data-grp="wk" data-k="c10" draggable="true">club meeting</span><span class="chip" data-grp="wk" data-k="c11" draggable="true">commute</span><span class="chip" data-grp="wk" data-k="c12" draggable="true">a job</span><span class="chip" data-grp="wk" data-k="c13" draggable="true">a big project</span><span class="chip" data-grp="wk" data-k="c14" draggable="true">time alone</span><span class="chip" data-grp="wk" data-k="c15" draggable="true">weekend plans</span></div>
+    </div>
+    <div class="dropgrid">
+      <div class="dropbox" data-grp="wk" data-box="1">
+        <div class="dbh"><span class="fill" contenteditable data-k="s3b1" data-ph="name this box"></span></div>
+        <div class="dropzone" data-grp="wk"></div>
       </div>
-    </div>
-    <div class="twocol">
-      <div class="col"><div class="colhd ink"><span class="fill" contenteditable data-k="s3b1" data-ph="name this box"></span></div><div class="open plain" contenteditable data-k="s3b2"></div></div>
-      <div class="col"><div class="colhd ink"><span class="fill" contenteditable data-k="s3b3" data-ph="name this box"></span></div><div class="open plain" contenteditable data-k="s3b4"></div></div>
-    </div>
-    <div class="twocol" style="margin-top:7px">
-      <div class="col"><div class="colhd ink"><span class="fill" contenteditable data-k="s3b5" data-ph="name this box"></span></div><div class="open plain" contenteditable data-k="s3b6"></div></div>
-      <div class="col"><div class="colhd ink"><span class="fill" contenteditable data-k="s3b7" data-ph="name this box"></span></div><div class="open plain" contenteditable data-k="s3b8"></div></div>
+      <div class="dropbox" data-grp="wk" data-box="2">
+        <div class="dbh"><span class="fill" contenteditable data-k="s3b2" data-ph="name this box"></span></div>
+        <div class="dropzone" data-grp="wk"></div>
+      </div>
+      <div class="dropbox" data-grp="wk" data-box="3">
+        <div class="dbh"><span class="fill" contenteditable data-k="s3b3" data-ph="name this box"></span></div>
+        <div class="dropzone" data-grp="wk"></div>
+      </div>
+      <div class="dropbox" data-grp="wk" data-box="4">
+        <div class="dbh"><span class="fill" contenteditable data-k="s3b4" data-ph="name this box"></span></div>
+        <div class="dropzone" data-grp="wk"></div>
+      </div>
     </div>
     <div class="qrow" style="flex:0 0 auto"><div class="ql">What rule did I sort by?</div><div class="lines" contenteditable data-k="s3b9" data-ph="urgency, energy, who it's for, something else"></div></div>
   </div>
@@ -903,6 +1039,32 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     <div class="rulez"></div>
     <div class="qrow"><div class="ql">The thing I lose over and over</div><div class="lines" contenteditable data-k="s3d13" data-ph="it's usually one specific thing"></div></div>
     <div class="qrow"><div class="ql">Its new one true home</div><div class="lines" contenteditable data-k="s3d14"></div></div>
+  </div>
+</section>
+
+<!-- ======== ORG 5 — LIVE ======== -->
+<section class="page" data-sys="org">
+  <div class="sysmark"><svg><use href="#g-org"/></svg>System 03 &middot; Organization</div>
+  <div class="body">
+    <p class="kicker">Laptop open. Right now.</p>
+    <h2 class="ptitle">The Five Minute Reset</h2>
+    <p class="small">Five minutes, as many as you can get. Tick them as you go. You will not finish, and that is fine.</p>
+    <div class="timer" data-sec="300">
+      <div><div class="tlbl">Go</div><div class="tdisp">5:00</div></div>
+      <div class="tprint">Set a timer for five minutes</div>
+      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
+    </div>
+    <div class="chk"><span class="box" data-k="s3f1"></span><span>Make one folder per class in Drive</span></div>
+    <div class="chk"><span class="box" data-k="s3f2"></span><span>Move five loose files into the right folder</span></div>
+    <div class="chk"><span class="box" data-k="s3f3"></span><span>Rename one Untitled document to something searchable</span></div>
+    <div class="chk"><span class="box" data-k="s3f4"></span><span>Clear your laptop desktop to under ten icons</span></div>
+    <div class="chk"><span class="box" data-k="s3f6"></span><span>Put one due date into your calendar</span></div>
+    <div class="chk"><span class="box" data-k="s3f7"></span><span>Throw out one thing from your backpack</span></div>
+    <div class="chk"><span class="box" data-k="s3f8"></span><span>Give one class a calendar color</span></div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">How many I got</div><div class="lines short" contenteditable data-k="s3f9" data-ph="out of 8"></div></div>
+    <div class="qrow"><div class="ql">The one that made the biggest difference</div><div class="lines" contenteditable data-k="s3f10"></div></div>
+    <div class="qrow"><div class="ql">When I'm running this again</div><div class="lines" contenteditable data-k="s3f11" data-ph="a real day, weekly"></div></div>
   </div>
 </section>
 
@@ -1033,6 +1195,31 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
+<!-- ======== STUDY 5 — LIVE ======== -->
+<section class="page" data-sys="study">
+  <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
+  <div class="body">
+    <p class="kicker">Retrieval practice, for real, right now</p>
+    <h2 class="ptitle">The Blank Page Test</h2>
+    <p class="small">Pick a unit you have a test on soon. Close every notebook and tab. Start the timer and write down everything you can remember. Then open your notes and mark what you missed.</p>
+    <div class="qrow"><div class="ql">Unit</div><div class="lines short" contenteditable data-k="s4f1"></div></div>
+    <div class="timer" data-sec="180">
+      <div><div class="tlbl">Notes closed</div><div class="tdisp">3:00</div></div>
+      <div class="tprint">Set a timer for three minutes</div>
+      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
+    </div>
+    <div class="open" contenteditable data-k="s4f2" data-ph="everything you remember"></div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">Things I got</div><div class="lines short" contenteditable data-k="s4f3"></div></div>
+    <div class="qrow"><div class="ql">Things I missed entirely</div><div class="lines short" contenteditable data-k="s4f4"></div></div>
+    <div class="star">
+      <div class="slab">The gap is the study list</div>
+      <div class="sq">The thing I missed that I was most sure I knew</div>
+      <div class="lines" contenteditable data-k="s4f5"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ======== STUDY 5 — LOOP ======== -->
 <section class="page" data-sys="study">
   <div class="sysmark"><svg><use href="#g-study"/></svg>System 04 &middot; Studying</div>
@@ -1061,6 +1248,29 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     </div>
   </div>
 </section>
+<!-- ============ HALFWAY ============ -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <p class="kicker pur">Four systems down, four to go</p>
+    <h2 class="ptitle lg">Halfway</h2>
+    <p class="small">Flip back through what you have written so far. Not to grade it. Just to see it.</p>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">One thing I actually tried outside this room</div><div class="lines" contenteditable data-k="hw1"></div></div>
+    <div class="qrow"><div class="ql">Did it work</div>
+      <div><span class="circ" data-k="hw2">yes</span><span class="circ" data-k="hw3">sort of</span><span class="circ" data-k="hw4">no</span><span class="circ" data-k="hw5">haven't tried yet</span></div></div>
+    <div class="qrow"><div class="ql">Which of the first four systems is most broken for me</div>
+      <div><span class="circ" data-k="hw6">asking</span><span class="circ" data-k="hw7">time</span><span class="circ" data-k="hw8">organization</span><span class="circ" data-k="hw9">studying</span></div></div>
+    <div class="qrow"><div class="ql">A page I skipped that I want to go back to</div><div class="lines" contenteditable data-k="hw10"></div></div>
+    <div class="star">
+      <div class="slab">Between now and the end</div>
+      <div class="sq">One thing I am going to change and actually keep doing</div>
+      <div class="lines" contenteditable data-k="hw11"></div>
+    </div>
+    <div class="spacer"></div>
+    <p class="tiny">Come back to this page in week seven and see whether you did it.</p>
+  </div>
+</section>
+
 <!-- ======== NOTES 1 ======== -->
 <section class="page" data-sys="notes">
   <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
@@ -1091,13 +1301,14 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   <div class="body">
     <p class="kicker">Format 01</p>
     <h2 class="ptitle sm">Cornell</h2>
-    <p class="small"><b>How it works:</b> split the page. Take normal notes on the right during class. After class, write questions on the left that your notes answer. Then write two sentences at the bottom summarizing the whole page.</p>
-    <p class="small"><b>Why it works:</b> the left column turns your notes into a quiz you can cover up and test yourself with. The bottom forces you to decide what actually mattered.</p>
+    <p class="small">Walter Pauk built this at Cornell in the 1950s. It is four steps, not one.</p>
+    <p class="small"><b>1. Record.</b> In class, notes go in the wide right column only. <b>2. Reduce.</b> Soon after, fill the narrow left column with cues: keywords and questions your notes answer. <b>3. Summarize.</b> At the bottom, the whole page in your own words. <b>4. Recite.</b> Cover the right column, look only at the cues, say the answers out loud, then check.</p>
+    <p class="small"><b>Why it works:</b> step four is the part people skip, and it is the only part that is retrieval practice. The other three exist to make step four possible.</p>
     <div class="cornell" style="margin-top:6px">
-      <div class="cq"><div class="clbl">Questions</div><div class="open plain" style="min-height:150px" contenteditable data-k="s5b1"></div></div>
-      <div class="cn"><div class="clbl">Notes</div><div class="open plain" style="min-height:150px" contenteditable data-k="s5b2"></div></div>
+      <div class="cq"><div class="clbl">Cues</div><div class="open plain" style="min-height:132px" contenteditable data-k="s5b1"></div></div>
+      <div class="cn"><div class="clbl">Notes</div><div class="open plain" style="min-height:132px" contenteditable data-k="s5b2"></div></div>
     </div>
-    <div class="cornell-sum"><div class="clbl">Summary</div><div class="open plain" style="min-height:44px" contenteditable data-k="s5b3"></div></div>
+    <div class="cornell-sum"><div class="clbl">Summary, in my own words</div><div class="open plain" style="min-height:44px" contenteditable data-k="s5b3"></div></div>
     <div class="mfoot" style="margin-top:8px"><span class="ratelbl">Worked for me</span><span class="rate" data-k="s5b4"><i></i><i></i><i></i><i></i><i></i></span></div>
   </div>
 </section>
@@ -1140,6 +1351,36 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
       <div class="col"><div class="colhd ink">What it said</div><div class="open plain" contenteditable data-k="s5d10"></div></div>
       <div class="col"><div class="colhd">What I think</div><div class="open plain" contenteditable data-k="s5d11"></div></div>
     </div>
+  </div>
+</section>
+
+<!-- ======== NOTES 5 — LIVE ======== -->
+<section class="page" data-sys="notes">
+  <div class="sysmark"><svg><use href="#g-notes"/></svg>System 05 &middot; Note-Taking</div>
+  <div class="body">
+    <p class="kicker">Same content, two formats, back to back</p>
+    <h2 class="ptitle sm">The Format Race</h2>
+    <p class="small">Your teacher will read the same short passage twice. Take notes on it in a different format each time. Two minutes each.</p>
+    <div class="timer" data-sec="120">
+      <div><div class="tlbl">Round timer</div><div class="tdisp">2:00</div></div>
+      <div class="tprint">Two minutes per round</div>
+      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
+    </div>
+    <div class="twocol">
+      <div class="col">
+        <div class="colhd ink">Round 1 &middot; <span class="fill" contenteditable data-k="s5f1" data-ph="format"></span></div>
+        <div class="open plain" contenteditable data-k="s5f2"></div>
+      </div>
+      <div class="col">
+        <div class="colhd">Round 2 &middot; <span class="fill" contenteditable data-k="s5f3" data-ph="format"></span></div>
+        <div class="open plain" contenteditable data-k="s5f4"></div>
+      </div>
+    </div>
+    <div class="rulez"></div>
+    <p class="kicker pur">Now cover them both and try to say the passage back</p>
+    <div class="qrow"><div class="ql">Which set of notes helped more</div>
+      <div><span class="circ" data-k="s5f5">round 1</span><span class="circ" data-k="s5f6">round 2</span><span class="circ" data-k="s5f7">same</span></div></div>
+    <div class="qrow"><div class="ql">Why, specifically</div><div class="lines" contenteditable data-k="s5f8"></div></div>
   </div>
 </section>
 
@@ -1264,6 +1505,25 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     <div class="rulez"></div>
     <div class="qrow"><div class="ql">One thing moving from right to left this month</div><div class="lines" contenteditable data-k="s6d3"></div></div>
     <div class="qrow"><div class="ql">When it's bigger than a reset, I tell</div><div class="lines" contenteditable data-k="s6d4" data-ph="a person, by name"></div></div>
+  </div>
+</section>
+
+<!-- ======== STRESS 5 — LIVE ======== -->
+<section class="page" data-sys="stress">
+  <div class="sysmark"><svg><use href="#g-stress"/></svg>System 06 &middot; Stress</div>
+  <div class="body">
+    <p class="kicker">Three minutes. No order, no spelling, no stopping.</p>
+    <h2 class="ptitle lg">The Brain Dump</h2>
+    <p class="small">Every single thing you are carrying. Assignments, people, the thing you said, the thing you didn't. Nobody reads this page.</p>
+    <div class="timer" data-sec="180">
+      <div><div class="tlbl">Keep the pen moving</div><div class="tdisp">3:00</div></div>
+      <div class="tprint">Set a timer for three minutes</div>
+      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
+    </div>
+    <div class="open" contenteditable data-k="s6f1" data-ph="start anywhere"></div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">Circle the ones that are actually mine to fix. How many</div><div class="lines short" contenteditable data-k="s6f2"></div></div>
+    <div class="qrow"><div class="ql">One I can finish in under ten minutes</div><div class="lines" contenteditable data-k="s6f3"></div></div>
   </div>
 </section>
 
@@ -1402,6 +1662,29 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
+<!-- ======== STUCK 5 — LIVE ======== -->
+<section class="page" data-sys="stuck">
+  <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
+  <div class="body">
+    <p class="kicker">Start this the next time you're stuck, not now</p>
+    <h2 class="ptitle">The Fifteen Minute Wall</h2>
+    <p class="small">The rule: fifteen minutes of no movement means it is time to ask, not to push harder. Set it before you start so the decision is already made and you are not negotiating with yourself at minute forty.</p>
+    <div class="timer" data-sec="900">
+      <div><div class="tlbl">When this hits zero, you ask</div><div class="tdisp">15:00</div></div>
+      <div class="tprint">Set a timer for fifteen minutes</div>
+      <div class="tbtns"><button class="tgo">Start</button><button class="trs">Reset</button></div>
+    </div>
+    <div class="rulez"></div>
+    <p class="kicker pur">Decide all of this before the timer starts</p>
+    <div class="qrow"><div class="ql">What I'm working on</div><div class="lines" contenteditable data-k="s7f1"></div></div>
+    <div class="qrow"><div class="ql">Which unstick move I try first</div><div class="lines" contenteditable data-k="s7f2"></div></div>
+    <div class="qrow"><div class="ql">If that fails, who I ask</div><div class="lines" contenteditable data-k="s7f3" data-ph="a name"></div></div>
+    <div class="qrow"><div class="ql">What I say to them</div><div class="lines" contenteditable data-k="s7f4" data-ph="I got to ___ and then ___"></div></div>
+    <div class="rulez"></div>
+    <div class="qrow"><div class="ql">Afterwards: did the wall hold, or did I push past it anyway</div><div class="lines" contenteditable data-k="s7f5"></div></div>
+  </div>
+</section>
+
 <!-- ======== STUCK 5 — LOOP ======== -->
 <section class="page" data-sys="stuck">
   <div class="sysmark"><svg><use href="#g-stuck"/></svg>System 07 &middot; Getting Stuck</div>
@@ -1526,6 +1809,54 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   </div>
 </section>
 
+<!-- ======== UPDATING 5 — THE LOCK ======== -->
+<section class="page" data-sys="upd">
+  <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
+  <div class="body tight">
+    <p class="kicker">Do not skip to the next page</p>
+    <h2 class="ptitle">Crack the lock</h2>
+    <p class="small">Three digits. Each line is a wrong guess someone already tried, and what the lock told them. There is exactly one answer and you have everything you need.</p>
+    <div class="lock" data-answer="042" data-tally="lock_tries">
+      <div class="clue"><span class="cd">6 8 2</span><span class="cx">One digit is correct and in the right position.</span></div>
+      <div class="clue"><span class="cd">6 1 4</span><span class="cx">One digit is correct but in the wrong position.</span></div>
+      <div class="clue"><span class="cd">2 0 6</span><span class="cx">Two digits are correct but both in the wrong position.</span></div>
+      <div class="clue"><span class="cd">7 3 8</span><span class="cx">Nothing is correct.</span></div>
+      <div class="clue"><span class="cd">3 8 0</span><span class="cx">One digit is correct but in the wrong position.</span></div>
+      <div class="lockin">
+        <input type="text" inputmode="numeric" maxlength="3" placeholder="000" aria-label="Your answer">
+        <button class="lockgo">Try it</button>
+        <span class="lockmsg"></span>
+      </div>
+      <div class="tally" style="margin-top:6px"></div>
+    </div>
+    <p class="tiny">Working space</p>
+    <div class="open" style="min-height:70px" contenteditable data-k="s8f1"></div>
+  </div>
+</section>
+
+<!-- ======== UPDATING 6 — THE DEBRIEF ======== -->
+<section class="page" data-sys="upd">
+  <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
+  <div class="body">
+    <h2 class="ptitle">What your brain did</h2>
+    <p class="small">The puzzle was never the point. Answer these about the last ten minutes.</p>
+    <div class="qrow"><div class="ql">Roughly how long before I felt frustrated</div><div class="lines short" contenteditable data-k="s8g1"></div></div>
+    <div class="qrow"><div class="ql">The first thing I thought when a guess failed</div><div class="lines" contenteditable data-k="s8g2" data-ph="the actual words"></div></div>
+    <div class="qrow"><div class="ql">Did I keep guessing, or did I change how I was working on it</div>
+      <div><span class="circ" data-k="s8g3">kept guessing</span><span class="circ" data-k="s8g4">changed strategy</span><span class="circ" data-k="s8g5">quit</span></div></div>
+    <div class="qrow"><div class="ql">If I changed strategy, what changed</div><div class="lines" contenteditable data-k="s8g6" data-ph="wrote things down, used a grid, started from the useless clue"></div></div>
+    <div class="rulez"></div>
+    <p class="small">Almost everyone starts by guessing numbers and only later starts eliminating them. Guessing is Default. Eliminating is Updated. Nobody taught you the second one in the middle of that puzzle. You switched, or you didn't.</p>
+    <div class="qrow"><div class="ql">Which class does this exact thing happen to me in</div><div class="lines" contenteditable data-k="s8g7"></div></div>
+    <div class="qrow"><div class="ql">What "changing strategy" would look like there</div><div class="lines" contenteditable data-k="s8g8"></div></div>
+    <div class="rulez"></div>
+    <button class="btn revealbtn" data-target="#lockans" style="font-family:var(--mono);font-size:7px;letter-spacing:.11em;text-transform:uppercase;background:none;border:1.5px solid var(--ink);padding:7px 10px;cursor:pointer;color:var(--ink)">Show the answer</button>
+    <div id="lockans" hidden style="margin-top:7px">
+      <p class="tiny" style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--pur-deep)">042. Line four kills 7, 3 and 8. Line one then has to mean the 2, in place. Work outward from there.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ======== UPDATING 5 — LOOP ======== -->
 <section class="page" data-sys="upd">
   <div class="sysmark"><svg><use href="#g-upd"/></svg>System 08 &middot; Updating</div>
@@ -1540,6 +1871,17 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
         <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s8e2"></div></div>
       <div class="loopstep upd"><div class="ls">4 &middot; Update</div><div class="lq">My updating system, version one</div>
         <div class="open plain nogrow" style="min-height:44px" contenteditable data-k="s8e3" data-star="upd" data-ph="one line"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== BREAK ======== -->
+<section class="page" data-sys="">
+  <div class="body nomark">
+    <div class="brk">
+      <div class="bt">Brain Break</div>
+      <div class="bs">Design a flag for your table group. It has to include one animal and one shape, and no words at all.</div>
+      <div class="bbox" contenteditable data-k="brk5" data-ph="be ready to defend it"></div>
     </div>
   </div>
 </section>
@@ -1587,7 +1929,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   <div class="colophon">
     Metacognition &middot; Grade 9<br>
     San Francisco University High School<br>
-    Seven weeks &middot; ungraded &middot; yours
+    Seven weeks &middot; yours
   </div>
 </section>
 </div>
@@ -1628,10 +1970,42 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   }
 
   /* ---------- storage ---------- */
-  let state={};
+  let state={}, storageOK=true;
+  const embedded = (window.self!==window.top);
+
+  function testStorage(){
+    try{
+      localStorage.setItem('hsos_probe','1');
+      const ok = localStorage.getItem('hsos_probe')==='1';
+      localStorage.removeItem('hsos_probe');
+      return ok;
+    }catch(e){ return false; }
+  }
+
+  function showWarn(msg){
+    const w=document.getElementById('warn');
+    document.getElementById('warntext').innerHTML=msg;
+    w.classList.add('show');
+  }
+
+  function checkContext(){
+    storageOK=testStorage();
+    const here=location.href.split('#')[0];
+    if(!storageOK){
+      showWarn('This browser is not letting the booklet save here. '+
+        '<a href="'+here+'" target="_blank">Open it in its own tab</a> and your writing will save normally.');
+      savedEl.textContent='not saving';
+      return;
+    }
+    if(embedded){
+      showWarn('You are working inside another page. Some browsers wipe this when you close the tab. '+
+        '<a href="'+here+'" target="_blank">Open in its own tab</a> to be safe, or use Back up to save a copy of your writing.');
+    }
+  }
+
   function load(){
     try{const raw=localStorage.getItem(KEY);if(raw)state=JSON.parse(raw)||{};}
-    catch(e){state={};savedEl.textContent='not saving here';}
+    catch(e){state={};}
   }
   let t=null;
   function save(){
@@ -1643,13 +2017,29 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
   }
   function restore(){
     src.querySelectorAll('[contenteditable][data-k]').forEach(el=>{
-      const v=state[el.dataset.k]; if(v){el.textContent=v;el.classList.remove('empty');}
+      const v=state[el.dataset.k];
+      el.textContent = v || '';
+      if(v) el.classList.remove('empty');
     });
+    src.querySelectorAll('.chk').forEach(c=>c.classList.remove('on'));
+    src.querySelectorAll('.circ,.chip,.cell,.pomocell,.fear').forEach(c=>c.classList.remove('on'));
+    src.querySelectorAll('.gaugebar>div').forEach(c=>c.classList.remove('on'));
     src.querySelectorAll('.box[data-k]').forEach(el=>{
       if(state[el.dataset.k]) el.parentElement.classList.add('on');
     });
-    src.querySelectorAll('.circ[data-k],.chip[data-k]').forEach(el=>{
+    src.querySelectorAll('.circ[data-k]').forEach(el=>{
       if(state[el.dataset.k]) el.classList.add('on');
+    });
+    src.querySelectorAll('.chip[data-k]').forEach(el=>{
+      if(el.dataset.grp)return;
+      if(state[el.dataset.k]) el.classList.add('on');
+    });
+    src.querySelectorAll('.chip[data-grp]').forEach(el=>{
+      const dest=state['sort_'+el.dataset.grp+'_'+el.dataset.k];
+      if(dest){
+        const z=src.querySelector('.dropbox[data-box="'+dest+'"][data-grp="'+el.dataset.grp+'"] .dropzone');
+        if(z)z.appendChild(el);
+      }
     });
     src.querySelectorAll('.cell[data-k]').forEach(el=>{
       if(state[el.dataset.k]) el.classList.add('on');
@@ -1713,6 +2103,77 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     if(e.key==='ArrowLeft')go(cur-1);
   });
 
+  /* ---------- live timers ---------- */
+  function fmt(s){const m=Math.floor(s/60),r=s%60;return m+':'+String(r).padStart(2,'0');}
+  src.querySelectorAll('.timer').forEach(tm=>{
+    const total=parseInt(tm.dataset.sec||'60',10);
+    const disp=tm.querySelector('.tdisp');
+    let left=total, id=null;
+    function paint(){disp.textContent=fmt(left);}
+    function stop(){clearInterval(id);id=null;tm.classList.remove('run');}
+    tm.querySelector('.tgo').addEventListener('click',e=>{
+      const btn=e.currentTarget;
+      if(id){stop();btn.textContent='Resume';return;}
+      if(left<=0)left=total;
+      tm.classList.remove('done');tm.classList.add('run');btn.textContent='Pause';
+      id=setInterval(()=>{
+        left--;paint();
+        if(left<=0){stop();tm.classList.add('done');btn.textContent='Again';}
+      },1000);
+    });
+    tm.querySelector('.trs').addEventListener('click',()=>{
+      stop();tm.classList.remove('done');left=total;paint();
+      tm.querySelector('.tgo').textContent='Start';
+    });
+    paint();
+  });
+
+  /* ---------- drag + tap sorting ---------- */
+  let picked=null;
+  function placeChip(chip,zone){
+    zone.appendChild(chip);
+    chip.classList.remove('sel');
+    const box=zone.closest('.dropbox');
+    const grp=chip.dataset.grp;
+    state['sort_'+grp+'_'+chip.dataset.k] = box ? box.dataset.box : '';
+    save();
+  }
+  src.querySelectorAll('.chip[draggable]').forEach(c=>{
+    c.addEventListener('dragstart',e=>{picked=c;e.dataTransfer.setData('text/plain','x');});
+    c.addEventListener('dragend',()=>{picked=null;});
+  });
+  src.querySelectorAll('.dropzone,.bankzone').forEach(z=>{
+    z.addEventListener('dragover',e=>{e.preventDefault();const b=z.closest('.dropbox');if(b)b.classList.add('over');});
+    z.addEventListener('dragleave',()=>{const b=z.closest('.dropbox');if(b)b.classList.remove('over');});
+    z.addEventListener('drop',e=>{
+      e.preventDefault();const b=z.closest('.dropbox');if(b)b.classList.remove('over');
+      if(picked&&picked.dataset.grp===z.dataset.grp)placeChip(picked,z);
+    });
+  });
+
+  /* ---------- the lock ---------- */
+  src.querySelectorAll('.lock[data-answer]').forEach(lk=>{
+    const inp=lk.querySelector('input'), msg=lk.querySelector('.lockmsg'),
+          tally=lk.querySelector('.tally'), key=lk.dataset.tally;
+    function tries(){return parseInt(state[key]||'0',10);}
+    function showTally(){if(tally)tally.textContent='Attempts: '+tries();}
+    lk.querySelector('.lockgo').addEventListener('click',()=>{
+      const v=(inp.value||'').trim();
+      if(!/^\d{3}$/.test(v)){msg.className='lockmsg';msg.textContent='Three digits';return;}
+      state[key]=tries()+1;save();showTally();
+      if(v===lk.dataset.answer){msg.className='lockmsg yes';msg.textContent='Open. Took you '+tries()+'.';}
+      else{msg.className='lockmsg';msg.textContent='Still locked';}
+    });
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')lk.querySelector('.lockgo').click();});
+    showTally();
+  });
+  src.querySelectorAll('.revealbtn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const t=src.querySelector(b.dataset.target);
+      if(t){t.hidden=!t.hidden;b.textContent=t.hidden?'Show the answer':'Hide the answer';}
+    });
+  });
+
   /* ---------- interactions ---------- */
   document.addEventListener('click',e=>{
     const chk=e.target.closest('.chk');
@@ -1725,7 +2186,16 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     const circ=e.target.closest('.circ');
     if(circ){circ.classList.toggle('on');
       if(circ.dataset.k){state[circ.dataset.k]=circ.classList.contains('on')?1:0;save();}return;}
+    const zone=e.target.closest('.dropzone,.bankzone');
+    if(zone&&picked&&picked.dataset.grp===zone.dataset.grp&&!e.target.closest('.chip')){
+      placeChip(picked,zone);picked=null;return;
+    }
     const chip=e.target.closest('.chip');
+    if(chip&&chip.dataset.grp){
+      if(picked===chip){picked.classList.remove('sel');picked=null;}
+      else{if(picked)picked.classList.remove('sel');picked=chip;chip.classList.add('sel');}
+      return;
+    }
     if(chip){chip.classList.toggle('on');
       if(chip.dataset.k){state[chip.dataset.k]=chip.classList.contains('on')?1:0;save();}return;}
     const fear=e.target.closest('.fear');
@@ -1790,6 +2260,36 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     flatten();
     window.print();
   });
+  document.getElementById('backupbtn').addEventListener('click',()=>{
+    const name=(state.name||'my').trim().replace(/[^A-Za-z0-9]+/g,'-').slice(0,24)||'my';
+    const blob=new Blob([JSON.stringify(state,null,1)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=name+'-os-booklet.json';
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+    savedEl.textContent='backed up';
+    setTimeout(()=>savedEl.textContent='',2000);
+  });
+  document.getElementById('restorebtn').addEventListener('click',()=>{
+    document.getElementById('restorefile').click();
+  });
+  document.getElementById('restorefile').addEventListener('change',e=>{
+    const f=e.target.files&&e.target.files[0]; if(!f)return;
+    const r=new FileReader();
+    r.onload=()=>{
+      try{
+        const data=JSON.parse(r.result);
+        if(typeof data!=='object'||!data) throw 0;
+        state=Object.assign(state,data);
+        save(); restore();
+        savedEl.textContent='restored';
+        setTimeout(()=>savedEl.textContent='',2200);
+      }catch(err){ alert('That file could not be read. Use a backup file created by this booklet.'); }
+      e.target.value='';
+    };
+    r.readAsText(f);
+  });
   document.getElementById('clearbtn').addEventListener('click',()=>{
     if(!confirm('Erase everything you have written in this booklet on this device?'))return;
     state={};
@@ -1797,7 +2297,7 @@ p.tiny{font-size:10px;line-height:1.45;margin:0 0 6px;color:var(--ink-soft)}
     location.reload();
   });
 
-  load();restore();go(0);
+  checkContext();load();restore();go(0);
 })();
 </script>
 </body>
