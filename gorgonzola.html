@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Gorgonzola Jones Case</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,400&family=Martian+Mono:wght@300;500;700&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFEAD9; --ink:#1B1A17; --ink-soft:#5A5449;
+  --pur:#D854DC; --pur-deep:#8E2B96; --pur-tint:#F6DEF8; --pur-wash:#FBF0FC;
+  --rule:#CFC7B0; --rule-soft:#DED7C4;
+  --mono:"Martian Mono",ui-monospace,monospace;
+  --serif:"Newsreader",Georgia,serif;
+  --disp:"Bricolage Grotesque",system-ui,sans-serif;
+  --hand:"Caveat","Bradley Hand",cursive;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1140px;margin:0 auto;padding:22px 20px 80px}
+h1,h2,h3{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;margin:0}
+h1{font-size:clamp(30px,5vw,52px);line-height:.98}
+h2{font-size:clamp(21px,2.6vw,29px);line-height:1.05}
+h3{font-size:18px;font-weight:700}
+p{margin:.5em 0}
+.tag{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.1em;color:var(--pur-deep)}
+.soft{color:var(--ink-soft)}
+button{font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;border-radius:0}
+.btn{background:var(--ink);color:var(--paper);border:2px solid var(--ink);padding:11px 18px;letter-spacing:.04em}
+.btn:hover{background:var(--pur-deep);border-color:var(--pur-deep)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--pur-tint);color:var(--ink);border-color:var(--ink)}
+.btn.sm{padding:8px 12px;font-size:11px}
+.btn:focus-visible,.cell:focus-visible,.chip:focus-visible,.sortitem:focus-visible,.pg:focus-visible{outline:3px solid var(--pur);outline-offset:2px}
+.btn[disabled]{opacity:.32;cursor:not-allowed}
+.bare{border:0;background:none;box-shadow:none;padding:0}
+.folder{border:2px solid var(--ink);background:#F7F3E6;box-shadow:7px 7px 0 var(--pur);padding:26px 26px 30px}
+.stamp{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;border:2px solid var(--pur-deep);color:var(--pur-deep);padding:5px 9px;transform:rotate(-2.5deg)}
+.hr{height:2px;background:var(--ink);margin:20px 0}
+.hr.thin{height:1px;background:var(--rule)}
+.screen{display:none}.screen.on{display:block}
+.grid-roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px;margin-top:18px}
+.rolecard{border:2px solid var(--ink);background:var(--paper);padding:16px;text-align:left;font-family:var(--serif);font-size:15px;color:var(--ink);line-height:1.35}
+.rolecard:hover{background:var(--pur-wash);box-shadow:4px 4px 0 var(--pur)}
+.rolecard .rn{font-family:var(--disp);font-weight:800;font-size:19px;display:block;margin-bottom:5px}
+.pill{display:inline-flex;gap:8px;border:2px solid var(--ink);padding:3px}
+.pill button{border:none;background:transparent;padding:9px 15px;color:var(--ink)}
+.pill button.sel{background:var(--ink);color:var(--paper)}
+.veil{position:fixed;inset:0;background:rgba(27,26,23,.86);z-index:60;display:none;align-items:center;justify-content:center;padding:18px}
+.veil.on{display:flex}
+.dossier{background:#F7F3E6;border:3px solid var(--ink);max-width:560px;width:100%;padding:26px;box-shadow:10px 10px 0 var(--pur);max-height:88vh;overflow:auto}
+.eye{width:52px;height:52px;border:2px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:26px;background:var(--pur-tint);margin-bottom:12px}
+.rhead{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+.stages{display:flex;flex-wrap:wrap;border:2px solid var(--ink)}
+.stages button{border:none;background:transparent;padding:10px 13px;color:var(--ink-soft);border-right:1px solid var(--rule)}
+.stages button:last-child{border-right:none}
+.stages button.sel{background:var(--pur);color:#fff;font-weight:700}
+.stages button.lock{opacity:.34;cursor:not-allowed}
+.stages button.cleared{color:var(--pur-deep)}
+.hintbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.hintct{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--ink-soft)}
+.ev{border:2px solid var(--ink);background:var(--paper);padding:15px 17px;margin:12px 0}
+.ev h3{margin-bottom:6px}
+.ev.hot{background:var(--pur-wash);box-shadow:4px 4px 0 var(--pur-tint)}
+.ev.dull{border-color:var(--rule);background:#F2EEE1}
+.ev.dull h3{font-size:15px;color:var(--ink-soft)}
+.ask{border-left:5px solid var(--pur);background:var(--pur-wash);padding:12px 15px;margin:14px 0;display:none}
+.ask.on{display:block}
+.ask .tag{display:block;margin-bottom:3px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border:1px solid var(--rule);padding:7px 9px;text-align:left}
+th{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em;background:var(--pur-tint)}
+td.num{font-family:var(--mono);font-size:12px}
+ul.lean{margin:.4em 0;padding-left:1.1em}ul.lean li{margin:.25em 0}
+input[type=number]{font-family:var(--mono);font-size:13px;width:74px;padding:7px;border:2px solid var(--ink);background:#fff;border-radius:0;text-align:center;color:var(--ink)}
+input[type=number].ok{border-color:var(--pur-deep);background:var(--pur-wash)}
+input[type=number].bad{border-color:#B3341F;background:#FBEAE6}
+.sortitem{display:block;width:100%;text-align:left;border:2px solid var(--ink);background:var(--paper);padding:8px 10px;margin:6px 0;font-family:var(--serif);font-size:14.5px;color:var(--ink);cursor:pointer}
+.sortitem:hover{background:var(--pur-wash)}
+.sortitem.picked{background:var(--pur);color:#fff;border-color:var(--pur-deep)}
+
+/* class strip */
+.classes{display:flex;flex-wrap:wrap;gap:0;border:2px solid var(--ink);margin:14px 0}
+.classes div{flex:1 1 130px;padding:9px 11px;border-right:1px solid var(--rule);font-size:13.5px;line-height:1.3}
+.classes div:last-child{border-right:none}
+.classes b{font-family:var(--disp);font-size:14px;display:block}
+.classes span{font-family:var(--mono);font-size:9.5px;color:var(--ink-soft);letter-spacing:.04em}
+
+/* trays */
+.traybox{border:2px solid var(--ink);padding:12px 14px;margin:14px 0}
+.traybox>.tag{display:block;margin-bottom:9px}
+.tray{display:flex;flex-wrap:wrap;gap:9px}
+.chip{border:2px solid var(--ink);background:var(--paper);padding:9px 12px;font-family:var(--mono);font-size:11px;color:var(--ink);text-align:left;line-height:1.4}
+.chip:hover{background:var(--pur-wash)}
+.chip.sel{background:var(--pur);color:#fff;border-color:var(--pur-deep)}
+.chip.done{opacity:.28;text-decoration:line-through}
+.chip.life{border-style:double;border-width:4px}
+.chip b{font-family:var(--disp);font-size:13px;display:block;letter-spacing:-.01em}
+.calrow{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.calscroll{overflow-x:auto;border:2px solid var(--ink);background:#F7F3E6;flex:1 1 620px}
+.bin{flex:0 0 190px;border:3px dashed var(--ink);padding:12px;min-height:150px;background:#F2EEE1}
+.bin h3{font-size:14px;font-family:var(--mono);font-weight:500;letter-spacing:.05em;margin-bottom:4px}
+.bin p{font-size:13px;margin:.2em 0 .6em}
+.bin .chip{display:block;width:100%;margin-bottom:6px}
+.cal{border-collapse:collapse;width:100%;min-width:700px}
+.cal th{background:var(--ink);color:var(--paper);font-size:10px;padding:8px 4px;text-align:center;border:1px solid var(--ink)}
+.cal th.rowh{background:var(--pur-tint);color:var(--ink)}
+.cal td{border:1px solid var(--rule);height:32px;padding:0;text-align:center;vertical-align:middle}
+.cal td.timecol{font-family:var(--mono);font-size:9.5px;color:var(--ink-soft);background:var(--pur-tint);width:70px;border-right:2px solid var(--ink)}
+.cell{width:100%;height:32px;border:none;background:transparent;cursor:pointer;display:block}
+.cell:hover{background:var(--pur-wash)}
+td.work{background:var(--pur)}
+td.work .lbl{font-family:var(--mono);font-size:9px;color:#fff;font-weight:500}
+td.lifec{background:repeating-linear-gradient(45deg,#E2DAC4,#E2DAC4 4px,#D6CDB4 4px,#D6CDB4 8px)}
+td.lifec .lbl{font-family:var(--mono);font-size:8.5px;color:#5A5449}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--ink-soft)}
+.sw{display:inline-block;width:13px;height:13px;border:1px solid var(--ink);vertical-align:-2px;margin-right:5px}
+.verdict{border:2px solid var(--ink);padding:16px 18px;margin-top:18px;display:none}
+.verdict.on{display:block}
+.verdict.fail{background:#FBEAE6;border-color:#B3341F;box-shadow:5px 5px 0 #F0C9C0}
+.verdict.pass{background:var(--pur-wash);box-shadow:5px 5px 0 var(--pur)}
+.verdict ul{padding-left:1.1em;margin:.5em 0}.verdict li{margin:.4em 0}
+.who{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--pur-deep)}
+.big{font-family:var(--disp);font-weight:800;font-size:26px;line-height:1.05;margin-bottom:6px}
+.foot{margin-top:28px;font-family:var(--mono);font-size:10px;color:var(--ink-soft);letter-spacing:.05em}
+
+/* ---------- notebook ---------- */
+.nbwrap{max-width:610px;margin:0 auto}
+.nb{
+  position:relative;background:#FCFBF4;border:1px solid #C9C2AC;
+  box-shadow:0 1px 0 #E5DFCC,0 14px 26px -14px rgba(60,45,25,.5);
+  padding:26px 30px 34px 66px;min-height:470px;
+  background-image:
+    linear-gradient(to right,transparent 46px,#E8A9A2 46px,#E8A9A2 47.5px,transparent 47.5px),
+    repeating-linear-gradient(to bottom,transparent 0 27px,#D3DCE8 27px 28px);
+  background-position:0 0,0 44px;
+}
+.nb .rings{position:absolute;left:16px;top:0;height:100%;display:flex;flex-direction:column;justify-content:space-evenly;padding:26px 0}
+.nb .rings i{display:block;width:13px;height:13px;border:1.5px solid #B8B0A0;border-radius:50%;background:#EFEAD9}
+.nbtext{font-family:var(--hand);font-size:25px;line-height:28px;color:#26356B}
+.nbtext .t{margin:0 0 28px}
+.nbtext .hd{font-family:var(--hand);font-weight:600;font-size:29px;line-height:28px;color:#26356B;margin:0 0 28px;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.nbtext .strike{text-decoration:line-through;color:#7C86A8}
+.nbtext .box{display:inline-block;border:2px solid #26356B;padding:0 7px;transform:rotate(-1deg)}
+.nbtext .red{color:#B3341F}
+.nbtable{font-family:var(--hand);font-size:24px;line-height:28px;color:#26356B;width:auto;border:none}
+.nbtable td,.nbtable th{border:none;padding:0 26px 0 0;font-family:var(--hand);font-size:24px;font-weight:400;background:none;letter-spacing:0;text-transform:none;color:#26356B}
+.nbtable th{border-bottom:1.5px solid #26356B}
+.doodle{position:absolute;opacity:.8;pointer-events:none}
+.nbnav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px}
+.pg{border:2px solid var(--ink);background:var(--paper);padding:10px 16px;color:var(--ink);font-family:var(--mono);font-size:11px}
+.pg:hover{background:var(--pur-tint)}
+.pg[disabled]{opacity:.3;cursor:not-allowed}
+.pgct{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft)}
+@media (max-width:700px){
+  .nb{padding:22px 18px 28px 52px;background-position:0 0,0 40px}
+  .nbtext{font-size:22px;line-height:26px}
+  .bin{flex:1 1 100%}
+}
+@media (prefers-reduced-motion:no-preference){
+  .veil.on .dossier{animation:pop .22s ease-out}
+  @keyframes pop{from{transform:translateY(10px) scale(.985);opacity:0}to{transform:none;opacity:1}}
+}
+</style>
+</head>
+<body>
+
+<div class="veil" id="veil">
+  <div class="dossier">
+    <div class="eye">&#128373;</div>
+    <span class="stamp">Case 03 &middot; Open</span>
+    <h2 style="margin-top:14px" id="misTitle">Mission</h2>
+    <div id="misBody"></div>
+    <div class="hr thin"></div>
+    <button class="btn" onclick="closeMission()">Take the case</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section class="screen on" id="scSetup">
+  <div class="folder">
+    <span class="stamp">Confidential</span>
+    <h1 style="margin:16px 0 4px">The Gorgonzola<br>Jones Case</h1>
+    <p class="tag" style="margin-bottom:14px">Time Management &middot; System 02</p>
+    <p style="max-width:60ch">Gorgonzola Jones has a soccer tournament, a family holiday, dinner at her grandmother's, five assignments, a make-up quiz, and friends who want to see her. She says her week is impossible.</p>
+    <p style="max-width:60ch">Her calendar is completely empty. Somebody has to fill it. Nobody at your table can see all of her information, so you will have to say what is in your folder out loud.</p>
+    <div class="hr"></div>
+    <p class="tag">How many people at your table?</p>
+    <div class="pill" style="margin-top:8px">
+      <button id="g4" class="sel" onclick="setSize(4)">Four</button>
+      <button id="g5" onclick="setSize(5)">Five</button>
+    </div>
+    <div style="margin-top:20px"><button class="btn" onclick="go('scRoles')">Pick roles</button></div>
+  </div>
+</section>
+
+<section class="screen" id="scRoles">
+  <div class="folder">
+    <span class="stamp">Assign one each</span>
+    <h2 style="margin:14px 0 6px">Who are you?</h2>
+    <p class="soft" style="max-width:58ch">One Scheduler. Everybody else holds evidence. Choose different roles. If two of you take the same folder, your table is missing information and the case will not close.</p>
+    <div class="grid-roles" id="roleGrid"></div>
+    <div class="hr thin"></div>
+    <button class="btn ghost" onclick="go('scSetup')">Back</button>
+  </div>
+</section>
+
+<section class="screen" id="scRole">
+  <div class="rhead">
+    <div>
+      <p class="tag" id="roleKicker">Evidence folder</p>
+      <h2 id="roleName">Role</h2>
+    </div>
+    <div class="stages" id="stageNav"></div>
+  </div>
+  <div class="hintbar">
+    <button class="btn ghost sm" id="hintBtn" onclick="useHint()">Ask for a hint</button>
+    <span class="hintct" id="hintCt">Hints used: 0</span>
+  </div>
+  <div class="folder" id="folderBox">
+    <div id="roleBody"></div>
+  </div>
+  <div class="foot">Case 03 &middot; Gorgonzola Jones &middot; <a href="#" onclick="location.reload();return false" style="color:var(--pur-deep)">start over</a></div>
+</section>
+
+</div>
+
+<script>
+/* ==========================================================
+   STATE
+   ========================================================== */
+var SIZE=4, ROLE=null, STAGE=1, HINTS=0, NBPAGE=0;
+var CLEARED={1:false,2:false,3:false,4:false};
+var ENDING=null;
+
+var DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+var ROWS=["3:00","3:30","4:00","4:30","5:00","5:30","6:00","6:30","7:00","7:30"];
+function rowLabel(i){return ROWS[i]+"\u2013"+(i===ROWS.length-1?"8:00":ROWS[i+1]);}
+
+/* ---- her class schedule (context only, school ends before the grid) ---- */
+var CLASSES=[
+  {p:"Period 1",c:"Biology",t:"Dr. Vellum"},
+  {p:"Period 2",c:"English",t:"Mr. Halloway"},
+  {p:"Period 3",c:"Math",t:"Mr. Tuck"},
+  {p:"Period 4",c:"History",t:"Ms. Bramble"},
+  {p:"Period 5",c:"Spanish",t:"Ms. Ferraro"}
+];
+
+/* ---- assignments. real minutes vary BY TEACHER ---- */
+var TASKS=[
+  {id:"hist",name:"History Ch. 7 + notes",teacher:"Ms. Bramble",est:30,real:60,cells:2,dueDay:2,dueTxt:"Wed 11:59pm"},
+  {id:"math",name:"Math Problem Set 4",teacher:"Mr. Tuck",est:45,real:90,cells:3,dueDay:2,dueTxt:"Wed 11:59pm"},
+  {id:"bio",name:"Bio lab writeup",teacher:"Dr. Vellum",est:90,real:90,cells:3,dueDay:3,dueTxt:"Thu 11:59pm"},
+  {id:"eng",name:"English essay draft",teacher:"Mr. Halloway",est:90,real:180,cells:6,dueDay:6,dueTxt:"Thu 8:00am"},
+  {id:"span",name:"Spanish vocab studying",teacher:"Ms. Ferraro",est:60,real:30,cells:1,dueDay:2,dueTxt:"quiz Friday"}
+];
+var SMALL={id:"small",name:"The small pile",sub:"five things, one block",cells:1,dueDay:6};
+var QUIZ={id:"quiz",name:"Make-up Spanish quiz",sub:"1 hr, Learning Center",cells:2,dueDay:6};
+
+/* ---- Learning Center after-school windows on the grid ---- */
+var LC=[{day:"Wed",row:0}];
+
+/* ---- life chips the Scheduler must place ---- */
+var LIFE=[
+  {id:"prac1",name:"Soccer practice",sub:"through the ride home",cells:6,kind:"prac"},
+  {id:"prac2",name:"Soccer practice",sub:"through the ride home",cells:6,kind:"prac"},
+  {id:"prac3",name:"Soccer practice",sub:"through the ride home",cells:6,kind:"prac"},
+  {id:"tourn",name:"Soccer tournament",sub:"the whole day",cells:10,req:{day:"Sat",row:0}},
+  {id:"holiday",name:"Family holiday",sub:"the whole day",cells:10,req:{day:"Fri",row:0}},
+  {id:"grandma",name:"Dinner at her grandmother's",sub:"2 hrs",cells:4,req:{day:"Wed",row:6}},
+  {id:"sundin",name:"Family dinner at home",sub:"1 hr",cells:2,req:{day:"Sun",row:6}},
+  {id:"hangout",name:"Hanging out with friends",sub:"2 hrs",cells:4,cuttable:true}
+];
+var PRAC_DAYS=["Mon","Tue","Thu"];
+
+/* ---- stage 2 ---- */
+var SORT_SEED=[
+  {t:"Mark the history syllabus as read (one click)",under:true},
+  {t:"Post one sentence on the history discussion board",under:true},
+  {t:"Accept the Learning Center appointment",under:true},
+  {t:"Text Priya for the notes from the day she missed",under:true},
+  {t:"Text the group chat back, she has left them on read",under:true},
+  {t:"Read Chapter 7 and take notes",under:false},
+  {t:"Write the bio lab writeup",under:false},
+  {t:"Do Math Problem Set 4",under:false},
+  {t:"Draft the English essay",under:false},
+  {t:"Study the Spanish vocab list",under:false}
+];
+var SORT_ITEMS=[], S2={};
+function shuffleSort(){
+  SORT_ITEMS=SORT_SEED.slice();
+  for(var i=SORT_ITEMS.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1)), t=SORT_ITEMS[i];
+    SORT_ITEMS[i]=SORT_ITEMS[j]; SORT_ITEMS[j]=t;
+  }
+  S2={};
+}
+shuffleSort();
+
+/* ---- roles ---- */
+var ROLEDEFS={
+  sched:{n:"Scheduler",d:"You build the calendar. Nobody else can touch it."},
+  canvas:{n:"Canvas",d:"Assignments, due dates, who assigned them, and the posted time estimates."},
+  inbox:{n:"Inbox",d:"Her email. Some of it matters and some of it does not."},
+  portal:{n:"School Portal",d:"Her Canvas and her email in one folder."},
+  note:{n:"Her Notebook",d:"Her actual notebook. You have to turn the pages."},
+  life:{n:"Life Outside School",d:"Practice, tournament, family, friends. None of it is on the calendar yet."}
+};
+function roleList(){return SIZE===5?["sched","canvas","inbox","note","life"]:["sched","portal","note","life"];}
+function roleLabel(k){return ROLEDEFS[k]?ROLEDEFS[k].n:k;}
+function schoolFolder(){return SIZE===5?"Canvas":"School Portal";}
+function mailFolder(){return SIZE===5?"Inbox":"School Portal";}
+
+var MISSIONS={
+  sched:["You are the Scheduler","Her calendar is empty and you are the only one who can write on it. You will be told things out loud and you have to put them in the right place. Four stages, and each one locks until you get it right. Ask direct questions. Make people repeat numbers."],
+  canvas:["You hold her Canvas","Five assignments, who assigned each one, and how long each teacher says it will take. Also some small stuff that is not on the front page. Read the teacher names out. They turn out to matter more than anybody expects."],
+  inbox:["You hold her email","Nine messages. Two of them decide whether this week works. The rest are noise, and one of them is wrong in a way that will cost your table time if nobody checks it."],
+  portal:["You hold her Canvas and her email","Assignments with teacher names and posted estimates, plus nine emails. Two of the emails decide whether the week works and one of them is wrong."],
+  note:["You hold her notebook","Her real notebook, in her handwriting. Turn every page. She has written down how long things actually take her, teacher by teacher, and it is not one simple rule. She also wrote what she avoids."],
+  life:["You hold everything outside school","Practice, the tournament, her grandmother, the family holiday, and her friends. None of it is on her calendar yet. The Scheduler cannot place any of it until you say what it is and when. You are not background information. You are half the puzzle."]
+};
+
+/* ---- hints ---- */
+var HINTTEXT={
+  canvas:"Read out every assignment with the teacher's name attached, and the posted estimate. Do not editorialise. Her Notebook is going to have opinions about some of these teachers.",
+  inbox:"Two of your emails change the week: one moves a deadline, one decides where the make-up quiz happens. One more looks like it removes work and does not. Check it against Canvas before anyone acts on it.",
+  portal:"Read assignments out with the teacher's name attached. Then your email: two messages change the week, one looks like it removes work and does not, and the rest is noise.",
+  note:"Turn every page. The pages are not in a helpful order and the useful lines are mixed in with junk. Look for anything she wrote about a specific teacher.",
+  life:"Nothing outside school is on her calendar until you put it there through the Scheduler. Go one commitment at a time: what it is, which day, what time, how long. Save the one with no fixed day for last.",
+  s1:"There is no single rule. Her Notebook has a guess-and-check log from earlier in the year: match the kind of work, not the class name. Two of the five are not in that log at all, and for those you need what she wrote about the teacher who assigned them.",
+  s2:"Could she finish it standing up, without sitting down? Go folder by folder. Every single person at your table has at least one of these, including the two who think this stage has nothing to do with them.",
+  s3:"Two answers here. Not just the task, but which folder it came from. If you are guessing on the folder, you have not asked everyone yet.",
+  s4:"Start with the things that cannot move. Get everything outside school on the board first, then look at what is left. Only one thing on the whole board has no fixed day, and it goes last."
+};
+
+/* ==========================================================
+   NAV
+   ========================================================== */
+function go(id){
+  ["scSetup","scRoles","scRole"].forEach(function(s){document.getElementById(s).classList.toggle("on",s===id);});
+  window.scrollTo(0,0);
+  if(id==="scRoles") drawRoles();
+}
+function setSize(n){SIZE=n;
+  document.getElementById("g4").classList.toggle("sel",n===4);
+  document.getElementById("g5").classList.toggle("sel",n===5);
+}
+function drawRoles(){
+  var g=document.getElementById("roleGrid"); g.innerHTML="";
+  roleList().forEach(function(k){
+    var b=document.createElement("button"); b.className="rolecard";
+    b.innerHTML='<span class="rn">'+ROLEDEFS[k].n+'</span>'+ROLEDEFS[k].d;
+    b.onclick=function(){pickRole(k);}; g.appendChild(b);
+  });
+}
+function pickRole(k){
+  ROLE=k; STAGE=1; HINTS=0; NBPAGE=0; HSHOWN={};
+  document.getElementById("roleName").textContent=ROLEDEFS[k].n;
+  document.getElementById("roleKicker").textContent=(k==="sched")?"You run the board":"Evidence folder";
+  document.getElementById("folderBox").className = (k==="note")?"bare":"folder";
+  drawStageNav(); updHint(); renderStage(); go("scRole");
+  var m=MISSIONS[k];
+  document.getElementById("misTitle").textContent=m[0];
+  document.getElementById("misBody").innerHTML="<p>"+m[1]+"</p>"+
+    "<p class='tag' style='margin-top:14px'>Hints</p>"+
+    "<p style='margin-top:2px'>There is a hint button, and it counts every time you press it. Try your table first.</p>";
+  document.getElementById("veil").classList.add("on");
+}
+function closeMission(){document.getElementById("veil").classList.remove("on");}
+
+var STAGE_NAMES=["Guess, then check","The two-minute rule","The loathsome task","Build her week","Ayayay"];
+function drawStageNav(){
+  var n=document.getElementById("stageNav"); n.innerHTML="";
+  if(ROLE!=="sched"){n.style.display="none"; return;}
+  n.style.display="flex";
+  for(var i=1;i<=5;i++){
+    (function(i){
+      var open = i===1 || CLEARED[i-1];
+      var b=document.createElement("button");
+      b.textContent=(CLEARED[i]?"\u2713 ":"")+i+". "+STAGE_NAMES[i-1];
+      b.className=(i===STAGE?"sel":(open?(CLEARED[i]?"cleared":""):"lock"));
+      if(!open){b.disabled=true; b.title="Solve stage "+(i-1)+" first.";}
+      else b.onclick=function(){STAGE=i; drawStageNav(); renderStage(); updHint();};
+      n.appendChild(b);
+    })(i);
+  }
+}
+function updHint(){
+  document.getElementById("hintCt").textContent="Hints used: "+HINTS;
+  var show=!(ROLE==="sched"&&STAGE===5);
+  document.querySelector(".hintbar").style.display=show?"flex":"none";
+}
+var HSHOWN={};
+function hintKey(){return (ROLE==="sched")?("s"+STAGE):ROLE;}
+function useHint(){
+  var k=hintKey();
+  if(!HSHOWN[k]){HINTS++; HSHOWN[k]=true; updHint();}
+  var box=document.getElementById("hintbox");
+  if(box){box.innerHTML='<span class="tag">Hint</span>'+HINTTEXT[k]; box.classList.add("on"); box.scrollIntoView({behavior:"smooth",block:"nearest"});}
+}
+function hintSlot(){
+  var k=hintKey();
+  return HSHOWN[k] ? '<div class="ask on" id="hintbox"><span class="tag">Hint</span>'+HINTTEXT[k]+'</div>'
+                   : '<div class="ask" id="hintbox"></div>';
+}
+
+/* ==========================================================
+   RENDER
+   ========================================================== */
+function renderStage(){
+  var b=document.getElementById("roleBody");
+  if(ROLE==="note"){renderNotebook(); return;}
+  if(ROLE==="sched"){b.innerHTML=schedStage(); wire(); return;}
+  var f = ROLE==="canvas"?evCanvas() : ROLE==="inbox"?evInbox()
+    : ROLE==="portal"?(sect("Canvas","assignments, due dates and to-do")+evCanvas()+sect("Her Inbox","nine messages")+evInbox())
+    : evLife();
+  b.innerHTML='<span class="stamp">'+ROLEDEFS[ROLE].n+'</span><div style="height:14px"></div>'+f+hintSlot();
+}
+
+function sect(t,sub){
+  return '<div class="hr"></div><h2 style="margin-bottom:2px">'+t+'</h2><p class="tag" style="margin-bottom:4px">'+sub+'</p>';
+}
+
+/* ---------- Canvas ---------- */
+function evCanvas(){
+  var rows=TASKS.map(function(t){
+    return "<tr><td>"+t.name+"</td><td>"+t.teacher+"</td><td>"+t.dueTxt+"</td><td class='num'>"+t.est+" min</td></tr>";
+  }).join("");
+  var h='<div class="ev"><h3>Assignments</h3><table><tr><th>What</th><th>Assigned by</th><th>Due</th><th>Posted estimate</th></tr>'+rows+'</table></div>';
+  h+='<div class="ev"><h3>To-Do</h3><p class="soft" style="font-size:14.5px">Not on the front page. You had to open each course to find these.</p><ul class="lean">'+
+     '<li>Mark the history syllabus as read. It is a checkbox.</li>'+
+     '<li>Post one sentence on the history discussion board.</li>'+
+     '<li>History review packet &mdash; <strong>not submitted</strong></li>'+
+     '<li>Spanish announcement: students absent Friday make up the quiz in the Learning Center.</li></ul></div>';
+  return h;
+}
+
+/* ---------- Inbox ---------- */
+function evInbox(){
+  return ''+
+  '<div class="ev hot"><h3>Mr. Halloway, English</h3><p>You asked for more time on the draft because of the tournament. Yes. New deadline is Wednesday next week, 8am. This only holds if you email me back and tell me which day you are turning it in.</p></div>'+
+  '<div class="ev hot"><h3>Ms. Ferraro, Spanish</h3><p>You are out Friday, so you will make up the vocab quiz in the Learning Center. It is a 30 minute quiz and you have extended time, so book a full hour. It cannot happen in my classroom.</p></div>'+
+  '<div class="ev"><h3>Learning Center</h3><p>An appointment request is sitting in her inbox waiting to be accepted. It is a button.</p><p class="tag" style="margin-top:10px">Hours</p><ul class="lean"><li>Mornings, 7:45 to 8:15</li><li>Lunch, 12:20 to 12:50</li><li>After school, Tuesday and Wednesday only, 3:00 to 4:00</li></ul></div>'+
+  '<div class="ev"><h3>Ms. Bramble, History</h3><p>Reminder to the class: if you completed the review packet, the Chapter 7 notes are optional. Reading still expected.</p></div>'+
+  '<div class="ev dull"><h3>All-school announcement</h3><p>Spirit Week is coming. Monday is pajama day, Tuesday is decades day, Wednesday is class colors.</p></div>'+
+  '<div class="ev dull"><h3>Robotics club listserv</h3><p>This week\u2019s meeting is moved. Reply if you are still on the parts subcommittee. Also somebody left a soldering iron on.</p></div>'+
+  '<div class="ev dull"><h3>Athletics office</h3><p>Saturday tournament: bus loads at 7am sharp. Bring both jerseys. Do not be the person who brings one jersey.</p></div>'+
+  '<div class="ev dull"><h3>Priya, from math</h3><p>a bunch of us are doing the problem set together sunday 3 to 5, you should come, we are getting food after</p></div>'+
+  '<div class="ev dull"><h3>Yearbook</h3><p>Last call for baby photos. This is the fourth last call.</p></div>';
+}
+
+/* ---------- Life ---------- */
+function evLife(){
+  return ''+
+  '<div class="ev"><h3>Soccer</h3><ul class="lean">'+
+  '<li>Practice <strong>Monday, Tuesday, Thursday</strong>. 3:00 to 5:00.</li>'+
+  '<li>She does not drive. Ride home gets her in the door at 6:00.</li>'+
+  '<li><strong>No practice Wednesday.</strong></li>'+
+  '<li>Tournament Saturday. Bus 7am, home 5pm, straight to bed.</li>'+
+  '<li>Coach, this week only: miss a practice, do not start Saturday.</li></ul></div>'+
+  '<div class="ev"><h3>Family</h3><ul class="lean">'+
+  '<li>Wednesday dinner at her grandmother\u2019s, 6:00 to 8:00. Mom says not a discussion.</li>'+
+  '<li>Friday, family holiday. Out of school, with family morning through evening.</li>'+
+  '<li>Sunday dinner at home, 6:00 to 7:00.</li></ul></div>'+
+  '<div class="ev hot"><h3>Friends</h3><ul class="lean">'+
+  '<li>Needs to answer the group chat. Left on read three days.</li>'+
+  '<li>Said yes to hanging out sometime this week. Two hours.</li></ul></div>';
+}
+
+/* ==========================================================
+   NOTEBOOK
+   ========================================================== */
+function dood(pos,inner,w,h,vb,col){
+  return '<svg class="doodle" style="'+pos+'" width="'+w+'" height="'+h+'" viewBox="'+vb+'">'+
+    '<g fill="none" stroke="'+(col||"#26356B")+'" stroke-width="2" stroke-linecap="round">'+inner+'</g></svg>';
+}
+var D={
+  face:function(p){return dood(p,'<circle cx="30" cy="30" r="24"/><circle cx="21" cy="24" r="1.6" fill="#26356B"/><circle cx="39" cy="24" r="1.6" fill="#26356B"/><path d="M19 38c5 6 17 6 22 0"/><path d="M12 12l6 5M48 12l-6 5"/>',62,62,"0 0 60 60");},
+  eye:function(p){return dood(p,'<path d="M3 20C16 4 48 4 61 20 48 36 16 36 3 20z"/><circle cx="32" cy="20" r="8"/><circle cx="32" cy="20" r="3" fill="#26356B"/><path d="M32 2v-0M14 8l-3-4M50 8l3-4"/>',66,42,"0 0 64 40");},
+  cat:function(p){return dood(p,'<path d="M8 34c0-12 8-20 20-20s20 8 20 20-8 14-20 14S8 46 8 34z"/><path d="M12 18l2-12 10 8M44 18l-2-12-10 8"/><circle cx="21" cy="32" r="1.6" fill="#26356B"/><circle cx="35" cy="32" r="1.6" fill="#26356B"/><path d="M28 36v3M24 41c2 2 6 2 8 0M2 34h12M42 34h12"/>',58,54,"0 0 56 52");},
+  bolt:function(p){return dood(p,'<path d="M20 2L6 26h10L10 46l18-26H17z"/>',34,50,"0 0 32 48","#B3341F");},
+  heart:function(p){return dood(p,'<path d="M22 40C10 30 2 24 2 15 2 8 7 3 13 3c4 0 7 2 9 5 2-3 5-5 9-5 6 0 11 5 11 12 0 9-8 15-20 25z"/>',46,46,"0 0 44 44","#B3341F");},
+  hand:function(p){return dood(p,'<path d="M14 44V20c0-3 4-3 4 0v-8c0-3 4-3 4 0v-4c0-3 4-3 4 0v6c0-3 4-3 4 0v18c0 8-4 12-10 12z"/>',42,52,"0 0 40 50");},
+  star:function(p){return dood(p,'<path d="M27 5l6 15 16 1-12 11 4 16-14-9-14 9 4-16L5 21l16-1z"/>',50,50,"0 0 54 54");},
+  spiral:function(p){return dood(p,'<path d="M33 33c0-5 5-5 5 0s-8 8-13 3-3-17 6-20 22 4 24 17"/>',60,60,"0 0 66 66");},
+  arrow:function(p){return dood(p,'<path d="M4 30c18-22 42-24 70-16"/><path d="M74 14l2 12-13-3"/>',76,44,"0 0 80 46","#B3341F");},
+  tally:function(p){return dood(p,'<path d="M6 5v24M16 5v24M26 5v24M36 5v24M2 26l38-22M48 5v24M58 5v24"/>',70,32,"0 0 76 34");},
+  cube:function(p){return dood(p,'<path d="M10 20l20-10 22 10-20 10z"/><path d="M10 20v22l22 10V30"/><path d="M52 20v22l-20 10"/>',56,56,"0 0 62 62");},
+  clock:function(p){return dood(p,'<circle cx="26" cy="26" r="22"/><path d="M26 10v16l11 7"/><path d="M26 2v4M26 46v4M2 26h4M46 26h4"/>',54,54,"0 0 52 52");},
+  swirl:function(p){return dood(p,'<path d="M2 30c0-16 12-28 28-28 12 0 20 8 20 18 0 8-6 14-14 14-6 0-10-4-10-9 0-4 3-7 7-7"/>',56,44,"0 0 52 40");},
+  zzz:function(p){return dood(p,'<path d="M4 6h14L4 20h14M24 22h11L24 32h11M40 34h9l-9 8h9"/>',56,48,"0 0 52 46");}
+};
+var NBPAGES=[
+  {d:D.face('right:22px;top:16px')+D.bolt('right:34px;bottom:26px')+D.swirl('left:60px;bottom:30px')+D.star('left:4px;bottom:74px'),h:'property of gorgonzola jones',b:[
+    'if you are reading this, put it back',
+    'things i need to stop doing: <span class="strike">saying yes immediately</span>, <span class="strike">starting at 10pm</span>, opening one tab and then forty',
+    '<span class="box">week from hell incoming</span>'
+  ]},
+  {d:D.clock('right:24px;top:14px')+D.tally('right:20px;bottom:22px')+D.zzz('left:74px;bottom:2px')+D.heart('left:0px;bottom:56px'),h:'guess, then check',b:[
+    '<table class="nbtable"><tr><th>thing</th><th>i guessed</th><th>it took</th></tr>'+
+    '<tr><td>ch. 2 reading + notes</td><td>30 min</td><td>60 min</td></tr>'+
+    '<tr><td>ch. 4 reading + notes</td><td>30 min</td><td>60 min</td></tr>'+
+    '<tr><td>ch. 5 reading + notes</td><td>30 min</td><td>1 hr</td></tr>'+
+    '<tr><td>problem set 1</td><td>45 min</td><td>90 min</td></tr>'+
+    '<tr><td>problem set 2</td><td>45 min</td><td>90 min</td></tr>'+
+    '<tr><td>problem set 3</td><td>45 min</td><td>1.5 hrs</td></tr>'+
+    '<tr><td>essay draft, unit 1</td><td>90 min</td><td>3 hrs</td></tr>'+
+    '<tr><td>essay draft, unit 2</td><td>90 min</td><td>3 hrs</td></tr>'+
+    '<tr><td>flashcards, map test</td><td>15 min</td><td>15 min</td></tr>'+
+    '<tr><td>get permission slip signed</td><td>2 min</td><td>4 days</td></tr></table>',
+    'every single time. i am not even mad anymore'
+  ]},
+  {d:D.swirl('right:28px;top:20px')+D.bolt('right:30px;bottom:28px')+D.face('left:74px;bottom:2px')+D.star('left:4px;bottom:74px'),h:'',b:[
+    'every problem set this year has taken me exactly the same amount of time. i keep telling myself i am going to get faster at them and i have not gotten faster at them once',
+    'chapter readings are the same story. three of them now, all an hour, never the thirty minutes it says on canvas. it is not that the chapters are hard, it is that taking notes is slower than reading',
+    'both essay drafts this year were three hours. i am not going to sit here and pretend the next one is going to be different',
+    'text priya for the notes from the day i missed <span class="red">STILL have not done this</span>'
+  ]},
+  {d:D.arrow('right:26px;top:34%')+D.hand('right:30px;bottom:18px')+D.eye('left:74px;bottom:2px')+D.bolt('left:6px;bottom:80px'),h:'',b:[
+    '<span class="strike">tues: ask priya about the thing</span>',
+    '<span class="strike">bring the permission slip</span> <span class="red">DO THIS</span>',
+    'the only teacher i have never had to adjust for is dr. vellum. she says 90 minutes and it is 90 minutes, every single lab. it is like she does them herself before she posts them. do not touch vellum\u2019s number, it is already right',
+    '<span class="strike">socks</span>'
+  ]},
+  {d:D.cat('right:22px;top:18px')+D.zzz('right:26px;bottom:26px')+D.spiral('left:74px;bottom:2px')+D.clock('left:0px;bottom:70px'),h:'',b:[
+    'ferraro is the opposite of everybody and nobody believes me. she says an hour for a vocab list and it takes me half that. she pads everything. i think she is being nice',
+    'after 8pm nothing goes in. i have tried. i read the same paragraph four times and then i am angry',
+    '<span class="strike">ask mom about saturday</span>'
+  ]},
+  {d:D.star('right:24px;top:12px')+D.heart('right:34px;bottom:24px')+D.face('left:60px;bottom:26px')+D.hand('left:-2px;bottom:72px'),h:'the truth',b:[
+    'reading a whole chapter is the worst thing on earth. i will empty the dishwasher to avoid it. i will reorganise my entire desk to avoid it. i have done both',
+    'if-then plans do not work on me. i write "if it is 4pm then i open the notebook" and then it is 4pm and i do not open the notebook',
+    'naming the first physical action does work though. not "study bio". open the packet to page 12. that one actually gets me moving'
+  ]},
+  {d:D.eye('right:20px;top:18px')+D.spiral('right:26px;bottom:20px')+D.cube('left:-2px;bottom:16px')+D.cat('left:150px;bottom:2px')+D.bolt('right:96px;top:30%'),h:'',b:[
+    'song ideas: <span class="strike">gorgonzola and the deadlines</span>',
+    'if i get through this week i am sleeping for eleven hours',
+    '<span class="box">ask for help earlier next time</span>'
+  ]}
+];
+function renderNotebook(){
+  var b=document.getElementById("roleBody"), p=NBPAGES[NBPAGE];
+  var rings=""; for(var i=0;i<11;i++) rings+="<i></i>";
+  var body=(p.h?'<p class="hd">'+p.h+'</p>':'')+p.b.map(function(l){return '<p class="t">'+l+'</p>';}).join("");
+  b.innerHTML='<span class="stamp">Her Notebook</span><div style="height:14px"></div>'+
+    '<div class="nbwrap"><div class="nb"><div class="rings">'+rings+'</div>'+p.d+
+    '<div class="nbtext">'+body+'</div></div>'+
+    '<div class="nbnav">'+
+      '<button class="pg" onclick="flip(-1)" '+(NBPAGE===0?"disabled":"")+'>&larr; back</button>'+
+      '<span class="pgct">page '+(NBPAGE+1)+' of '+NBPAGES.length+'</span>'+
+      '<button class="pg" onclick="flip(1)" '+(NBPAGE===NBPAGES.length-1?"disabled":"")+'>next &rarr;</button>'+
+    '</div></div>'+hintSlot();
+}
+function flip(d){NBPAGE=Math.max(0,Math.min(NBPAGES.length-1,NBPAGE+d)); renderNotebook();}
+
+/* ==========================================================
+   SCHEDULER STAGES
+   ========================================================== */
+var S1={}, PLACED={}, CUT={}, SEL=null, S3TASK=null, S3SRC=null;
+
+function schedStage(){
+  var head='<span class="stamp">Stage '+STAGE+' &middot; '+STAGE_NAMES[STAGE-1]+'</span><div style="height:16px"></div>';
+  if(STAGE===1){
+    var rows=TASKS.map(function(t){
+      return '<tr><td>'+t.name+'</td><td class="num">'+t.est+' min</td>'+
+        '<td><input type="number" min="0" step="30" id="r_'+t.id+'" value="'+(S1[t.id]||"")+'"></td></tr>';
+    }).join("");
+    return head+'<h2>How long do these actually take her?</h2>'+
+      '<p style="max-width:64ch">Every assignment has a posted estimate. Ask '+schoolFolder()+' to read them out with the name of the teacher who posted them. Then find out what actually happens. Round to the nearest half hour.</p>'+
+      '<table style="margin-top:14px"><tr><th>Task</th><th>Posted estimate</th><th>Real minutes</th></tr>'+rows+'</table>'+
+      '<div style="margin-top:16px"><button class="btn" onclick="check1()">Check my numbers</button></div>'+
+      hintSlot()+'<div class="verdict" id="v1"></div>';
+  }
+  if(STAGE===2){
+    var items=SORT_ITEMS.map(function(it,i){
+      return '<button class="sortitem'+(S2[i]?" picked":"")+'" data-i="'+i+'">'+it.t+'</button>';
+    }).join("");
+    return head+'<h2>Which of these take under two minutes?</h2>'+
+      '<p style="max-width:64ch">If something takes less than two minutes, tracking it costs more attention than doing it. Click every item that is under two minutes and leave the real work alone.</p>'+
+      '<div class="ev" style="margin-top:14px">'+items+'</div>'+
+      '<div><button class="btn" onclick="check2()">Check the pile</button></div>'+
+      hintSlot()+'<div class="verdict" id="v2"></div>';
+  }
+  if(STAGE===3){
+    var opts=TASKS.map(function(t){return '<button class="sortitem'+(S3TASK===t.id?" picked":"")+'" data-l="'+t.id+'">'+t.name+'</button>';}).join("");
+    var srcs=roleList().filter(function(k){return k!=="sched";})
+      .map(function(k){return '<button class="sortitem'+(S3SRC===k?" picked":"")+'" data-s="'+k+'">'+ROLEDEFS[k].n+'</button>';}).join("");
+    return head+'<h2>Which one does she dread?</h2>'+
+      '<p style="max-width:64ch">The rule is that she does the task she hates most first, so she stops carrying it around all week. Pick the task. Then say which folder at your table that came from, because knowing where an answer lives is half of it.</p>'+
+      '<div class="ev" style="margin-top:14px"><p class="tag">The task</p>'+opts+'</div>'+
+      '<div class="ev"><p class="tag">Where you found it</p>'+srcs+'</div>'+
+      '<div><button class="btn" onclick="check3()">Check both</button></div>'+
+      hintSlot()+'<div class="verdict" id="v3"></div>';
+  }
+  if(STAGE===5) return head+ayayay();
+  return head+schedCal();
+}
+
+function ayayay(){
+  var cut = ENDING==="cut";
+  return '<h1 style="margin-bottom:6px">Ayayay.</h1>'+
+    '<p class="tag" style="margin-bottom:18px">Case 03 &middot; closed</p>'+
+    '<div class="ev hot"><h3>You just time managed somebody else\u2019s entire week</h3>'+
+    '<p>Gorgonzola told you it was impossible. She was not lying, she just did not have the information in one place. '+
+    'You put it in one place. That is the whole job.</p></div>'+
+    '<div class="ev"><h3>What it actually took</h3>'+
+    '<table><tr><th>Posted estimates said</th><td class="num">5 hrs 15 min</td></tr>'+
+    '<tr><th>Her real numbers said</th><td class="num">9 hrs</td></tr>'+
+    '<tr><th>Half hours in her week you had to account for</th><td class="num">66 of 70</td></tr>'+
+    '<tr><th>Assignments cut</th><td class="num">zero</td></tr>'+
+    '<tr><th>Hints used at this laptop</th><td class="num">'+HINTS+'</td></tr></table></div>'+
+    '<div class="ev"><h3>The four moves you made</h3><ul class="lean">'+
+    '<li><strong>Guess, then check.</strong> You stopped trusting the posted number and used what actually happens.</li>'+
+    '<li><strong>The two-minute rule.</strong> Five things became one block instead of five.</li>'+
+    '<li><strong>The loathsome task.</strong> The chapter went first, so she stopped carrying it around all week.</li>'+
+    '<li><strong>She asked.</strong> The extension and the Learning Center hour were already hers. Wednesday only works because somebody sent an email.</li></ul></div>'+
+    (cut ? '<div class="ev"><h3>One more thing</h3><p>You cut her friends. It closed the case, and sometimes that is the right call. But look at the board one more time and be honest: was there really no two hour gap, or was it just the first thing that felt optional?</p></div>'
+         : '<div class="ev"><h3>One more thing</h3><p>Her friends made it in. That is the first thing most people delete, and you kept it, because the work went where it had to go instead of wherever felt fine.</p></div>')+
+    '<div class="ev hot"><h3>Now the hard part</h3><p>Her week was lighter than yours. That was on purpose, so the four moves would be visible. '+
+    'Yours has more assignments, more days, and nobody handing you a folder with the answer in it.</p>'+
+    '<p><strong>Which one of the four moves would change your week the most this week?</strong></p></div>';
+}
+
+function allBlocks(){
+  var o={}; TASKS.concat([SMALL,QUIZ]).concat(LIFE).forEach(function(t){o[t.id]=t;}); return o;
+}
+function isLife(id){return LIFE.some(function(l){return l.id===id;});}
+
+function schedCal(){
+  var work=TASKS.concat([SMALL,QUIZ]).map(function(t){return chipHTML(t);}).join("");
+  var life=LIFE.map(function(t){return chipHTML(t);}).join("");
+  var cls=CLASSES.map(function(c){return '<div><b>'+c.c+'</b><span>'+c.p+" &middot; "+c.t+'</span></div>';}).join("");
+
+  var th='<tr><th class="rowh">time</th>'+DAYS.map(function(d){return '<th>'+d+'</th>';}).join("")+'</tr>';
+  var body="";
+  for(var r=0;r<ROWS.length;r++){
+    body+='<tr><td class="timecol">'+rowLabel(r)+'</td>';
+    for(var c=0;c<DAYS.length;c++){
+      var d=DAYS[c], f=findFill(d,r);
+      var cls2 = f? (isLife(f.id)?"lifec":"work") : "";
+      body+='<td class="'+cls2+'"><button class="cell" data-d="'+d+'" data-r="'+r+'" aria-label="'+d+' '+rowLabel(r)+' '+(f?f.lbl:"empty")+'"><span class="lbl">'+(f?f.lbl:"")+'</span></button></td>';
+    }
+    body+='</tr>';
+  }
+  var cutlist=Object.keys(CUT).map(function(k){return '<button class="chip" data-b="'+k+'">'+allBlocks()[k].name+'</button>';}).join("")
+    || '<p class="soft" style="font-size:13px">Empty.</p>';
+
+  return '<h2>Build her week</h2>'+
+    '<p style="max-width:66ch">The calendar is empty. Click a block, then click where it starts. Blocks cannot be split. Click anything you already placed to pull it back off. School is over before this grid starts, so these are her afternoons and evenings only.</p>'+
+    '<div class="classes">'+cls+'</div>'+
+    '<div class="traybox"><span class="tag">Outside school &mdash; ask Life Outside School</span><div class="tray">'+life+'</div></div>'+
+    '<div class="traybox"><span class="tag">School work</span><div class="tray">'+work+'</div></div>'+
+    '<div class="calrow">'+
+      '<div class="calscroll"><table class="cal">'+th+body+'</table></div>'+
+      '<div class="bin" id="cutbin"><h3>cut bin</h3><p class="soft" style="font-size:13px">Pick a block, then click here to cut it. Most things will refuse.</p>'+cutlist+'</div>'+
+    '</div>'+
+    '<div class="legend">'+
+      '<span><span class="sw" style="background:repeating-linear-gradient(45deg,#E2DAC4,#E2DAC4 4px,#D6CDB4 4px,#D6CDB4 8px)"></span>life outside school</span>'+
+      '<span><span class="sw" style="background:var(--pur)"></span>school work</span>'+
+    '</div>'+
+    '<div style="margin-top:18px"><button class="btn" onclick="checkWeek()">Close the case</button> '+
+    '<button class="btn ghost" onclick="clearWeek()">Clear everything</button></div>'+
+    hintSlot()+'<div class="verdict" id="v4"></div>';
+}
+function chipHTML(t){
+  var done=!!PLACED[t.id]||!!CUT[t.id];
+  var sub=t.sub?t.sub:(t.cells*30)+" min";
+  return '<button class="chip'+(isLife(t.id)?" life":"")+(done?" done":"")+(SEL===t.id?" sel":"")+'" data-b="'+t.id+'"><b>'+t.name+'</b>'+sub+'</button>';
+}
+function findFill(d,r){
+  for(var k in PLACED){var p=PLACED[k];
+    if(p.day===d && r>=p.row && r<p.row+p.cells) return {id:k,lbl:shortName(k)};}
+  return null;
+}
+function shortName(id){
+  var m={hist:"history",math:"math",bio:"bio",eng:"english",span:"spanish",small:"small pile",
+    quiz:"make-up quiz",prac1:"practice",prac2:"practice",prac3:"practice",tourn:"tournament",
+    holiday:"family holiday",grandma:"grandma",sundin:"family dinner",hangout:"friends"};
+  return m[id]||id;
+}
+
+function wire(){
+  var b=document.getElementById("roleBody");
+  b.querySelectorAll("[data-i]").forEach(function(el){
+    el.onclick=function(){var i=+el.dataset.i; S2[i]=!S2[i]; el.classList.toggle("picked",!!S2[i]);};
+  });
+  b.querySelectorAll("[data-l]").forEach(function(el){
+    el.onclick=function(){S3TASK=el.dataset.l; renderStage();};
+  });
+  b.querySelectorAll("[data-s]").forEach(function(el){
+    el.onclick=function(){S3SRC=el.dataset.s; renderStage();};
+  });
+  b.querySelectorAll("[data-b]").forEach(function(el){
+    el.onclick=function(){
+      var id=el.dataset.b;
+      if(PLACED[id]){delete PLACED[id]; SEL=null;}
+      else if(CUT[id]){delete CUT[id]; SEL=null;}
+      else SEL=(SEL===id?null:id);
+      renderStage();
+    };
+  });
+  b.querySelectorAll(".cell").forEach(function(el){
+    el.onclick=function(){
+      var d=el.dataset.d, r=+el.dataset.r, f=findFill(d,r);
+      if(f){delete PLACED[f.id]; SEL=null; renderStage(); return;}
+      if(SEL) place(SEL,d,r);
+    };
+  });
+  var bin=document.getElementById("cutbin");
+  if(bin) bin.onclick=function(e){
+    if(e.target.dataset && e.target.dataset.b) return;
+    if(!SEL) return;
+    var t=allBlocks()[SEL], v=document.getElementById("v4");
+    if(!t.cuttable){
+      flash(v, isLife(SEL) ? "That one does not come off the calendar. Ask <span class='who'>Life Outside School</span> whether it is negotiable."
+        : "That is an assignment. It does not stop existing because it is inconvenient.");
+      return;
+    }
+    delete PLACED[SEL]; CUT[SEL]=true; SEL=null; renderStage();
+  };
+}
+function place(id,d,r){
+  var t=allBlocks()[id], v=document.getElementById("v4");
+  if(r+t.cells>ROWS.length) return flash(v,"That block runs off the end of the evening.");
+  for(var i=r;i<r+t.cells;i++) if(findFill(d,i)) return flash(v,"Something is already sitting there.");
+  delete CUT[id];
+  PLACED[id]={day:d,row:r,cells:t.cells}; SEL=null; renderStage();
+}
+function flash(v,msg){v.className="verdict fail on"; v.innerHTML="<p style='margin:0'>"+msg+"</p>";}
+function clearWeek(){PLACED={}; CUT={}; SEL=null; renderStage();}
+
+/* ==========================================================
+   CHECKS
+   ========================================================== */
+function check1(){
+  var bad=0, v=document.getElementById("v1");
+  TASKS.forEach(function(t){
+    var el=document.getElementById("r_"+t.id); S1[t.id]=el.value;
+    if(+el.value===t.real) el.className="ok"; else {el.className="bad"; bad++;}
+  });
+  if(!bad){
+    CLEARED[1]=true; drawStageNav();
+    v.className="verdict pass on";
+    v.innerHTML='<div class="big">Her numbers are real now.</div>'+
+      '<p>There was never one rule. Bramble and Tuck both post half of what the work actually takes. Vellum posts the truth. Ferraro pads hers, so the Spanish studying is genuinely short. '+
+      'Nine hours of work, not seven, and it is not spread the way the estimates said.</p>'+
+      '<p>The point is not that teachers are bad at estimating. It is that she now knows which numbers she can trust and which she has to adjust, and she only knows that because she wrote it down over time.</p>'+
+      '<p class="who">Stage 2 is open.</p>';
+  } else {
+    v.className="verdict fail on";
+    v.innerHTML="<p>"+bad+" of the five are still wrong.</p><ul>"+
+      "<li>Ask <span class='who'>"+schoolFolder()+"</span> which teacher assigned each one.</li>"+
+      "<li>Ask <span class='who'>Her Notebook</span>. She has timed some of this kind of work herself, and separately she has opinions about particular teachers. Do not assume one rule covers all five.</li></ul>";
+  }
+}
+function check2(){
+  var wrong=0, missed=0, v=document.getElementById("v2");
+  SORT_ITEMS.forEach(function(it,i){
+    if(S2[i]&&!it.under) wrong++;
+    if(!S2[i]&&it.under) missed++;
+  });
+  if(!wrong&&!missed){
+    CLEARED[2]=true; drawStageNav();
+    v.className="verdict pass on";
+    v.innerHTML='<div class="big">Five items, one block.</div>'+
+      '<p>All five together run about ten minutes. Given a row on the calendar each, they would eat two and a half hours of her week to hold ten minutes of work. '+
+      'They go down once, as a single block. One of them is the email that keeps her extension alive.</p><p class="who">Stage 3 is open.</p>';
+  } else {
+    v.className="verdict fail on";
+    v.innerHTML="<p>"+(wrong?"You marked "+wrong+" real assignment"+(wrong>1?"s":"")+" as under two minutes. ":"")+
+      (missed?"You missed "+missed+" quick one"+(missed>1?"s":"")+". ":"")+"</p><ul>"+
+      "<li>Could she finish it standing up, without sitting down?</li>"+
+      "<li>Three of the quick ones are not on Canvas at all. Every folder at your table is holding at least one.</li></ul>";
+  }
+}
+function check3(){
+  var v=document.getElementById("v3");
+  if(!S3TASK||!S3SRC){flash(v,"Pick a task and a folder."); return;}
+  var okTask=(S3TASK==="hist"), okSrc=(S3SRC==="note");
+  if(okTask&&okSrc){
+    CLEARED[3]=true; drawStageNav();
+    v.className="verdict pass on";
+    v.innerHTML='<div class="big">Reading the chapter, from her notebook.</div>'+
+      '<p>She wrote that she would empty the dishwasher to avoid it, and she has. So it goes first, in the first free slot of the week, and everything after it is downhill.</p>'+
+      '<p>Her notebook also says if-then plans slide off her and naming the first physical action works. So the block is not "study history." It is <em>open the book to page 118</em>.</p>'+
+      '<p class="who">Stage 4 is open. Her calendar is empty.</p>';
+  } else {
+    v.className="verdict fail on";
+    v.innerHTML="<p>Not it. One or both of those is wrong.</p>";
+  }
+}
+
+function checkWeek(){
+  var v=document.getElementById("v4"), P=[];
+  var work=TASKS.concat([SMALL,QUIZ]);
+
+  /* ---- life placements ---- */
+  var pracAt=[];
+  ["prac1","prac2","prac3"].forEach(function(k){
+    var p=PLACED[k]; if(p) pracAt.push(p.day+"|"+p.row);
+  });
+  var pracWant=PRAC_DAYS.map(function(d){return d+"|0";});
+  var pracOK = pracAt.length===3 && pracWant.every(function(w){return pracAt.indexOf(w)>-1;});
+  if(!pracOK) P.push("Soccer practice is not on the three right days starting at the right time. Ask <span class='who'>Life Outside School</span> which days, and when she is actually back in the door.");
+
+  LIFE.forEach(function(l){
+    if(!l.req) return;
+    var p=PLACED[l.id];
+    if(!p) P.push("<strong>"+l.name+"</strong> is not on the calendar. Ask <span class='who'>Life Outside School</span>.");
+    else if(p.day!==l.req.day||p.row!==l.req.row) P.push("<strong>"+l.name+"</strong> is in the wrong place. Ask <span class='who'>Life Outside School</span> to say the day and time again.");
+  });
+  var hangPlaced=!!PLACED["hangout"], hangCut=!!CUT["hangout"];
+  if(!hangPlaced&&!hangCut) P.push("Her friends are still waiting. Two hours somewhere, or put it in the cut bin on purpose. Leaving it in the tray is not a decision.");
+
+  /* ---- work placed ---- */
+  var un=work.filter(function(t){return !PLACED[t.id];}).map(function(t){return t.name;});
+  if(un.length===1) P.push("<strong>"+un[0]+"</strong> is not on the calendar anywhere.");
+  else if(un.length>1) P.push("Still off the calendar: <strong>"+un.join("</strong>, <strong>")+"</strong>.");
+
+  /* ---- deadlines ---- */
+  TASKS.forEach(function(t){
+    var p=PLACED[t.id]; if(!p) return;
+    if(DAYS.indexOf(p.day)>t.dueDay)
+      P.push("<strong>"+t.name+"</strong> is sitting after its deadline. Ask <span class='who'>"+schoolFolder()+"</span> to read the due date again"+
+        (t.id==="eng"?", then ask <span class='who'>"+mailFolder()+"</span> whether that date is still the real one.":"."));
+  });
+
+  /* ---- spanish before quiz ---- */
+  var ps=PLACED["span"], pq=PLACED["quiz"];
+  if(ps&&pq){
+    var a=DAYS.indexOf(ps.day), b=DAYS.indexOf(pq.day);
+    if(a>b||(a===b&&ps.row>=pq.row)) P.push("She is studying the vocab after she has already taken the quiz.");
+  }
+  /* ---- quiz in a real LC hour ---- */
+  if(pq){
+    var ok=LC.some(function(w){return w.day===pq.day&&w.row===pq.row&&pq.cells===2;});
+    if(!ok) P.push("The make-up quiz is not in a Learning Center hour that fits it. Ask <span class='who'>"+mailFolder()+
+      "</span> for the hours, then ask <span class='who'>Life Outside School</span> which of those she is free for.");
+  }
+  /* ---- loathsome first ---- */
+  var ph=PLACED["hist"];
+  if(ph){
+    var e=DAYS.indexOf(ph.day)*100+ph.row, who=null;
+    ["math","bio","eng","span","small"].forEach(function(k){
+      var p=PLACED[k]; if(!p) return;
+      var i=DAYS.indexOf(p.day)*100+p.row;
+      if(i<e){e=i; who=k;}
+    });
+    if(who) P.push("She is doing other schoolwork before the thing she dreads. The chapter goes first, in the first free slot of the week.");
+  }
+
+  if(P.length){
+    v.className="verdict fail on";
+    v.innerHTML='<div class="big">Case still open.</div><ul>'+P.map(function(x){return "<li>"+x+"</li>";}).join("")+'</ul>';
+    v.scrollIntoView({behavior:"smooth",block:"nearest"}); return;
+  }
+
+  ENDING = hangCut?"cut":"fit";
+  CLEARED[4]=true; drawStageNav();
+  var ending = hangCut
+    ? '<p><strong>You cut her friends.</strong> A legal answer, and sometimes the right one.</p>'
+    : '<p><strong>Her friends made it in.</strong> That is the part most people cut first.</p>';
+
+  v.className="verdict pass on";
+  v.innerHTML='<div class="big">Case closed. Her week fits.</div>'+
+    '<p>She said it was impossible. She was wrong, and she was wrong for reasons worth knowing:</p>'+
+    '<ul><li>Her real numbers, teacher by teacher, instead of one rule applied to everything.</li>'+
+    '<li>Five small things as one block instead of five.</li>'+
+    '<li>The chapter she dreads first, so she stopped carrying it.</li>'+
+    '<li>She asked. The extension and the Learning Center hour were already hers, and they are why Wednesday works at all.</li></ul>'+
+    ending+
+    '<p class="who" style="margin-top:14px">Stage 5 is open.</p>';
+  v.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+</script>
+</body>
+</html>
