@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600&family=Martian+Mono:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFEAD9; --ink:#1B1A17; --soft:#5A5449;
+  --pur:#D854DC; --purd:#8E2B96; --purt:#F6DEF8; --purw:#FBF0FC;
+  --rule:#CFC7B0; --red:#B3341F; --gold:#E8B62C; --green:#3E7D3A;
+  --mono:"Martian Mono",ui-monospace,monospace;
+  --serif:"Newsreader",Georgia,serif;
+  --disp:"Bricolage Grotesque",system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);
+  overflow:hidden;user-select:none;-webkit-user-select:none}
+h1,h2{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;margin:0}
+button{font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;border-radius:0}
+.btn{background:var(--ink);color:var(--paper);border:2px solid var(--ink);padding:13px 22px;letter-spacing:.05em}
+.btn:hover{background:var(--purd);border-color:var(--purd)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--purt)}
+.btn:focus-visible,.tick:focus-visible,.top:focus-visible,.slot:focus-visible{outline:3px solid var(--pur);outline-offset:2px}
+
+#stage{position:relative;height:100%;max-width:1120px;margin:0 auto;padding:12px 16px;
+  display:flex;flex-direction:column;gap:12px}
+
+/* ---------- HUD ---------- */
+#hud{display:flex;align-items:center;gap:16px;height:46px;flex:0 0 auto}
+.stat{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--soft);white-space:nowrap}
+.stat b{font-family:var(--disp);font-size:22px;color:var(--ink);display:block;letter-spacing:-.02em;line-height:1}
+.stat.sc b{color:var(--purd)}
+.stat.st b{color:var(--gold)}
+#daywrap{flex:1;height:20px;border:2px solid var(--ink);background:#E3DCC6;position:relative;overflow:hidden}
+#day{position:absolute;inset:0;background:var(--ink);transform-origin:left center}
+#day.warn{background:var(--red)}
+
+/* ---------- tickets ---------- */
+#tickets{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;height:126px}
+.tick{position:relative;border:2px solid var(--ink);background:#F7F3E6;padding:9px 10px;
+  text-align:left;color:var(--ink);font-family:var(--serif);cursor:pointer;overflow:hidden}
+.tick.empty{border-style:dashed;border-color:var(--rule);background:transparent;cursor:default}
+.tick:hover:not(.empty){background:var(--purw)}
+.tick.sel{border-color:var(--purd);border-width:3px;background:var(--purw)}
+.tick.big{background:#2A2824}
+.tick.big .who,.tick.big .items{color:var(--paper)}
+.tick.big.sel{border-color:var(--pur)}
+.tick .who{font-family:var(--mono);font-size:9px;letter-spacing:.07em;color:var(--purd)}
+.tick .items{font-family:var(--disp);font-weight:700;font-size:13px;line-height:1.3;margin-top:5px}
+.tick .pat{position:absolute;left:0;bottom:0;height:5px;width:100%;background:var(--green);transform-origin:left}
+.tick .pat.mid{background:var(--gold)}
+.tick .pat.low{background:var(--red)}
+.tick .rush{position:absolute;top:8px;right:9px;font-family:var(--mono);font-size:8.5px;
+  font-weight:700;letter-spacing:.08em;color:var(--pur);border:1.5px solid var(--pur);padding:2px 4px}
+.tick .drink{position:absolute;top:8px;right:9px;font-family:var(--mono);font-size:8.5px;
+  font-weight:700;letter-spacing:.08em;color:var(--purd);border:1.5px solid var(--purd);padding:2px 4px}
+.tick.leaving{animation:fly .35s forwards}
+@keyframes fly{to{transform:translateY(-24px);opacity:0}}
+
+/* ---------- main ---------- */
+#main{flex:1 1 auto;display:grid;grid-template-columns:1fr 330px;gap:14px;min-height:0}
+.bay{border:2px solid var(--ink);background:#F7F3E6;padding:12px;position:relative;
+  display:flex;flex-direction:column;min-height:0}
+.bay>.lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--purd);flex:0 0 auto}
+
+/* build station */
+#buildInner{flex:1 1 auto;display:flex;align-items:center;gap:18px;min-height:0}
+#pieWrap{flex:0 0 auto;width:158px;height:158px;position:relative}
+#pie{position:absolute;inset:0;border-radius:50%;background:#E8C77A;border:5px solid #C9973F;
+  box-shadow:inset 0 0 0 9px #F2DCA8}
+#pie.off{opacity:.16}
+.dot{position:absolute;width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(0,0,0,.35)}
+#need{flex:1 1 auto}
+#need .h{font-family:var(--disp);font-weight:800;font-size:17px}
+#need .s{font-family:var(--serif);font-size:14.5px;color:var(--soft);margin-top:3px}
+#tops{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.top{border:2px solid var(--ink);background:var(--paper);padding:8px 4px;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;letter-spacing:.04em}
+.top:hover{background:var(--purw)}
+.top i{width:19px;height:19px;border-radius:50%;border:1.5px solid rgba(0,0,0,.35);display:block}
+#send{margin-top:9px;flex:0 0 auto;width:100%;opacity:.3;pointer-events:none}
+#send.on{opacity:1;pointer-events:auto;background:var(--purd);border-color:var(--purd)}
+
+/* oven */
+#slots{flex:1 1 auto;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.slot{position:relative;border:2px solid var(--ink);background:var(--paper);height:66px;
+  display:flex;align-items:center;gap:12px;padding:0 12px;color:var(--ink);cursor:default}
+.slot.busy{cursor:pointer}
+.slot.busy:hover{background:var(--purw)}
+.ring{flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:#DED7C4;position:relative}
+.ring::after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--paper)}
+.slot .nm{font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--soft)}
+.slot.ready{border-color:var(--green);border-width:3px;background:#EAF3E6}
+.slot.ready .nm{color:var(--green);font-weight:700}
+.slot.burn{border-color:var(--red);border-width:3px;background:#FBEAE6}
+.slot.burn .nm{color:var(--red);font-weight:700}
+.slot.pulse{animation:pulse .6s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(62,125,58,.5)}50%{box-shadow:0 0 0 6px rgba(62,125,58,0)}}
+
+/* ---------- fx ---------- */
+#toast{position:absolute;left:50%;top:180px;transform:translateX(-50%);z-index:40;
+  font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;
+  background:var(--ink);color:var(--paper);padding:9px 15px;opacity:0;transition:opacity .18s;white-space:nowrap}
+#toast.on{opacity:1}
+#toast.good{background:var(--purd)}
+#toast.bad{background:var(--red)}
+.pointsfx{position:absolute;z-index:45;font-family:var(--disp);font-weight:800;font-size:30px;
+  color:var(--purd);pointer-events:none;animation:rise .8s forwards}
+@keyframes rise{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-46px)}}
+
+/* ---------- panels ---------- */
+.panel{position:absolute;inset:0;z-index:60;background:var(--paper);display:none;
+  align-items:center;justify-content:center;padding:20px;overflow:auto}
+.panel.on{display:flex}
+.sheet{max-width:680px;width:100%;border:2px solid var(--ink);background:#F7F3E6;
+  box-shadow:8px 8px 0 var(--pur);padding:28px}
+.stamp{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;
+  border:2px solid var(--purd);color:var(--purd);padding:5px 9px;transform:rotate(-2deg)}
+.rules{margin:18px 0 4px;padding:0;list-style:none}
+.rules li{display:flex;gap:12px;align-items:flex-start;margin:11px 0;font-size:16.5px}
+.rules i{flex:0 0 26px;height:26px;background:var(--pur);border:1.5px solid var(--ink);border-radius:50%;
+  display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;font-style:normal}
+.hr{height:2px;background:var(--ink);margin:18px 0}
+.hr.thin{height:1px;background:var(--rule)}
+input[type=number]{font-family:var(--mono);font-size:22px;width:120px;padding:10px;text-align:center;
+  border:2px solid var(--ink);background:#fff;border-radius:0;color:var(--ink)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.box{border:2px solid var(--ink);background:var(--paper);padding:12px}
+.box .k{font-family:var(--mono);font-size:9px;letter-spacing:.07em;color:var(--purd)}
+.box .v{font-family:var(--disp);font-weight:800;font-size:25px;line-height:1.1;margin-top:2px}
+.lesson{border-left:5px solid var(--pur);background:var(--purw);padding:11px 14px;margin:9px 0;font-size:15.5px}
+.lesson b{font-family:var(--disp)}
+.big{font-family:var(--disp);font-weight:800;font-size:40px;line-height:1}
+.sub{color:var(--soft);font-size:16px;margin-top:5px}
+@media (max-height:700px){
+  #tickets{height:110px}
+  #pieWrap{width:126px;height:126px}
+}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <div id="hud">
+    <div class="stat sc">SCORE<b id="uiScore">0</b></div>
+    <div class="stat st">STREAK<b id="uiStreak">x1</b></div>
+    <div id="daywrap"><div id="day"></div></div>
+    <div class="stat">SERVED<b id="uiServed">0</b></div>
+    <div class="stat">WALKED<b id="uiWalked">0</b></div>
+  </div>
+
+  <div id="tickets"></div>
+
+  <div id="main">
+    <div class="bay">
+      <div class="lbl">COUNTER</div>
+      <div id="buildInner">
+        <div id="pieWrap"><div id="pie" class="off"></div></div>
+        <div id="need"><div class="h">Take an order.</div><div class="s">Click a ticket up top to start it.</div></div>
+      </div>
+      <div id="tops"></div>
+      <button class="btn" id="send" onclick="sendToOven()">INTO THE OVEN</button>
+    </div>
+
+    <div class="bay">
+      <div class="lbl">OVEN &middot; RUNS WITHOUT YOU</div>
+      <div id="slots"></div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <!-- START -->
+  <div class="panel on" id="pStart">
+    <div class="sheet">
+      <span class="stamp">Bonus round</span>
+      <h1 style="font-size:56px;margin:14px 0 2px">Slice</h1>
+      <p class="sub" style="margin-top:0">One lunch rush. Four seats. One oven. Serve as many people as you can.</p>
+      <ul class="rules">
+        <li><i>1</i><div>Click a <b>ticket</b> to take that order. Add the toppings it asks for, then send it to the oven.</div></li>
+        <li><i>2</i><div>The oven <b>bakes on its own</b>. Pull it when the ring turns green. Too late and it burns.</div></li>
+        <li><i>3</i><div>Everyone has a patience bar. It runs out, they walk, your streak dies.</div></li>
+        <li><i>4</i><div>Black tickets are the big ugly orders. They lose patience fastest and pay <b>double</b> if you take them first.</div></li>
+      </ul>
+      <div class="hr"></div>
+      <button class="btn" onclick="startGame()">Open the counter</button>
+      <span class="stat" style="margin-left:14px;display:inline-block">best this session&nbsp; <b id="uiBest" style="display:inline">0</b></span>
+    </div>
+  </div>
+
+  <!-- GUESS -->
+  <div class="panel" id="pGuess">
+    <div class="sheet">
+      <span class="stamp">Counter closed</span>
+      <h2 style="font-size:33px;margin:15px 0 4px">Before you see the score.</h2>
+      <p class="sub" style="margin-top:0">How many people do you think you actually served?</p>
+      <div style="margin:22px 0"><input type="number" id="guess" min="0" max="99" placeholder="?"></div>
+      <button class="btn" onclick="reveal()">Check</button>
+    </div>
+  </div>
+
+  <!-- END -->
+  <div class="panel" id="pEnd"><div class="sheet" id="endSheet"></div></div>
+</div>
+
+<script>
+/* =====================================================================
+   DATA
+   ===================================================================== */
+var BEST = 0, G = null;
+
+var TOPS = [
+  {id:"pep",  nm:"PEPPERONI", c:"#B3341F"},
+  {id:"mush", nm:"MUSHROOM",  c:"#8A7A5E"},
+  {id:"olive",nm:"OLIVE",     c:"#2F3A2A"},
+  {id:"pep2", nm:"PEPPER",    c:"#3E7D3A"}
+];
+var NAMES = ["Table 1","Table 2","Table 3","Table 4","Booth","Counter","Takeout","Window",
+             "Corner","Patio","Bar seat","Curbside"];
+var DRINKS = ["Just a soda","Just a water","Just a lemonade","One iced tea"];
+
+/* deterministic-ish topping scatter */
+var SPOTS = [[28,24],[64,20],[100,30],[24,62],[62,58],[100,66],[44,94],[82,96],[16,40],[74,40]];
+
+function $(id){return document.getElementById(id);}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function topName(id){return TOPS.filter(function(x){return x.id===id;})[0].nm.toLowerCase();}
+function summarize(list){
+  var n={}, order=[];
+  list.forEach(function(t){ if(!(t in n)){n[t]=0; order.push(t);} n[t]++; });
+  return order.map(function(t){ return (n[t]>1 ? n[t]+"x " : "") + topName(t); }).join(", ");
+}
+
+/* =====================================================================
+   START
+   ===================================================================== */
+function startGame(){
+  ["pStart","pGuess","pEnd"].forEach(function(p){$(p).classList.remove("on");});
+  G = {
+    score:0, served:0, walked:0, streak:0, mult:1,
+    dayMax:95000, day:95000,
+    seats:[null,null,null,null],
+    oven:[{},{},{}],
+    build:null,
+    nextSpawn:400, spawnEvery:2600,
+    bigTotal:0, bigFirst:0, drinksLost:0, idle:0, burnt:0,
+    uid:0, over:false, last:performance.now()
+  };
+  G.oven.forEach(function(o){ o.busy=false; });
+  drawTops(); drawSlots(); drawTickets(); clearBuild(); ui();
+  requestAnimationFrame(loop);
+}
+
+/* =====================================================================
+   RENDER SHELLS
+   ===================================================================== */
+function drawTops(){
+  var w = $("tops"); w.innerHTML = "";
+  TOPS.forEach(function(t){
+    var b = document.createElement("button");
+    b.className = "top";
+    b.innerHTML = '<i style="background:'+t.c+'"></i>'+t.nm;
+    b.onclick = function(){ addTop(t.id); };
+    w.appendChild(b);
+  });
+}
+function drawSlots(){
+  var w = $("slots"); w.innerHTML = "";
+  G.oven.forEach(function(o,i){
+    var el = document.createElement("div");
+    el.className = "slot";
+    el.innerHTML = '<div class="ring"></div><div class="nm">empty</div>';
+    el.onclick = function(){ pull(i); };
+    o.el = el; o.ring = el.querySelector(".ring"); o.nm = el.querySelector(".nm");
+    w.appendChild(el);
+  });
+}
+
+function drawTickets(){
+  var w = $("tickets"); w.innerHTML = "";
+  G.seats.forEach(function(c,i){
+    var el = document.createElement("div");
+    if(!c){
+      el.className = "tick empty";
+      w.appendChild(el);
+      return;
+    }
+    el.className = "tick" + (c.big?" big":"") + (G.build && G.build.id===c.id ? " sel":"");
+    var items = c.type==="drink" ? c.label : summarize(c.need);
+    el.innerHTML =
+      (c.big?'<div class="rush">RUSH x2</div>':'') +
+      (c.type==="drink"?'<div class="drink">QUICK</div>':'') +
+      '<div class="who">'+c.name+'</div>'+
+      '<div class="items">'+items+'</div>'+
+      '<div class="pat"></div>';
+    el.onclick = function(){ take(i); };
+    c.el = el; c.patEl = el.querySelector(".pat");
+    w.appendChild(el);
+  });
+}
+
+/* =====================================================================
+   ORDERS
+   ===================================================================== */
+function spawn(){
+  var free = [];
+  G.seats.forEach(function(c,i){ if(!c) free.push(i); });
+  if(!free.length) return;
+  var i = pick(free);
+  var r = Math.random();
+  var c;
+  if(r < 0.22){
+    c = {id:++G.uid, type:"drink", label:pick(DRINKS), name:pick(NAMES),
+         need:[], big:false, patMax:7000, pat:7000};
+  } else {
+    var bigOut = G.seats.some(function(o){ return o && o.big; });
+    var big = !bigOut && r > 0.62;
+    var n = big ? 4 : (1 + Math.floor(Math.random()*2));
+    var need = [];
+    for(var k=0;k<n;k++) need.push(pick(TOPS).id);
+    c = {id:++G.uid, type:"pizza", name:pick(NAMES), need:need, big:big,
+         patMax: big ? 15000 : 20000, pat: big ? 15000 : 20000};
+    if(big){ G.bigTotal++; G.bigClaimed = false; }
+  }
+  G.seats[i] = c;
+  drawTickets();
+}
+
+function take(i){
+  if(G.over) return;
+  var c = G.seats[i]; if(!c) return;
+
+  if(c.type==="drink"){          /* one click, done, no oven */
+    serve(c, 1.0, "QUICK ONE");
+    return;
+  }
+  if(G.build && G.build.id===c.id) return;
+  G.build = {id:c.id, seat:i, need:c.need.slice(), added:[], big:c.big};
+  /* did they take the big one before any other pizza that was waiting? */
+  if(c.big && !c.tookLate) G.bigFirst++;
+  G.seats.forEach(function(o){ if(o && o.big && o.id!==c.id) o.tookLate = true; });
+  if(!c.big){
+    G.seats.forEach(function(o){ if(o && o.big) o.tookLate = true; });
+  }
+  drawTickets(); paintBuild();
+}
+
+function addTop(id){
+  if(G.over || !G.build) { toast("TAKE AN ORDER FIRST"); return; }
+  var b = G.build;
+  if(b.added.length >= b.need.length) return;
+  b.added.push(id);
+  paintBuild();
+  if(b.added.length === b.need.length){
+    if(matches(b)) $("send").className = "btn on";
+    else { toast("THAT IS NOT THE ORDER", "bad"); b.added = []; paintBuild(); }
+  }
+}
+function matches(b){
+  var a = b.added.slice().sort().join("|"), n = b.need.slice().sort().join("|");
+  return a === n;
+}
+
+function paintBuild(){
+  var pie = $("pie"), nd = $("need");
+  pie.innerHTML = "";
+  if(!G.build){
+    pie.className = "off";
+    nd.innerHTML = '<div class="h">Take an order.</div><div class="s">Click a ticket up top to start it.</div>';
+    $("send").className = "btn";
+    return;
+  }
+  pie.className = "";
+  var b = G.build;
+  b.added.forEach(function(t,i){
+    var c = TOPS.filter(function(x){return x.id===t;})[0];
+    var d = document.createElement("div");
+    d.className = "dot";
+    d.style.background = c.c;
+    d.style.left = SPOTS[i%SPOTS.length][0] + "px";
+    d.style.top  = SPOTS[i%SPOTS.length][1] + "px";
+    pie.appendChild(d);
+  });
+  var left = b.need.slice();
+  b.added.forEach(function(t){ var k = left.indexOf(t); if(k>-1) left.splice(k,1); });
+  nd.innerHTML =
+    '<div class="h">'+(b.big?"RUSH ORDER":"Order up")+'</div>'+
+    '<div class="s">'+(left.length
+      ? "Still needs: " + summarize(left)
+      : "Ready for the oven.")+'</div>';
+}
+function clearBuild(){ G.build = null; paintBuild(); drawTickets(); }
+
+/* =====================================================================
+   OVEN
+   ===================================================================== */
+function sendToOven(){
+  if(G.over || !G.build || !matches(G.build)) return;
+  var slot = null;
+  for(var i=0;i<G.oven.length;i++) if(!G.oven[i].busy){ slot = G.oven[i]; break; }
+  if(!slot){ toast("OVEN IS FULL", "bad"); return; }
+  var b = G.build;
+  slot.busy = true; slot.t = 0; slot.bake = 4000;
+  slot.cid = b.id; slot.big = b.big; slot.seat = b.seat;
+  var cust = seatById(b.id);
+  if(cust) cust.inOven = true;
+  slot.nm.textContent = "baking";
+  clearBuild();
+  $("send").className = "btn";
+}
+
+function pull(i){
+  var o = G.oven[i];
+  if(G.over || !o.busy) return;
+  var pct = o.t/o.bake;
+  var c = seatById(o.cid);
+  var q, label;
+  if(pct < 0.82){ q = 0.35; label = "RAW"; }
+  else if(pct <= 1.18){ q = 1.0; label = "PERFECT"; }
+  else { q = 0; label = "BURNT"; }
+  o.busy = false; o.el.className = "slot"; o.nm.textContent = "empty";
+  o.ring.style.background = "#DED7C4";
+  if(c) serve(c, q, label);
+  else { toast("NOBODY TO SERVE IT TO", "bad"); breakStreak(); }
+}
+
+function seatById(id){
+  for(var i=0;i<4;i++) if(G.seats[i] && G.seats[i].id===id) return G.seats[i];
+  return null;
+}
+
+/* =====================================================================
+   SERVE / LOSE
+   ===================================================================== */
+function serve(c, q, label){
+  var i = G.seats.indexOf(c);
+  if(q === 0){
+    G.burnt++;
+    breakStreak();
+    toast("BURNT", "bad");
+    if(i>-1) leave(i, true);
+    return;
+  }
+  G.streak++;
+  G.mult = Math.min(5, 1 + Math.floor(G.streak/3));
+  var base = c.type==="drink" ? 40 : (c.big ? 200 : 100);
+  var pts = Math.round(base * q * G.mult * (c.big ? 2 : 1));
+  G.score += pts;
+  G.served++;
+  fx(c.el, "+"+pts);
+  toast(label + (G.mult>1 ? "  x"+G.mult : ""), "good");
+  if(i>-1){
+    c.el.classList.add("leaving");
+    G.seats[i] = null;
+    setTimeout(drawTickets, 340);
+  }
+  ui();
+}
+function leave(i, quiet){
+  var c = G.seats[i]; if(!c) return;
+  if(!quiet){
+    G.walked++;
+    if(c.type==="drink") G.drinksLost++;
+    breakStreak();
+    toast("THEY WALKED OUT", "bad");
+  }
+  if(G.build && G.build.id===c.id) clearBuild();
+  G.oven.forEach(function(o){
+    if(o.busy && o.cid===c.id){
+      o.busy=false; o.el.className="slot"; o.nm.textContent="empty";
+      o.ring.style.background="#DED7C4";
+    }
+  });
+  c.el.classList.add("leaving");
+  G.seats[i] = null;
+  setTimeout(drawTickets, 340);
+  ui();
+}
+function breakStreak(){ G.streak = 0; G.mult = 1; ui(); }
+
+/* =====================================================================
+   LOOP
+   ===================================================================== */
+function loop(now){
+  if(!G || G.over) return;
+  var dt = Math.min(60, now - G.last);
+  G.last = now;
+
+  G.day -= dt;
+  if(G.day <= 0){ G.day = 0; endDay(); return; }
+  var p = G.day/G.dayMax;
+  var d = $("day");
+  d.style.transform = "scaleX("+p+")";
+  d.className = p < 0.2 ? "warn" : "";
+
+  /* patience */
+  for(var i=0;i<4;i++){
+    var c = G.seats[i];
+    if(!c || !c.patEl) continue;
+    if(c.inOven){ c.patEl.className = "pat"; continue; }
+    c.pat -= dt * (c.big ? 1.5 : 1);
+    if(c.pat <= 0){ leave(i); continue; }
+    var f = c.pat/c.patMax;
+    c.patEl.style.transform = "scaleX("+f+")";
+    c.patEl.className = "pat" + (f<0.28?" low":(f<0.6?" mid":""));
+  }
+
+  /* oven bakes with or without you */
+  var ovenBusy = false;
+  G.oven.forEach(function(o){
+    if(!o.busy) return;
+    ovenBusy = true;
+    o.t += dt;
+    var pct = o.t/o.bake;
+    var deg = Math.min(1, pct) * 360;
+    var col = pct > 1.18 ? "#B3341F" : (pct >= 0.82 ? "#3E7D3A" : "#D854DC");
+    o.ring.style.background = "conic-gradient("+col+" "+deg+"deg,#DED7C4 0)";
+    if(pct > 1.18){
+      o.el.className = "slot busy burn"; o.nm.textContent = "burning";
+    } else if(pct >= 0.82){
+      o.el.className = "slot busy ready pulse"; o.nm.textContent = "PULL IT";
+    } else {
+      o.el.className = "slot busy"; o.nm.textContent = "baking";
+    }
+    if(pct > 1.6){                       /* left in far too long */
+      var c = seatById(o.cid);
+      o.busy = false; o.el.className = "slot"; o.nm.textContent = "empty";
+      o.ring.style.background = "#DED7C4";
+      G.burnt++; breakStreak(); toast("BURNT TO A CRISP", "bad");
+      if(c){ var k = G.seats.indexOf(c); if(k>-1) leave(k, true); }
+    }
+  });
+
+  /* standing around while the oven does the work AND there is work sitting there */
+  var waiting = G.seats.some(function(c){ return c && !c.inOven; });
+  if(ovenBusy && !G.build && waiting) G.idle += dt;
+
+  /* spawn */
+  G.nextSpawn -= dt;
+  if(G.nextSpawn <= 0){
+    spawn();
+    G.spawnEvery = Math.max(1300, G.spawnEvery - 110);
+    G.nextSpawn = G.spawnEvery * (0.75 + Math.random()*0.5);
+  }
+
+  requestAnimationFrame(loop);
+}
+
+/* =====================================================================
+   UI
+   ===================================================================== */
+function ui(){
+  $("uiScore").textContent = G.score;
+  $("uiStreak").textContent = "x" + G.mult;
+  $("uiServed").textContent = G.served;
+  $("uiWalked").textContent = G.walked;
+}
+var tT;
+function toast(t, kind){
+  var el = $("toast");
+  el.textContent = t;
+  el.className = "on" + (kind?" "+kind:"");
+  clearTimeout(tT);
+  tT = setTimeout(function(){ el.className = ""; }, 1000);
+}
+function fx(anchor, txt){
+  if(!anchor) return;
+  var r = anchor.getBoundingClientRect(), s = $("stage").getBoundingClientRect();
+  var el = document.createElement("div");
+  el.className = "pointsfx";
+  el.textContent = txt;
+  el.style.left = (r.left - s.left + r.width/2 - 24) + "px";
+  el.style.top  = (r.top - s.top + 12) + "px";
+  $("stage").appendChild(el);
+  setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 820);
+}
+
+/* =====================================================================
+   END
+   ===================================================================== */
+function endDay(){
+  G.over = true;
+  $("day").style.transform = "scaleX(0)";
+  $("guess").value = "";
+  $("pGuess").classList.add("on");
+  setTimeout(function(){ $("guess").focus(); }, 60);
+}
+
+function reveal(){
+  var g = parseInt($("guess").value,10); if(isNaN(g)) g = 0;
+  var off = g - G.served;
+  var offTxt = off===0 ? "Dead on." : (off<0 ? Math.abs(off)+" more than you thought." : off+" fewer than you thought.");
+  if(G.score > BEST) BEST = G.score;
+  $("uiBest").textContent = BEST;
+  var idleS = (G.idle/1000).toFixed(1);
+
+  var L = [];
+
+  if(G.bigTotal > 0){
+    if(G.bigFirst === G.bigTotal)
+      L.push(["The worst order first","You grabbed every black ticket before anything else. That is why the score looks like that. They pay double and they walk out fastest, so they were never the ones to save for later."]);
+    else if(G.bigFirst === 0)
+      L.push(["The worst order last","You left every black ticket sitting. They lose patience half again as fast as everyone else, and they were the only double-pay orders on the board."]);
+    else
+      L.push(["The worst order","You took "+G.bigFirst+" of "+G.bigTotal+" black tickets first. Those were the ones that paid double."]);
+  }
+
+  if(G.drinksLost === 0)
+    L.push(["The one-click orders","You never lost a drink. Each one was a single click and you took them as they came instead of letting them sit."]);
+  else
+    L.push(["The one-click orders","You lost "+G.drinksLost+" drink order"+(G.drinksLost===1?"":"s")+". Each one was one click and worth real points, and each one broke your streak on the way out."]);
+
+  if(G.idle < 4000)
+    L.push(["While the oven ran","You were almost never standing still. "+idleS+" seconds of empty counter with a pizza in the oven. The oven works whether you do or not, and you used that."]);
+  else
+    L.push(["While the oven ran","You spent "+idleS+" seconds watching the oven with nothing on your counter. The oven bakes on its own. That was free time to build the next order and you gave it away."]);
+
+  L.push(["Your guess","You said "+g+". It was "+G.served+". "+offTxt]);
+
+  $("endSheet").innerHTML =
+    '<span class="stamp">Counter closed</span>'+
+    '<div class="big" style="margin:15px 0 0">'+G.score+'</div>'+
+    '<p class="sub" style="margin-top:2px">'+G.served+' served, '+G.walked+' walked out. Best this session: '+BEST+'.</p>'+
+    '<div class="grid2" style="margin-top:15px">'+
+      '<div class="box"><div class="k">BLACK TICKETS TAKEN FIRST</div><div class="v">'+G.bigFirst+' / '+G.bigTotal+'</div></div>'+
+      '<div class="box"><div class="k">ONE-CLICK ORDERS LOST</div><div class="v">'+G.drinksLost+'</div></div>'+
+      '<div class="box"><div class="k">IDLE WHILE OVEN RAN</div><div class="v">'+idleS+'s</div></div>'+
+      '<div class="box"><div class="k">YOU GUESSED / ACTUAL</div><div class="v">'+g+' / '+G.served+'</div></div>'+
+    '</div>'+
+    '<div class="hr"></div>'+
+    L.map(function(x){return '<div class="lesson"><b>'+x[0]+'.</b> '+x[1]+'</div>';}).join("")+
+    '<div class="hr thin"></div>'+
+    '<button class="btn" onclick="startGame()">Run it again</button> '+
+    '<button class="btn ghost" onclick="backToStart()">Rules</button>';
+
+  $("pGuess").classList.remove("on");
+  $("pEnd").classList.add("on");
+}
+function backToStart(){
+  $("pEnd").classList.remove("on");
+  $("uiBest").textContent = BEST;
+  $("pStart").classList.add("on");
+}
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Enter" && $("pGuess").classList.contains("on")) reveal();
+  if(!G || G.over) return;
+  if(e.key >= "1" && e.key <= "4"){ e.preventDefault(); addTop(TOPS[+e.key-1].id); }
+  if(e.code === "Space"){ e.preventDefault(); if($("send").classList.contains("on")) sendToOven(); }
+});
+</script>
+</body>
+</html>
