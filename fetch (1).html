@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FETCH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Martian+Mono:wght@400;600&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=block" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFEAD9; --ink:#1B1A17; --pur:#D854DC; --pur-dim:#8E2F92;
+  --grime:#6B6455; --rule:#C9C0A8; --alarm:#C4442B; --good:#2E7D5B; --shade:#E2DBC6;
+  --disp:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Newsreader',Georgia,serif;
+  --mono:'Martian Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--pur);outline-offset:2px}
+canvas.px{image-rendering:pixelated;display:block}
+
+#app{max-width:1200px;margin:0 auto;padding:20px 20px 70px;position:relative;z-index:2}
+.screen{display:none}
+.screen.on{display:block}
+
+/* title */
+.wrap{max-width:70ch}
+h1.logo{font-family:var(--disp);font-weight:800;font-size:clamp(60px,14vw,150px);line-height:.82;letter-spacing:-.05em;margin:4vh 0 0}
+h1.logo b{color:var(--pur);font-weight:800}
+.tag{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--grime);margin:14px 0 26px}
+.lede{font-size:21px;max-width:52ch;margin:0 0 24px}
+.rules{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:16px 0;margin:0 0 24px;max-width:62ch}
+.rules dl{margin:0;display:grid;grid-template-columns:118px 1fr;gap:9px 16px}
+.rules dt{font-family:var(--disp);font-weight:800;font-size:16px}
+.rules dd{margin:0;font-size:16px}
+.big-btn{font-family:var(--disp);font-weight:800;font-size:25px;background:var(--ink);color:var(--paper);border:none;padding:13px 32px}
+.big-btn:hover{background:var(--pur);color:var(--ink)}
+.big-btn:disabled{background:var(--rule);color:var(--grime);cursor:wait}
+.ghost-btn{font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:none;border:2px solid var(--ink);padding:9px 15px}
+.ghost-btn:hover{background:var(--ink);color:var(--paper)}
+.cast{display:flex;gap:14px;margin:0 0 26px;flex-wrap:wrap}
+.cast canvas{border:2px solid var(--ink);background:var(--shade)}
+
+/* brief */
+.lvl-no{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--pur-dim)}
+.avatar-row{display:flex;align-items:center;gap:20px;margin:10px 0 4px}
+.avatar-row canvas{border:3px solid var(--ink);background:var(--shade);flex:none}
+h2.who{font-family:var(--disp);font-weight:800;font-size:52px;line-height:.95;letter-spacing:-.03em;margin:0}
+.who-sub{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--grime);margin-top:5px}
+.brief-body{font-size:20px;margin:16px 0 18px;max-width:50ch}
+.newthing{border-left:5px solid var(--pur);padding:8px 0 8px 16px;margin:0 0 24px;max-width:50ch}
+.newthing b{font-family:var(--disp)}
+
+/* build */
+.build-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:16px}
+.build-head h3{font-family:var(--disp);font-weight:800;font-size:32px;margin:0;letter-spacing:-.02em}
+.build-note{font-size:16px;color:var(--grime);max-width:58ch;margin:0 0 18px}
+.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:0 0 14px;max-width:880px}
+.slot{display:flex;align-items:center;gap:8px;border:2px solid var(--ink);background:var(--paper);padding:8px 10px}
+.slot span{font-family:var(--mono);font-size:10px;color:var(--grime);flex:none}
+.slot input{border:none;background:none;outline:none;width:100%;font-family:var(--disp);font-weight:700;font-size:17px}
+.suggest{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 22px;max-width:880px}
+.sg{font-family:var(--mono);font-size:11px;background:var(--shade);border:2px solid var(--rule);padding:6px 10px}
+.sg:hover{border-color:var(--ink)}
+.build-sec{margin:0 0 26px}
+.build-sec h4{font-family:var(--disp);font-weight:800;font-size:21px;margin:0 0 4px}
+.build-sec p{font-size:15px;color:var(--grime);margin:0 0 11px;max-width:56ch}
+
+/* hud */
+.hud{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:12px}
+.hud canvas{border:2px solid var(--ink);background:var(--shade);flex:none}
+.hud-name{font-family:var(--disp);font-weight:800;font-size:21px;line-height:1}
+.hud-name small{display:block;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.1em;color:var(--grime);margin-top:3px}
+.hud-phase{font-family:var(--disp);font-weight:800;font-size:14px;background:var(--ink);color:var(--paper);padding:5px 10px}
+.hud-phase.f{background:var(--pur);color:var(--ink)}
+.spacer{flex:1}
+.meter-wrap{width:180px}
+.meter-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;display:flex;justify-content:space-between;margin-bottom:3px}
+.meter{height:12px;border:2px solid var(--ink);background:var(--paper)}
+.meter i{display:block;height:100%;width:0;background:var(--good);transition:width .18s linear}
+.meter.w i{background:var(--pur)} .meter.d i{background:var(--alarm)}
+.score{font-family:var(--mono);font-weight:600;font-size:19px;min-width:70px;text-align:right}
+
+.board{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+
+/* tabs */
+.tabs{display:flex;gap:0;margin-bottom:-2px;flex-wrap:wrap}
+.tab{font-family:var(--disp);font-weight:800;font-size:15px;background:var(--shade);border:2px solid var(--ink);border-bottom-color:transparent;padding:8px 14px;margin-right:5px;position:relative}
+.tab[aria-selected="true"]{background:var(--paper);}
+.tab .badge{font-family:var(--mono);font-size:10px;background:var(--ink);color:var(--paper);padding:1px 5px;margin-left:6px}
+.tab.hot .badge{background:var(--alarm)}
+.panel{border:2px solid var(--ink);background:var(--paper);padding:13px;min-height:300px}
+.crumb{display:flex;align-items:center;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+.crumb h4{font-family:var(--disp);font-weight:800;font-size:19px;margin:0}
+.crumb .sub{font-family:var(--mono);font-size:10px;color:var(--grime)}
+.back{font-family:var(--mono);font-size:11px;background:var(--shade);border:2px solid var(--ink);padding:5px 10px}
+.back:hover{background:var(--ink);color:var(--paper)}
+
+.items{display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start}
+.item{font-family:var(--mono);font-size:11px;line-height:1.35;background:var(--paper);border:2px solid var(--ink);padding:7px 9px;max-width:230px;text-align:left;word-break:break-word;display:flex;gap:6px;align-items:flex-start}
+.item .ic{font-family:var(--mono);font-size:9px;color:var(--grime);flex:none;border:1px solid var(--rule);padding:1px 3px}
+.item.junk{border-color:var(--alarm);color:var(--alarm)}
+.item.paper{background:var(--shade)}
+.item.sel{background:var(--pur);border-color:var(--ink);color:var(--ink)}
+.item.sel .ic{border-color:var(--ink);color:var(--ink)}
+.item.new{animation:pop .3s ease}
+@keyframes pop{from{transform:scale(.75);opacity:0}}
+.none{font-family:var(--mono);font-size:11px;color:var(--grime)}
+
+.grid-folders{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+.fcard{border:2px solid var(--ink);background:var(--shade);padding:12px;text-align:left}
+.fcard b{display:block;font-family:var(--disp);font-weight:800;font-size:17px;margin-bottom:3px;word-break:break-word}
+.fcard i{font-family:var(--mono);font-style:normal;font-size:10px;color:var(--grime)}
+.fcard:hover{background:var(--pur)}
+
+/* canvas portal */
+.course{border:2px solid var(--rule);margin-bottom:9px}
+.course h5{font-family:var(--disp);font-weight:800;font-size:16px;margin:0;padding:7px 10px;background:var(--shade);border-bottom:2px solid var(--rule)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:9px;width:100%;background:none;border:none;border-bottom:1px solid var(--rule);padding:7px 10px;text-align:left;font-family:var(--mono);font-size:11px}
+.row:last-child{border-bottom:none}
+.row:hover{background:var(--shade)}
+.row.sel{background:var(--pur)}
+.st{font-family:var(--mono);font-size:9px;padding:2px 6px;border:1px solid var(--ink);flex:none}
+.st.missing{background:var(--alarm);color:var(--paper);border-color:var(--alarm)}
+.st.done{color:var(--grime);border-color:var(--rule)}
+.st.soon{background:var(--ink);color:var(--paper)}
+
+/* detail */
+.detail{border:2px solid var(--ink);background:var(--shade);padding:13px;margin-top:13px}
+.detail .dn{font-family:var(--mono);font-size:13px;word-break:break-word;margin-bottom:9px}
+.detail .dn b{color:var(--pur-dim)}
+.reveal{font-size:18px;margin:0 0 10px}
+.reveal b{font-family:var(--disp)}
+.namerow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:11px}
+.namerow input{border:2px solid var(--ink);background:var(--paper);padding:8px 10px;font-family:var(--mono);font-size:12px;min-width:260px;flex:1}
+.dests{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.dests .lab{font-family:var(--mono);font-size:10px;color:var(--grime);margin-right:3px}
+.dest{font-family:var(--disp);font-weight:700;font-size:14px;background:var(--paper);border:2px solid var(--ink);padding:7px 12px}
+.dest:hover{background:var(--pur)}
+.btn-s{font-family:var(--disp);font-weight:700;font-size:14px;background:var(--paper);border:2px solid var(--ink);padding:7px 12px}
+.btn-s:hover{background:var(--ink);color:var(--paper)}
+.btn-s.go{background:var(--ink);color:var(--paper)}
+.btn-s.go:hover{background:var(--pur);color:var(--ink)}
+.loading{font-family:var(--mono);font-size:11px;color:var(--grime)}
+
+/* rail */
+.rail{display:flex;flex-direction:column;gap:12px}
+.ask{border:3px solid var(--pur);background:var(--paper);padding:14px}
+.ask.idle{border-color:var(--rule);opacity:.6}
+.ask .lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--pur-dim);margin-bottom:6px}
+.ask h3{font-family:var(--disp);font-weight:800;font-size:20px;line-height:1.15;margin:0 0 8px}
+.ask .from{font-size:15px;color:var(--grime);margin:0 0 10px}
+.bar{height:9px;border:2px solid var(--ink)}
+.bar i{display:block;height:100%;background:var(--pur);width:100%}
+.ask .act{margin-top:11px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.ask .act input{border:2px solid var(--ink);background:var(--paper);padding:7px 9px;font-family:var(--mono);font-size:13px;width:78px}
+.wherebox{border:2px solid var(--ink);background:var(--shade);padding:11px}
+.wherebox h5{font-family:var(--disp);font-weight:800;font-size:14px;margin:0 0 6px}
+.wherebox ul{margin:0;padding-left:16px;font-family:var(--mono);font-size:10px;color:var(--grime);line-height:1.7}
+
+/* gremlin layer */
+#grem{position:fixed;inset:0;pointer-events:none;z-index:1}
+.gr{position:absolute;transition:none}
+.gr.act{filter:drop-shadow(0 0 6px var(--pur))}
+
+/* toasts */
+.toasts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);display:flex;flex-direction:column-reverse;gap:6px;z-index:60;pointer-events:none;align-items:center}
+.toast{font-family:var(--mono);font-size:12px;background:var(--ink);color:var(--paper);padding:7px 13px;max-width:78vw;text-align:center}
+.toast.bad{background:var(--alarm)} .toast.win{background:var(--good)} .toast.gob{background:var(--pur);color:var(--ink)}
+
+/* result */
+.verdict{font-family:var(--disp);font-weight:800;font-size:clamp(42px,8vw,82px);line-height:.9;letter-spacing:-.04em;margin:4vh 0 6px}
+.verdict.fail{color:var(--alarm)}
+.stars{font-size:34px;letter-spacing:.1em;margin:0 0 14px}
+.reason{font-size:19px;margin:0 0 20px;max-width:50ch}
+.lost{border:2px solid var(--alarm);padding:13px;margin:0 0 20px;max-width:56ch}
+.lost h5{font-family:var(--disp);font-weight:800;font-size:17px;margin:0 0 7px}
+.lost ul{margin:0;padding-left:18px;font-family:var(--mono);font-size:12px;line-height:1.8}
+.stat{display:grid;grid-template-columns:1fr auto;gap:5px 18px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:13px 0;margin:0 0 20px;font-family:var(--mono);font-size:13px;max-width:56ch}
+.stat b{font-weight:600;text-align:right}
+.final-line{font-size:22px;max-width:44ch;margin:0 0 24px}
+
+@media (max-width:960px){ .board{grid-template-columns:1fr} .rail{order:-1} }
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
+</style>
+</head>
+<body>
+<div id="grem"></div>
+<div id="app">
+
+<section class="screen on" id="s-title"><div class="wrap">
+  <h1 class="logo">FET<b>C</b>H</h1>
+  <p class="tag">FIVE PEOPLE / FOUR PLACES THINGS LIVE / GOOD LUCK</p>
+  <div class="cast" id="cast"></div>
+  <p class="lede">Everything you are about to sort is work somebody already finished. You are not here to do it. You are here to be able to produce it when somebody asks.</p>
+  <div class="rules"><dl>
+    <dt>BUILD</dt><dd>Name your own folders and pockets before anything arrives. Locked for the level.</dd>
+    <dt>SORT</dt><dd>Things land in the pile. Pick one up and send it somewhere.</dd>
+    <dt>OPEN</dt><dd>Half of it arrives named nothing. Open it, see what it is, and call it whatever you want.</dd>
+    <dt>FETCH</dt><dd>People start asking. Some answers are in your drive. Some are not.</dd>
+  </dl></div>
+  <p class="lede" style="font-size:16px">Things are also crawling around the edges of this screen adding files while you work.</p>
+  <button class="big-btn" id="go" disabled>Loading</button>
+</div></section>
+
+<section class="screen" id="s-brief"><div class="wrap">
+  <div class="lvl-no" id="b-lvl"></div>
+  <div class="avatar-row"><div id="b-face"></div><div><h2 class="who" id="b-name"></h2><div class="who-sub" id="b-sub"></div></div></div>
+  <p class="brief-body" id="b-body"></p>
+  <div class="newthing" id="b-new"></div>
+  <button class="big-btn" id="b-go">Set it up</button>
+</div></section>
+
+<section class="screen" id="s-build">
+  <div class="build-head"><h3 id="bh">Set up the drive</h3><div class="slot-count" id="bcount" style="font-family:var(--mono);font-size:13px"></div></div>
+  <p class="build-note">Nothing has arrived yet. Type whatever names you want. There is no right answer and no undo, and you are living with these for the whole level.</p>
+  <div class="build-sec">
+    <h4>Folders in the drive</h4>
+    <p>For everything digital.</p>
+    <div class="slot-grid" id="fslots"></div>
+    <div class="suggest" id="fsug"></div>
+  </div>
+  <div class="build-sec" id="bagsec" hidden>
+    <h4>Pockets in the backpack</h4>
+    <p>For paper. Paper cannot be renamed or searched. The only thing you will have is which pocket you put it in.</p>
+    <div class="slot-grid" id="pslots"></div>
+    <div class="suggest" id="psug"></div>
+  </div>
+  <button class="big-btn" id="build-go">Start the day</button>
+</section>
+
+<section class="screen" id="s-play">
+  <div class="hud">
+    <div id="h-face"></div>
+    <div class="hud-name" id="h-name"></div>
+    <div class="hud-phase" id="h-phase">SORT</div>
+    <div class="spacer"></div>
+    <div class="meter-wrap"><div class="meter-label"><span>IN THE PILE</span><span id="m-num"></span></div><div class="meter" id="meter"><i id="m-fill"></i></div></div>
+    <div class="score" id="h-score">0</div>
+  </div>
+  <div class="board">
+    <div>
+      <div class="tabs" id="tabs"></div>
+      <div class="panel" id="panel"></div>
+      <div class="detail" id="detail"></div>
+    </div>
+    <div class="rail">
+      <div class="ask idle" id="ask">
+        <div class="lab">NOBODY IS ASKING YET</div>
+        <h3 id="ask-q">Requests start once the pile stops falling.</h3>
+        <p class="from" id="ask-from"></p>
+        <div class="bar"><i id="ask-bar"></i></div>
+        <div class="act" id="ask-act"></div>
+      </div>
+      <div class="wherebox" id="wherebox"></div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="s-result"><div class="wrap">
+  <p class="verdict" id="r-verdict"></p>
+  <div class="stars" id="r-stars"></div>
+  <p class="reason" id="r-reason"></p>
+  <div class="lost" id="r-lost" hidden><h5>You named these, then could not find them</h5><ul id="r-lost-list"></ul></div>
+  <div class="stat" id="r-stat"></div>
+  <button class="big-btn" id="r-next">Next level</button>
+  <button class="ghost-btn" id="r-retry" style="margin-left:8px">Run it again</button>
+</div></section>
+
+<section class="screen" id="s-final"><div class="wrap">
+  <p class="verdict" id="f-verdict"></p>
+  <div class="stars" id="f-stars"></div>
+  <div class="stat" id="f-stat"></div>
+  <p class="final-line" id="f-line"></p>
+  <button class="big-btn" id="f-again">Play again</button>
+</div></section>
+
+</div>
+<div class="toasts" id="toasts"></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i)};
+
+/* ================= PIXEL ART ================= */
+var K="#1B1A17", W="#FFFFFF", E="#241F1B";
+
+var FACES={
+ noah:{p:{S:"#D9A87C",H:"#5E3A1E",C:"#3F6B4A",A:"#C4442B"},r:[
+ "....KKKK....","..KKHHHHKK..",".KHHHHHHHHK.",".KHSSSSSSHK.",".KSWESSEWSK.",".KSSSSSSSSK.",
+ ".KSSMMMMSSK.","..KSSSSSSK..","...KKSSKK...","..KCCCCCCK..",".KCACCCCACK.",".KC.KKKK.CK."]},
+ priya:{p:{S:"#B67F52",H:"#221A14",C:"#7A4C86",A:"#D854DC"},r:[
+ "....KKKK....","..KHHHHHHK..",".KHHHHHHHHK.",".KHSSSSSSHK.",".KHSEESEEHK.",".KHSSSSSSHK.",
+ ".KHSSMMSSHK.",".KHSSSSSSHK.","..KHKSSKHK..","..KCCCCCCK..",".KCCCCCCCCK.",".KC.KKKK.CK."]},
+ marcus:{p:{S:"#8A5A34",H:"#221A14",C:"#2E5E7D",A:"#D854DC"},r:[
+ "....KKKK....","..KKAAAAKK..",".KAAAAAAAAK.",".KASSSSSSAK.",".KAWEAAEWAK.",".KSSSSSSSSK.",
+ ".KSSMMMMSSK.","..KSSSSSSK..","...KKSSKK...","..KCCCCCCK..",".KCCCAACCCK.",".KC.KKKK.CK."]},
+ june:{p:{S:"#E0B48A",H:"#8A4B22",C:"#2E7D5B",A:"#C4442B"},r:[
+ "....KKKK....","..KKHHHHKK..",".KHHHHHHHHK.","KAHSSSSSSHAK","KASWESSEWSAK","KAHSSSSSSHAK",
+ ".KSSMMMMSSK.","..KSSSSSSK..","...KKSSKK...","..KCCCCCCK..",".KCCCCCCCCK.",".KC.KKKK.CK."]},
+ dev:{p:{S:"#C08B5C",H:"#2C2118",C:"#6B6455",A:"#D854DC"},r:[
+ "...KKKKKK...","..KCCCCCCK..",".KCHHHHHHCK.",".KCSSSSSSCK.",".KCSEESEESK.",".KCSSSSSSCK.",
+ ".KCSSMMSSCK.",".KCSSSSSSCK.","..KCSSSSCK..","..KCCCCCCK..",".KCCCCCCCCK.",".KC.KKKK.CK."]}
+};
+
+var GREM={
+ blob:{n:"the BLOB",p:{B:"#6FA85B"},r:[
+ "..........","...BBBB...","..BBBBBB..",".BBWBBWBB.",".BBEBBEBB.",".BBBBBBBB.",".BBBBBBBB.","..B.BB.B..","..........",".........."]},
+ snap:{n:"the SNAP",p:{B:"#C4442B",A:"#8E2F92",M:"#1B1A17"},r:[
+ ".B......B.",".BB....BB.","..BBBBBB..",".BWBBBBWB.",".BEBBBBEB.",".BBBMMBBB.","..BBBBBB..","..AA..AA..","..........",".........."]},
+ wraith:{n:"the WRAITH",p:{B:"#8E2F92"},r:[
+ "...BBBB...","..BBBBBB..",".BWBBBBWB.",".BEBBBBEB.",".BBBBBBBB.",".BBBBBBBB.",".BBBBBBBB.",".B.BB.BB.B","..........",".........."]},
+ moth:{n:"the MOTH",p:{B:"#4A4338",A:"#D854DC"},r:[
+ "..........",".AA....AA.","AAAA..AAAA","AAAABBAAAA",".AABBBBAA.","..BWBBWB..","..BEBBEB..","...BBBB...","..A....A..",".........."]},
+ twin:{n:"the TWIN",p:{B:"#2E7D5B"},r:[
+ "..........","..BB..BB..",".BBBB.BBBB",".BWBB.BWBB",".BEBB.BEBB",".BBBB.BBBB","..BBBBBB..","..BBBBBB..","..B....B..",".........."]}
+};
+
+function draw(def,scale){
+  var r=def.r,h=r.length,w=r[0].length;
+  var c=document.createElement("canvas");
+  c.className="px"; c.width=w*scale; c.height=h*scale;
+  var x=c.getContext("2d");
+  var pal=Object.assign({K:K,W:W,E:E,M:"#8C3A2E"},def.p);
+  for(var y=0;y<h;y++) for(var i=0;i<w;i++){
+    var ch=r[y][i]; if(ch==="."||!pal[ch]) continue;
+    x.fillStyle=pal[ch]; x.fillRect(i*scale,y*scale,scale,scale);
+  }
+  return c;
+}
+
+/* ================= LEVEL DATA ================= */
+/* item: [medium, category, description, junkKind]  medium: d digital, r photo, b paper */
+var JN={
+ untitled:function(){return "Untitled document ("+(3+Math.floor(Math.random()*40))+")"},
+ draft:function(){return "draft_"+(1+Math.floor(Math.random()*4))},
+ copy:function(){return "Copy of Copy of untitled"},
+ vague:function(){return ["new doc","final.docx","thing","stuff2","asdf","document (2)"][Math.floor(Math.random()*6)]},
+ shot:function(){return "Screenshot 2026-"+p2(9+Math.floor(Math.random()*2))+"-"+p2(1+Math.floor(Math.random()*28))+" at "+(1+Math.floor(Math.random()*11))+"."+p2(Math.floor(Math.random()*59))+" PM"},
+ img:function(){return "IMG_"+(4000+Math.floor(Math.random()*900))}
+};
+function p2(n){return (n<10?"0":"")+n}
+
+var ASKERS=["your Bio teacher, in class, right now","you, at 10:40pm, the night before",
+"the front office, before you can leave","your advisor, in a meeting that started already",
+"your group, in a text you keep ignoring","your English teacher, who says she never got it",
+"your coach, before the bus leaves","a parent, standing in the doorway",
+"you, in March, trying to study","the sub, who has no idea what is going on"];
+
+var LEVELS=[
+{no:1,key:"noah",name:"NOAH",init:"NB",sub:"NINTH GRADE / FOUR WEEKS IN / NOTHING HAS GONE WRONG YET",
+ body:"Four classes and one drive. Noah has not lost anything yet, mostly because there is not much yet to lose.",
+ nw:"<b>This level.</b> Build folders. Sort the pile. Open the things that arrived named nothing. Hand over what people ask for.",
+ portals:["drive"], fslots:4, sug:["Bio","English","Math","History","Stuff","School","This week"],
+ dump:40000, req:30000, gap:5000, asks:4, cap:12, grem:["blob"], gms:20000, pre:0,
+ items:[
+ ["d","Bio","your Bio Lab 3 data table","untitled"],["d","Bio","the Bio syllabus",0],
+ ["d","Bio","the rubric for the Bio lab report",0],["d","English","your first draft of the English essay","draft"],
+ ["d","English","the English essay you turned in",0],["d","English","your reading notes for chapter 6",0],
+ ["d","English","your teacher's comments on your draft",0],["d","Math","math problem set 4",0],
+ ["d","Math","your math quiz corrections",0],["d","Math","the math formula sheet",0],
+ ["d","Math","the math notes from the day you were out","untitled"],["d","History","your annotated history sources",0],
+ ["d","History","your history notes from week 2",0],["d","History","the history study guide",0]]},
+
+{no:2,key:"priya",name:"PRIYA",init:"PR",sub:"WRITES EVERYTHING THE NIGHT BEFORE / PHOTOGRAPHS EVERYTHING ELSE",
+ body:"Priya finishes things. She just finishes them four times. And when she does not want to write something down, she takes a picture of it.",
+ nw:"<b>New.</b> A camera roll. Photos never touch the pile, they go straight in there and stay there. Nobody ever looks in there on purpose.",
+ portals:["drive","roll"], fslots:4, sug:["English","History","Spanish","Bio","Photos","Important","Misc"],
+ dump:42000, req:28000, gap:4500, asks:5, cap:13, grem:["blob","snap"], gms:16000, pre:0,
+ items:[
+ ["d","English","the first draft of essay 2","draft"],["d","English","the second draft of essay 2","draft"],
+ ["d","English","the essay 2 you actually turned in",0],["d","English","your outline for essay 2",0],
+ ["d","English","the essay rubric",0],["d","History","your rough draft of the DBQ","draft"],
+ ["d","History","the DBQ you turned in",0],["d","History","your history notes from week 4",0],
+ ["d","Spanish","the Spanish vocab set for week 3",0],["d","Spanish","your script for the Spanish oral exam",0],
+ ["d","Spanish","Spanish homework page 42","untitled"],["d","Bio","your Bio Lab 4 data","copy"],
+ ["d","Bio","your written Bio Lab 4 report",0],["d","Bio","the Bio unit 2 study guide",0],
+ ["r","Spanish","a photo of the homework board in Spanish","img"],
+ ["r","English","a photo of your handwritten outline","img"],
+ ["r","History","a screenshot of the assignment page","shot"],
+ ["r","Bio","a photo of the lab setup","img"],
+ ["r","History","a photo of a friend's notes from the class you missed","img"],
+ ["r","English","a screenshot of your teacher's email about the due date","shot"]]},
+
+{no:3,key:"marcus",name:"MARCUS",init:"MT",sub:"VARSITY SWIM / PRACTICE SIX DAYS A WEEK / DROWNING IN PAPER",
+ body:"Marcus does not only have classes. He has a season and he has a house, and all three hand him paperwork that the other two do not care about.",
+ nw:"<b>New.</b> A backpack. Paper cannot be renamed and cannot be searched. The only thing you will ever have is which pocket you put it in.",
+ portals:["drive","roll","bag"], fslots:5, pslots:3,
+ sug:["Bio","Math","Spanish","Swim","Home","School","Stuff","Later"],
+ psug:["School","Swim","Home","Signed","To hand in","Everything"],
+ dump:45000, req:26000, gap:4000, asks:6, cap:13, grem:["blob","snap","wraith"], gms:14000, pre:0,
+ items:[
+ ["d","Bio","your Bio Lab 5 data",0],["d","Bio","the Bio midterm study guide",0],
+ ["d","Bio","your Bio notes from week 5","untitled"],["d","Math","math problem set 6",0],
+ ["d","Math","your math test corrections",0],["d","Math","the math formula sheet",0],
+ ["d","Math","the notes from your math tutor",0],["d","Spanish","the Spanish vocab set for week 6",0],
+ ["d","Spanish","your draft of the Spanish essay","draft"],["d","Spanish","your notes for the Spanish oral",0],
+ ["d","Swim","the swim meet schedule",0],["d","Swim","the email from your coach about practice times",0],
+ ["d","Home","the family calendar for October",0],["d","Home","the summer program application","untitled"],
+ ["r","Swim","a photo of your split times from the meet","img"],
+ ["r","Math","a photo of the whiteboard in math","img"],
+ ["r","Swim","a screenshot of the bus departure time","shot"],
+ ["r","Home","a photo of the form your parent signed","img"],
+ ["r","Home","a photo of the chore list on the fridge","img"],
+ ["b","Swim","the signed sports physical form",0],["b","Swim","the permission slip for the away meet",0],
+ ["b","Spanish","the Spanish vocab handout",0],["b","Bio","the Bio lab safety contract",0],
+ ["b","Home","the field trip form your parent signed",0],["b","Math","the graded math test you have to return",0]]},
+
+{no:4,key:"june",name:"JUNE",init:"JK",sub:"IN FOUR GROUP PROJECTS AT ONCE / BEHIND ON TWO OF THEM",
+ body:"Half of June's drive was named by other people. Shared copies, her own copies, and three files that look identical and are not.",
+ nw:"<b>New.</b> Canvas. You do not organize Canvas and you cannot fix it. It is the only thing in this game that will tell you the truth about what you owe.",
+ portals:["drive","roll","bag","canvas"], fslots:4, pslots:3,
+ sug:["English","History","Chem","Group work","Stuff","Projects","Misc"],
+ psug:["To hand in","Handed back","Signed","School","Everything"],
+ dump:45000, req:24000, gap:3500, asks:7, cap:13, grem:["blob","snap","twin","moth"], gms:12000, pre:0,
+ items:[
+ ["d","Group work","the group slides everyone can edit",0],["d","Group work","your own copy of the group slides","copy"],
+ ["d","Group work","the research notes you wrote",0],["d","Group work","the research notes your partner sent you","untitled"],
+ ["d","Group work","the list of who is doing what",0],["d","Group work","the rough script for the presentation","draft"],
+ ["d","Group work","the script you are actually presenting",0],["d","English","the English essay you turned in",0],
+ ["d","English","your reading notes for chapter 11",0],["d","English","the feedback you wrote for a classmate",0],
+ ["d","History","your draft of the second DBQ","draft"],["d","History","the second DBQ you turned in",0],
+ ["d","Chem","your Chem Lab 2 data",0],["d","Chem","your written Chem Lab 2 report",0],
+ ["r","Chem","a photo of the board from chem","img"],
+ ["r","Group work","a screenshot of the group chat deciding who presents","shot"],
+ ["r","History","a photo of your partner's handwriting","img"],
+ ["r","Group work","a screenshot of the presentation order","shot"],
+ ["r","English","a photo of the essay page you rewrote by hand","img"],
+ ["b","Chem","the periodic table handout",0],["b","Chem","the signed chem safety contract",0],
+ ["b","English","the printed essay with your teacher's marks",0],
+ ["b","Group work","the rubric the group is graded on",0],["b","History","the source packet you annotated",0]],
+ canvas:[
+ {c:"English",rows:[["Essay 3","done","turned in"],["Reading response ch 11","done","turned in"],["Peer feedback form","missing","was due Tuesday"]]},
+ {c:"History",rows:[["DBQ 2","done","turned in"],["Source analysis","missing","was due last Friday"]]},
+ {c:"Chem",rows:[["Lab 2 report","done","turned in"],["Safety quiz","done","100"],["Periodic table practice","missing","was due Monday"],["Prelab 3","soon","due Friday"]]},
+ {c:"Group work",rows:[["Group slides","soon","due Monday"]]}]},
+
+{no:5,key:"dev",name:"DEV",init:"DA",sub:"SECOND SEMESTER / INHERITED A MESS FROM SEPTEMBER",
+ body:"Dev did all the work last semester. Dev cannot prove it. Everything in here was named in a hurry by somebody who assumed he would remember, and that somebody was Dev.",
+ nw:"<b>This level.</b> The drive is already full before you start, all four places are live, and everything that has come after you so far is coming at once.",
+ portals:["drive","roll","bag","canvas"], fslots:5, pslots:3,
+ sug:["Bio","English","Math","Art","Home","Last semester","Stuff","Important"],
+ psug:["To hand in","Signed","School","Home","Everything"],
+ dump:45000, req:22000, gap:3000, asks:8, cap:14, grem:["blob","snap","wraith","moth","twin"], gms:10000, pre:6,
+ items:[
+ ["d","Bio","the lab packet from first semester","untitled"],["d","Bio","last semester's Bio final study guide","vague"],
+ ["d","English","the essay you got your best grade on","draft"],["d","Math","your corrections from math test 3","untitled"],
+ ["d","Art","the artist statement you wrote","draft"],["d","English","your English notes from first semester","vague"],
+ ["d","Bio","your Bio Lab 7 data",0],["d","Bio","your Bio notes from week 14",0],
+ ["d","Bio","the Bio midterm review guide",0],["d","English","your draft of English essay 5","draft"],
+ ["d","English","the English essay you turned in this week",0],["d","English","your annotations on the novel",0],
+ ["d","Math","math problem set 9",0],["d","Math","your math quiz 4 corrections",0],
+ ["d","Math","the math review packet",0],["d","Art","the list of pieces in your portfolio",0],
+ ["d","Art","the notes from your critique",0],["d","Home","the summer program application",0],
+ ["r","Art","a photo of your sketchbook pages","img"],
+ ["r","Math","a photo of the whiteboard before it got erased","img"],
+ ["r","Bio","a screenshot of the lab data you lost","shot"],
+ ["r","Home","a photo of the form your parent signed","img"],
+ ["r","English","a screenshot of the essay prompt","shot"],
+ ["r","Art","a photo of the piece you are entering in the show","img"],
+ ["r","Math","a screenshot of your grade before the corrections","shot"],
+ ["b","Home","the permission slip for the field trip",0],["b","Home","the paperwork for your schedule change",0],
+ ["b","Art","the entry form for the art show",0],["b","Bio","the graded Bio midterm",0],
+ ["b","Math","the graded math test you have to return",0],["b","English","the printed novel excerpt you annotated",0]],
+ canvas:[
+ {c:"Bio",rows:[["Lab 7 report","done","turned in"],["Midterm review","soon","due Thursday"],["Lab 5 writeup","missing","was due three weeks ago"]]},
+ {c:"English",rows:[["Essay 5","done","turned in"],["Novel annotations","done","turned in"],["Essay 4 revision","missing","was due last month"]]},
+ {c:"Math",rows:[["Problem set 9","done","turned in"],["Quiz 4 corrections","done","turned in"],["Test 3 corrections","missing","was due in December"],["Problem set 10","soon","due Friday"]]},
+ {c:"Art",rows:[["Portfolio list","done","turned in"],["Artist statement","missing","was due Monday"],["Show entry","soon","due next Wednesday"]]}]}
+];
+
+/* ================= STATE ================= */
+var S={li:0,L:null,items:[],folders:[],pockets:[],view:{z:"pile"},sel:null,pickRow:null,
+ phase:"sort",t:0,score:0,hits:0,miss:0,wrong:0,named:0,binned:0,killed:0,lostNames:[],
+ asks:[],ask:null,askEnd:0,nextAsk:0,toDump:[],nextDrop:0,step:0,gAt:0,running:false,last:0,
+ opening:false,total:0,starTot:0,gremlins:[]};
+
+function show(id){var a=document.querySelectorAll(".screen");for(var i=0;i<a.length;i++)a[i].classList.remove("on");$(id).classList.add("on");window.scrollTo(0,0)}
+function toast(m,k){var t=document.createElement("div");t.className="toast"+(k?" "+k:"");t.textContent=m;$("toasts").appendChild(t);setTimeout(function(){t.remove()},2400)}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+/* ================= GREMLIN LAYER ================= */
+function spawnGremlins(kinds){
+  $("grem").innerHTML=""; S.gremlins=[];
+  kinds.forEach(function(k,i){
+    var el=document.createElement("div"); el.className="gr";
+    el.appendChild(draw(GREM[k],4));
+    $("grem").appendChild(el);
+    S.gremlins.push({k:k,el:el,t:i/kinds.length,sp:0.00006+Math.random()*0.00005,bob:Math.random()*6});
+  });
+}
+function moveGremlins(dt){
+  var W=window.innerWidth,H=window.innerHeight,m=8,w=40,h=40;
+  S.gremlins.forEach(function(g){
+    g.t=(g.t+g.sp*dt)%1; g.bob+=dt/140;
+    var P=2*(W-w-2*m)+2*(H-h-2*m), d=g.t*P, x,y;
+    if(d<W-w-2*m){x=m+d;y=m}
+    else if(d<W-w-2*m+H-h-2*m){x=W-w-m;y=m+(d-(W-w-2*m))}
+    else if(d<2*(W-w-2*m)+H-h-2*m){x=W-w-m-(d-(W-w-2*m)-(H-h-2*m));y=H-h-m}
+    else {x=m;y=H-h-m-(d-2*(W-w-2*m)-(H-h-2*m))}
+    g.el.style.transform="translate("+x+"px,"+(y+Math.sin(g.bob)*3)+"px)";
+  });
+}
+function flash(kind){
+  var g=S.gremlins.filter(function(x){return x.k===kind})[0];
+  if(!g)return; g.el.classList.add("act"); setTimeout(function(){g.el.classList.remove("act")},700);
+}
+
+/* ================= SETUP ================= */
+function brief(i){
+  S.li=i; var L=LEVELS[i];
+  $("b-lvl").textContent="LEVEL "+L.no+" OF 5";
+  $("b-face").innerHTML=""; $("b-face").appendChild(draw(FACES[L.key],8));
+  $("b-name").textContent=L.name; $("b-sub").textContent=L.sub;
+  $("b-body").textContent=L.body; $("b-new").innerHTML=L.nw;
+  show("s-brief");
+}
+
+function slotRow(pre,n,fill){
+  var g=$(pre+"slots"); g.innerHTML="";
+  for(var i=0;i<n;i++){
+    var d=document.createElement("div"); d.className="slot";
+    var s=document.createElement("span"); s.textContent=(i+1);
+    var inp=document.createElement("input"); inp.maxLength=18; inp.placeholder="name it"; inp.id=pre+"in"+i;
+    if(fill&&fill[i])inp.value=fill[i];
+    d.appendChild(s); d.appendChild(inp); g.appendChild(d);
+  }
+}
+function sugRow(pre,list){
+  var g=$(pre+"sug"); g.innerHTML="";
+  (list||[]).forEach(function(nm){
+    var b=document.createElement("button"); b.type="button"; b.className="sg"; b.textContent=nm;
+    b.onclick=function(){
+      var ins=g.parentNode.querySelectorAll(".slot input");
+      for(var i=0;i<ins.length;i++) if(!ins[i].value.trim()){ins[i].value=nm;ins[i].focus();return}
+      toast("All those slots are full. Type over one if you want.");
+    };
+    g.appendChild(b);
+  });
+}
+
+function buildScreen(){
+  var L=LEVELS[S.li];
+  $("bh").textContent="Set up "+L.name.charAt(0)+L.name.slice(1).toLowerCase()+"'s day";
+  slotRow("f",L.fslots); sugRow("f",L.sug);
+  if(L.portals.indexOf("bag")>-1){ $("bagsec").hidden=false; slotRow("p",L.pslots); sugRow("p",L.psug); }
+  else $("bagsec").hidden=true;
+  $("bcount").textContent="";
+  show("s-build");
+}
+
+function readSlots(pre,n){
+  var out=[];
+  for(var i=0;i<n;i++){var v=($(pre+"in"+i)||{value:""}).value.trim(); if(v)out.push(v)}
+  return out;
+}
+
+/* ================= START LEVEL ================= */
+function startLevel(){
+  var L=LEVELS[S.li];
+  var f=readSlots("f",L.fslots);
+  if(f.length<2){toast("You need at least two folders.","bad");return}
+  var p=(L.portals.indexOf("bag")>-1)?readSlots("p",L.pslots):[];
+  if(L.portals.indexOf("bag")>-1&&p.length<1){toast("You need at least one pocket.","bad");return}
+
+  S.L=L; S.folders=f.map(function(n){return{name:n,items:[]}});
+  S.pockets=p.map(function(n){return{name:n,items:[]}});
+  S.items=[]; S.sel=null; S.pickRow=null; S.view={z:"pile"};
+  S.phase="sort"; S.t=0; S.score=0; S.hits=0; S.miss=0; S.wrong=0; S.named=0; S.binned=0; S.killed=0;
+  S.lostNames=[]; S.ask=null; S.opening=false;
+
+  L.items.forEach(function(it,i){
+    S.items.push({id:i,med:it[0],cat:it[1],desc:it[2],jk:it[3]||null,
+      name:it[3]?JN[it[3]]():(it[0]==="b"?it[2]:capital(it[2])),
+      known:!it[3], zone:null, slot:-1});
+  });
+
+  var pile=[],roll=[];
+  S.items.forEach(function(x){ if(x.med==="r"){x.zone="roll";roll.push(x)} });
+  var rest=S.items.filter(function(x){return x.med!=="r"});
+  var pre=rest.splice(0,L.pre);
+  pre.forEach(function(x){x.zone="pile"});
+  shuffle(rest); S.toDump=rest; S.step=L.dump/Math.max(1,rest.length); S.nextDrop=0;
+  S.gAt=L.gms*(L.pre?0.5:1);
+  S.nextAsk=L.dump+1200;
+
+  S.asks=makeAsks(L);
+  spawnGremlins(L.grem);
+
+  $("h-face").innerHTML=""; $("h-face").appendChild(draw(FACES[L.key],3));
+  $("h-name").innerHTML=L.name+"<small>LEVEL "+L.no+" OF 5</small>";
+  setPhase("sort"); drawTabs(); render(); setAsk(null); hud();
+  show("s-play");
+  S.running=true; S.last=performance.now(); requestAnimationFrame(loop);
+}
+function capital(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+
+function makeAsks(L){
+  var pool=shuffle(S.items.slice()), out=[], n=L.asks;
+  var cn=0;
+  if(L.canvas){ cn=(L.no===5)?3:2; }
+  for(var i=0;i<n-cn;i++){ var it=pool[i]; out.push({k:"item",id:it.id}); }
+  if(L.canvas){
+    var qs=canvasAsks(L);
+    shuffle(qs);
+    for(var j=0;j<cn;j++) out.push(qs[j]);
+  }
+  shuffle(out);
+  return out;
+}
+function canvasAsks(L){
+  var miss=[],soon=[];
+  L.canvas.forEach(function(c,ci){ c.rows.forEach(function(r,ri){
+    if(r[1]==="missing")miss.push({c:c.c,ri:ci+"-"+ri,t:r[0]});
+    if(r[1]==="soon")soon.push({c:c.c,ri:ci+"-"+ri,t:r[0]});
+  })});
+  var out=[{k:"count",q:"How many assignments are you missing right now?",ans:miss.length}];
+  shuffle(miss).forEach(function(m){
+    out.push({k:"row",q:"Point to the thing you are missing in "+m.c+".",row:m.ri});
+  });
+  shuffle(soon).forEach(function(s2){
+    out.push({k:"row",q:"Point to what is due next in "+s2.c+".",row:s2.ri});
+  });
+  return out;
+}
+
+/* ================= LOOP ================= */
+function setPhase(p){ S.phase=p; $("h-phase").textContent=p==="sort"?"SORT":"FETCH"; $("h-phase").classList.toggle("f",p!=="sort"); }
+
+function loop(now){
+  if(!S.running)return;
+  var dt=now-S.last; S.last=now; if(dt>300)dt=300;
+  S.t+=dt; moveGremlins(dt);
+  var L=S.L;
+
+  if(S.toDump.length&&S.t>=S.nextDrop){
+    var it=S.toDump.shift(); it.zone="pile"; S.nextDrop=S.t+S.step;
+    if(S.view.z==="pile")render(); hud();
+  }
+  if(S.phase==="sort"&&S.t>=L.dump) setPhase("fetch");
+  if(S.t>=S.gAt){ gremlinAct(); S.gAt=S.t+L.gms*(0.8+Math.random()*0.5); }
+
+  if(S.phase==="fetch"){
+    if(!S.ask&&S.asks.length&&S.t>=S.nextAsk) nextAsk();
+    if(S.ask){
+      var frac=Math.max(0,(S.askEnd-S.t)/L.req);
+      $("ask-bar").style.width=(frac*100)+"%";
+      if(frac<=0) timeout();
+    }
+  }
+  if(pileCount()>L.cap) return finish(false,"The pile buried you. Once there is more loose than you can hold in your head, you stop searching and start guessing.","BURIED");
+  if(!S.asks.length&&!S.ask&&S.phase==="fetch"){
+    var need=Math.ceil(L.asks/2);
+    if(S.hits<need) return finish(false,"You never ran out of room. You just could not produce the work when somebody asked for it. "+S.hits+" of "+L.asks+" arrived in time.","EMPTY HANDED");
+    return finish(true,null);
+  }
+  requestAnimationFrame(loop);
+}
+function pileCount(){return S.items.filter(function(x){return x.zone==="pile"}).length}
+function rollCount(){return S.items.filter(function(x){return x.zone==="roll"}).length}
+
+/* ================= GREMLINS ACT ================= */
+function gremlinAct(){
+  var ks=S.L.grem, k=ks[Math.floor(Math.random()*ks.length)];
+  if(k==="wraith"){
+    var filed=S.items.filter(function(x){return (x.zone==="drive")&&x.known&&x.med!=="b"});
+    if(filed.length){var v=filed[Math.floor(Math.random()*filed.length)];
+      v.known=false; v.jk="draft"; v.name=JN.draft();
+      flash(k); toast("The WRAITH renamed something in "+S.folders[v.slot].name+" to "+v.name,"gob");
+      render(); detail(); return;}
+    k="blob";
+  }
+  if(k==="moth"){
+    var f2=S.items.filter(function(x){return x.zone==="drive"||x.zone==="bag"});
+    if(f2.length){var m=f2[Math.floor(Math.random()*f2.length)];
+      var from=(m.zone==="drive"?S.folders:S.pockets)[m.slot].name;
+      unplace(m); m.zone="pile";
+      flash(k); toast("The MOTH pulled "+m.name+" back out of "+from,"gob");
+      render(); hud(); return;}
+    k="blob";
+  }
+  if(k==="twin"){
+    var a=S.items.filter(function(x){return x.zone&&x.med==="d"});
+    if(a.length){var s=a[Math.floor(Math.random()*a.length)];
+      var c={id:9000+Math.floor(Math.random()*90000),med:"d",cat:s.cat,
+        desc:"an out of date copy of "+s.desc,jk:"copy",name:JN.copy(),known:false,zone:"pile",slot:-1,decoy:true};
+      S.items.push(c); flash(k); toast("The TWIN made a copy: "+c.name,"gob"); render(); hud(); return;}
+  }
+  if(k==="snap"){
+    var sh={id:9000+Math.floor(Math.random()*90000),med:"r",cat:"",
+      desc:"nothing. a screenshot you took by accident",jk:"shot",name:JN.shot(),known:false,zone:"roll",slot:-1,decoy:true};
+    S.items.push(sh); flash(k); toast("The SNAP dropped a screenshot in the camera roll","gob"); render(); drawTabs(); return;
+  }
+  var kind=["untitled","vague"][Math.floor(Math.random()*2)];
+  var t={id:9000+Math.floor(Math.random()*90000),med:"d",cat:"",
+    desc:"nothing. a blank file you never made on purpose",jk:kind,name:JN[kind](),known:false,zone:"pile",slot:-1,decoy:true};
+  S.items.push(t); flash("blob"); toast("The BLOB dropped "+t.name+" in the pile","gob"); render(); hud();
+}
+
+/* ================= REQUESTS ================= */
+function nextAsk(){
+  var a=S.asks.shift(); S.ask=a; S.askEnd=S.t+S.L.req;
+  var el=$("ask"); el.classList.remove("idle");
+  el.querySelector(".lab").textContent=(a.k==="item"?"FETCH / ":"CHECK / ")+(S.L.asks-S.asks.length)+" OF "+S.L.asks;
+  var it=a.k==="item"?byId(a.id):null;
+  $("ask-q").textContent=a.k==="item"?("Hand over "+it.desc+"."):a.q;
+  $("ask-from").textContent=(a.k==="item")?("asked by "+ASKERS[Math.floor(Math.random()*ASKERS.length)]):"this one is not in your drive";
+  $("ask-bar").style.width="100%";
+  askActions();
+}
+function setAsk(){ S.ask=null; var el=$("ask"); el.classList.add("idle");
+  el.querySelector(".lab").textContent="NOBODY IS ASKING YET";
+  $("ask-q").textContent="Requests start once the pile stops falling.";
+  $("ask-from").textContent=""; $("ask-bar").style.width="100%"; $("ask-act").innerHTML=""; }
+
+function askActions(){
+  var box=$("ask-act"); box.innerHTML=""; if(!S.ask)return;
+  if(S.ask.k==="count"){
+    var inp=document.createElement("input"); inp.type="number"; inp.min="0"; inp.id="cnum"; inp.placeholder="0";
+    var b=document.createElement("button"); b.className="btn-s go"; b.textContent="Answer";
+    b.onclick=function(){ var v=parseInt(($("cnum")||{}).value,10);
+      if(isNaN(v)){toast("Type a number first.");return}
+      if(v===S.ask.ans)good(); else bad("That is not what Canvas says.");
+    };
+    box.appendChild(inp); box.appendChild(b);
+  } else if(S.ask.k==="row"){
+    var b2=document.createElement("button"); b2.className="btn-s go"; b2.textContent="Point to it";
+    b2.onclick=function(){ if(!S.pickRow){toast("Open Canvas and click the line first.");return}
+      if(S.pickRow===S.ask.row)good(); else bad("That is not the one."); S.pickRow=null; render(); };
+    box.appendChild(b2);
+    var h=document.createElement("span"); h.className="loading"; h.textContent="in Canvas";
+    box.appendChild(h);
+  } else {
+    var b3=document.createElement("button"); b3.className="btn-s go"; b3.textContent="Hand it over";
+    b3.onclick=function(){ if(!S.sel){toast("Pick something up first.");return}
+      if(S.sel.id===S.ask.id){ good(S.sel); } else { bad("That is "+S.sel.desc+"."); }
+    };
+    box.appendChild(b3);
+  }
+}
+function good(item){
+  var left=Math.max(0,S.askEnd-S.t), bonus=Math.round(left/120);
+  S.score+=140+bonus; S.hits++; toast("Done. +"+(140+bonus),"win");
+  if(item){ item.delivered=true; unplace(item); item.zone=null; S.sel=null; }
+  setAsk(); S.nextAsk=S.t+S.L.gap; render(); detail(); hud(); drawTabs();
+}
+function bad(msg){ S.wrong++; S.score-=45; toast(msg,"bad"); S.sel=null; render(); detail(); }
+function timeout(){
+  S.miss++; S.score-=70;
+  if(S.ask.k==="item"){ var it=byId(S.ask.id);
+    if(it){ S.lostNames.push(it.gone?(it.name+"  (you threw it away)"):it.name); }
+    toast("Out of time. It never turned up.","bad");
+  } else { S.lostNames.push("[the Canvas question: "+S.ask.q+"]"); toast("Out of time.","bad"); }
+  setAsk(); S.nextAsk=S.t+S.L.gap;
+}
+function byId(id){for(var i=0;i<S.items.length;i++)if(S.items[i].id===id)return S.items[i];return null}
+
+/* ================= MOVING ================= */
+function unplace(x){
+  if(x.zone==="drive"&&S.folders[x.slot])S.folders[x.slot].items=S.folders[x.slot].items.filter(function(y){return y.id!==x.id});
+  if(x.zone==="bag"&&S.pockets[x.slot])S.pockets[x.slot].items=S.pockets[x.slot].items.filter(function(y){return y.id!==x.id});
+  x.slot=-1;
+}
+function place(x,zone,slot){
+  unplace(x); x.zone=zone; x.slot=slot;
+  if(zone==="drive")S.folders[slot].items.push(x);
+  if(zone==="bag")S.pockets[slot].items.push(x);
+  S.sel=null; render(); detail(); hud(); drawTabs();
+}
+function pick(x){ S.sel=(S.sel&&S.sel.id===x.id)?null:x; render(); detail(); }
+
+/* ================= RENDER ================= */
+var TABNAME={pile:"The pile",drive:"Drive",roll:"Camera roll",bag:"Backpack",canvas:"Canvas"};
+function drawTabs(){
+  var t=$("tabs"); t.innerHTML="";
+  var list=["pile"].concat(S.L.portals);
+  list.forEach(function(z){
+    var b=document.createElement("button"); b.type="button"; b.className="tab";
+    b.setAttribute("aria-selected",S.view.z===z?"true":"false");
+    b.textContent=TABNAME[z];
+    var n=(z==="pile")?pileCount():(z==="roll")?rollCount():0;
+    if(z==="pile"||z==="roll"){ var s=document.createElement("span"); s.className="badge"; s.textContent=n; b.appendChild(s);
+      if(z==="roll"&&n>7)b.classList.add("hot"); }
+    if(z==="canvas"&&S.ask&&S.ask.k!=="item")b.classList.add("hot");
+    b.onclick=function(){S.view={z:z};render();drawTabs()};
+    t.appendChild(b);
+  });
+}
+function itemEl(x){
+  var b=document.createElement("button"); b.type="button";
+  b.className="item"+(x.known?"":" junk")+(x.med==="b"?" paper":"")+((S.sel&&S.sel.id===x.id)?" sel":"");
+  var ic=document.createElement("span"); ic.className="ic";
+  ic.textContent=x.med==="b"?"PAPER":x.med==="r"?"PHOTO":"FILE";
+  var tx=document.createElement("span"); tx.textContent=x.name;
+  b.appendChild(ic); b.appendChild(tx);
+  b.onclick=function(e){e.stopPropagation();pick(x)};
+  return b;
+}
+function listInto(node,arr,emptyMsg){
+  if(!arr.length){var d=document.createElement("div");d.className="none";d.textContent=emptyMsg;node.appendChild(d);return}
+  var g=document.createElement("div"); g.className="items";
+  arr.forEach(function(x){g.appendChild(itemEl(x))}); node.appendChild(g);
+}
+function crumb(node,title,sub,backFn){
+  var c=document.createElement("div"); c.className="crumb";
+  if(backFn){var b=document.createElement("button");b.type="button";b.className="back";b.textContent="\u2190 Back";b.onclick=backFn;c.appendChild(b)}
+  var h=document.createElement("h4"); h.textContent=title; c.appendChild(h);
+  if(sub){var s=document.createElement("span");s.className="sub";s.textContent=sub;c.appendChild(s)}
+  node.appendChild(c);
+}
+function render(){
+  var p=$("panel"); p.innerHTML=""; var v=S.view;
+  if(v.z==="pile"){
+    crumb(p,"The pile",S.phase==="sort"?"still falling":"whatever you never put away");
+    listInto(p,S.items.filter(function(x){return x.zone==="pile"}),"Nothing loose. Enjoy it.");
+  }
+  else if(v.z==="roll"){
+    crumb(p,"Camera roll","photos land here on their own, newest first");
+    listInto(p,S.items.filter(function(x){return x.zone==="roll"}).reverse(),"No photos yet.");
+  }
+  else if(v.z==="drive"){
+    if(v.f===undefined){
+      crumb(p,"Drive",S.folders.length+" folders");
+      var g=document.createElement("div"); g.className="grid-folders";
+      S.folders.forEach(function(f,i){
+        var b=document.createElement("button"); b.type="button"; b.className="fcard";
+        b.innerHTML="<b></b><i></i>"; b.querySelector("b").textContent=f.name;
+        b.querySelector("i").textContent=f.items.length+" item"+(f.items.length===1?"":"s");
+        b.onclick=function(){S.view={z:"drive",f:i};render();drawTabs()};
+        g.appendChild(b);
+      });
+      p.appendChild(g);
+    } else {
+      crumb(p,S.folders[v.f].name,S.folders[v.f].items.length+" in here",function(){S.view={z:"drive"};render()});
+      listInto(p,S.folders[v.f].items,"Nothing in this folder.");
+    }
+  }
+  else if(v.z==="bag"){
+    if(v.f===undefined){
+      crumb(p,"Backpack",S.pockets.length+" pockets");
+      var g2=document.createElement("div"); g2.className="grid-folders";
+      S.pockets.forEach(function(f,i){
+        var b=document.createElement("button"); b.type="button"; b.className="fcard";
+        b.innerHTML="<b></b><i></i>"; b.querySelector("b").textContent=f.name;
+        b.querySelector("i").textContent=f.items.length+" item"+(f.items.length===1?"":"s");
+        b.onclick=function(){S.view={z:"bag",f:i};render();drawTabs()};
+        g2.appendChild(b);
+      });
+      p.appendChild(g2);
+    } else {
+      crumb(p,S.pockets[v.f].name,"pocket",function(){S.view={z:"bag"};render()});
+      listInto(p,S.pockets[v.f].items,"Nothing in this pocket.");
+    }
+  }
+  else if(v.z==="canvas"){
+    crumb(p,"Canvas","you cannot change any of this");
+    S.L.canvas.forEach(function(c,ci){
+      var d=document.createElement("div"); d.className="course";
+      var h=document.createElement("h5"); h.textContent=c.c; d.appendChild(h);
+      c.rows.forEach(function(r,ri){
+        var id=ci+"-"+ri;
+        var b=document.createElement("button"); b.type="button"; b.className="row"+(S.pickRow===id?" sel":"");
+        var l=document.createElement("span"); l.textContent=r[0];
+        var right=document.createElement("span"); right.style.display="flex"; right.style.gap="8px"; right.style.alignItems="center";
+        var note=document.createElement("span"); note.style.color="var(--grime)"; note.style.fontSize="10px"; note.textContent=r[2];
+        var st=document.createElement("span"); st.className="st "+r[1];
+        st.textContent=r[1]==="missing"?"MISSING":r[1]==="soon"?"DUE":"IN";
+        right.appendChild(note); right.appendChild(st);
+        b.appendChild(l); b.appendChild(right);
+        b.onclick=function(){S.pickRow=(S.pickRow===id)?null:id;render()};
+        d.appendChild(b);
+      });
+      p.appendChild(d);
+    });
+  }
+  detail();
+}
+
+/* ================= DETAIL PANEL ================= */
+function detail(){
+  var d=$("detail"); d.innerHTML="";
+  if(!S.sel){
+    var n=document.createElement("div"); n.className="none";
+    n.textContent="Nothing picked up. Click anything to pick it up.";
+    d.appendChild(n); return;
+  }
+  var x=S.sel;
+  var nm=document.createElement("div"); nm.className="dn";
+  nm.innerHTML="<b>"+(x.med==="b"?"PAPER":x.med==="r"?"PHOTO":"FILE")+"</b> &nbsp;"+esc(x.name);
+  d.appendChild(nm);
+
+  if(!x.known){
+    if(S.opening){ var l=document.createElement("div"); l.className="loading"; l.textContent="opening it..."; d.appendChild(l); }
+    else{
+      var ob=document.createElement("button"); ob.className="btn-s go"; ob.textContent="Open it and look";
+      ob.onclick=function(){
+        S.opening=true; detail();
+        setTimeout(function(){ S.opening=false; if(S.sel&&S.sel.id===x.id){x.known=true;} detail(); },1300);
+      };
+      d.appendChild(ob);
+      var w=document.createElement("span"); w.className="loading"; w.style.marginLeft="9px";
+      w.textContent="you have no idea what this is yet";
+      d.appendChild(w);
+    }
+    dests(d,x); return;
+  }
+
+  var r=document.createElement("p"); r.className="reveal";
+  r.innerHTML="It is <b>"+esc(x.desc)+"</b>.";
+  d.appendChild(r);
+
+  if(x.med!=="b"){
+    var row=document.createElement("div"); row.className="namerow";
+    var inp=document.createElement("input"); inp.maxLength=34; inp.id="rn";
+    inp.placeholder="call it whatever you want";
+    if(x.renamed) inp.value=x.name;
+    inp.onkeydown=function(e){if(e.key==="Enter")saveName(x)};
+    var sv=document.createElement("button"); sv.className="btn-s"; sv.textContent="Save this name";
+    sv.onclick=function(){saveName(x)};
+    var tr=document.createElement("button"); tr.className="btn-s"; tr.textContent="Throw it away";
+    tr.onclick=function(){bin(x)};
+    row.appendChild(inp); row.appendChild(sv); row.appendChild(tr);
+    d.appendChild(row);
+  } else {
+    var tr2=document.createElement("button"); tr2.className="btn-s"; tr2.textContent="Throw it away";
+    tr2.style.marginBottom="11px"; tr2.onclick=function(){bin(x)}; d.appendChild(tr2);
+  }
+  dests(d,x);
+}
+function esc(s){var e=document.createElement("span");e.textContent=s;return e.innerHTML}
+
+function dests(d,x){
+  var row=document.createElement("div"); row.className="dests";
+  var lab=document.createElement("span"); lab.className="lab"; lab.textContent="PUT IT IN";
+  row.appendChild(lab);
+  if(x.med==="b"){
+    if(!S.pockets.length){row.appendChild(txt("no pockets, this level has no backpack"))}
+    S.pockets.forEach(function(f,i){ row.appendChild(destBtn(f.name,function(){place(x,"bag",i)},x.zone==="bag"&&x.slot===i)) });
+    row.appendChild(txt("paper cannot go in the drive"));
+  } else {
+    S.folders.forEach(function(f,i){ row.appendChild(destBtn(f.name,function(){place(x,"drive",i)},x.zone==="drive"&&x.slot===i)) });
+    if(x.med==="r"&&x.zone!=="roll") row.appendChild(destBtn("Camera roll",function(){unplace(x);x.zone="roll";S.sel=null;render();detail();drawTabs()},false));
+  }
+  d.appendChild(row);
+}
+function destBtn(label,fn,here){
+  var b=document.createElement("button"); b.className="dest"; b.textContent=label+(here?" \u2713":"");
+  b.onclick=fn; return b;
+}
+function txt(s){var e=document.createElement("span");e.className="loading";e.textContent=s;return e}
+
+function saveName(x){
+  var v=($("rn")||{value:""}).value.trim();
+  if(!v){toast("Give it some name.","bad");return}
+  x.name=v; x.renamed=true; S.named++; S.score+=12; toast("Saved as "+v);
+  render(); detail();
+}
+function bin(x){
+  x.gone=true; unplace(x); x.zone=null;
+  if(x.decoy){S.score+=15;S.binned++;toast("Thrown away. It was not anything.","win")}
+  else{S.killed++;toast("Gone for good. That was real work.","bad")}
+  S.sel=null; render(); detail(); hud(); drawTabs();
+}
+
+/* ================= HUD ================= */
+function hud(){
+  var n=pileCount();
+  $("m-num").textContent=n+"/"+S.L.cap;
+  var pct=Math.min(100,n/S.L.cap*100); $("m-fill").style.width=pct+"%";
+  var m=$("meter"); m.classList.toggle("w",pct>=55&&pct<85); m.classList.toggle("d",pct>=85);
+  $("h-score").textContent=S.score;
+  var wb=$("wherebox");
+  wb.innerHTML="<h5>Where things go</h5>";
+  var ul=document.createElement("ul");
+  var lines=["files land in the pile"];
+  if(S.L.portals.indexOf("roll")>-1)lines.push("photos land in the camera roll on their own");
+  if(S.L.portals.indexOf("bag")>-1)lines.push("paper only fits in backpack pockets");
+  if(S.L.portals.indexOf("canvas")>-1)lines.push("canvas is read only");
+  lines.forEach(function(t){var li=document.createElement("li");li.textContent=t;ul.appendChild(li)});
+  wb.appendChild(ul);
+  drawTabs();
+}
+
+/* ================= END ================= */
+function finish(won,reason,word){
+  S.running=false; $("grem").innerHTML=""; S.gremlins=[];
+  var L=S.L, stars=0;
+  if(won){ stars=1; if(S.hits>=Math.ceil(L.asks*0.7))stars=2; if(S.hits===L.asks&&S.wrong<=1)stars=3; }
+  $("r-verdict").textContent=won?(stars===3?"CLEAN":"CLEARED"):(word||"BURIED");
+  $("r-verdict").classList.toggle("fail",!won);
+  $("r-stars").textContent=won?("\u2605\u2605\u2605".slice(0,stars)+"\u2606\u2606\u2606".slice(0,3-stars)):"\u2606\u2606\u2606";
+  var why=reason;
+  if(!why){ why=stars===3?"You could produce everything under pressure, including the things that arrived named nothing."
+    :stars===2?"Good enough to survive. Look at what you missed and at where it was sitting when they asked."
+    :"You got through it. Most of what went wrong happened before anybody asked you for anything."; }
+  $("r-reason").textContent=why;
+
+  if(S.lostNames.length){ $("r-lost").hidden=false;
+    var ul=$("r-lost-list"); ul.innerHTML="";
+    S.lostNames.forEach(function(n){var li=document.createElement("li");li.textContent=n;ul.appendChild(li)});
+  } else $("r-lost").hidden=true;
+
+  var rows=[["Delivered on time",S.hits+" / "+L.asks],["Ran out of time",S.miss],
+    ["Handed over the wrong thing",S.wrong],["Things you renamed",S.named],
+    ["Junk you threw away",S.binned],["Real work you threw away",S.killed],
+    ["Left in the pile",pileCount()],["Left in the camera roll",rollCount()],
+    ["Your folders",S.folders.map(function(f){return f.name}).join(", ")]];
+  if(S.pockets.length)rows.push(["Your pockets",S.pockets.map(function(f){return f.name}).join(", ")]);
+  rows.push(["Score",S.score]);
+  var g=$("r-stat"); g.innerHTML="";
+  rows.forEach(function(r){var a=document.createElement("span");a.textContent=r[0];var b=document.createElement("b");b.textContent=r[1];g.appendChild(a);g.appendChild(b)});
+  if(won){S.total+=S.score;S.starTot+=stars}
+  $("r-next").hidden=!won;
+  $("r-next").textContent=(S.li>=LEVELS.length-1)?"See the whole run":"Next level";
+  $("r-retry").textContent=won?"Run it again":"Try this level again";
+  show("s-result");
+}
+function finalScreen(){
+  $("f-verdict").textContent="FIVE DRIVES";
+  $("f-stars").textContent=S.starTot+" / 15 stars";
+  var g=$("f-stat"); g.innerHTML="";
+  [["Total score",S.total],["Stars",S.starTot+" / 15"]].forEach(function(r){
+    var a=document.createElement("span");a.textContent=r[0];var b=document.createElement("b");b.textContent=r[1];g.appendChild(a);g.appendChild(b)});
+  $("f-line").textContent="Everything you could not find was work you had already done.";
+  show("s-final");
+}
+
+/* ================= WIRING ================= */
+$("go").onclick=function(){S.total=0;S.starTot=0;brief(0)};
+$("b-go").onclick=buildScreen;
+$("build-go").onclick=startLevel;
+$("r-retry").onclick=buildScreen;
+$("r-next").onclick=function(){ if(S.li>=LEVELS.length-1)finalScreen(); else brief(S.li+1) };
+$("f-again").onclick=function(){S.total=0;S.starTot=0;brief(0)};
+window.addEventListener("resize",function(){moveGremlins(0)});
+
+/* cast on the title card */
+["noah","priya","marcus","june","dev"].forEach(function(k){$("cast").appendChild(draw(FACES[k],5))});
+
+/* hold the start button until the fonts are actually in, so nothing reflows mid-game */
+function ready(){ var b=$("go"); b.disabled=false; b.textContent="Start level 1"; }
+if(document.fonts&&document.fonts.ready){
+  var done=false;
+  document.fonts.ready.then(function(){if(!done){done=true;ready()}});
+  setTimeout(function(){if(!done){done=true;ready()}},4000);
+} else ready();
+
+})();
+</script>
+</body>
+</html>
