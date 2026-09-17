@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OS · Lesson 4 · Organization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Martian+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=block" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFEAD9; --ink:#1B1A17; --pur:#D854DC; --plum:#8E2F92;
+  --grime:#6B6455; --rule:#C9C0A8; --alarm:#C4442B; --shade:#E2DBC6;
+  --disp:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Newsreader',Georgia,serif;
+  --mono:'Martian Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#0D0C0B}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased}
+
+#boot{position:fixed;inset:0;background:var(--ink);display:grid;place-items:center;z-index:999;
+  font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--pur)}
+#boot.gone{display:none}
+
+#stage{position:fixed;inset:0;display:grid;place-items:center;padding:0}
+.slide{position:absolute;inset:0;display:none;padding:6vh 7vw;overflow:hidden}
+.slide.on{display:flex;flex-direction:column;justify-content:center}
+.slide.cream{background:var(--paper);color:var(--ink)}
+.slide.black{background:var(--ink);color:var(--paper)}
+
+.eyebrow{font-family:var(--mono);font-size:clamp(11px,1.1vw,16px);letter-spacing:.24em;
+  color:var(--plum);margin-bottom:2.4vh;position:relative;z-index:3}
+.slide.black .eyebrow{color:var(--pur)}
+.big{font-family:var(--disp);font-weight:800;letter-spacing:-.035em;line-height:.94;
+  font-size:clamp(34px,6.4vw,124px);position:relative;z-index:3;max-width:17ch}
+.big.sm{font-size:clamp(30px,4.6vw,84px);max-width:22ch}
+.big em{font-style:normal;color:var(--pur)}
+.sub{font-family:var(--body);font-size:clamp(17px,2.05vw,38px);line-height:1.34;
+  margin-top:3.2vh;max-width:28ch;position:relative;z-index:3}
+.slide.black .sub{color:var(--shade)}
+.kicker{font-family:var(--mono);font-size:clamp(11px,1.15vw,17px);letter-spacing:.14em;
+  color:var(--grime);margin-top:3.4vh;position:relative;z-index:3}
+.slide.black .kicker{color:var(--rule)}
+
+.spectrum{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4vw;margin-top:5vh;position:relative;z-index:3}
+.spectrum div{border:4px solid var(--ink);padding:2.6vh 1.1vw;font-family:var(--disp);font-weight:800;
+  font-size:clamp(15px,1.85vw,34px);line-height:1.04;letter-spacing:-.02em}
+.spectrum div:nth-child(2){background:var(--shade)}
+.spectrum div:nth-child(4){background:var(--pur)}
+
+.stack{margin-top:4vh;display:flex;flex-direction:column;gap:2.2vh;position:relative;z-index:3}
+.stack li{list-style:none;font-family:var(--disp);font-weight:700;
+  font-size:clamp(19px,2.75vw,52px);line-height:1.08;letter-spacing:-.02em;
+  border-left:9px solid var(--pur);padding-left:1.5vw}
+.stack li b{font-weight:800;display:block;font-size:.66em;font-family:var(--mono);
+  letter-spacing:.1em;color:var(--plum);margin-bottom:.5vh}
+.slide.black .stack li b{color:var(--pur)}
+
+.steps{margin-top:4vh;display:flex;flex-direction:column;gap:1.8vh;position:relative;z-index:3}
+.steps li{list-style:none;font-family:var(--mono);font-size:clamp(13px,1.6vw,29px);line-height:1.4;
+  display:flex;gap:1.2vw;align-items:baseline}
+.steps li i{font-style:normal;font-family:var(--disp);font-weight:800;color:var(--pur);flex:none;
+  font-size:1.25em;min-width:1.6em}
+
+.warn{margin-top:3.6vh;display:grid;grid-template-columns:1fr 1fr;gap:2.4vh 3vw;
+  position:relative;z-index:3;max-width:84vw}
+.warn li{list-style:none;border-top:4px solid var(--pur);padding-top:1.3vh}
+.warn li b{display:block;font-family:var(--disp);font-weight:800;letter-spacing:-.02em;
+  font-size:clamp(16px,1.95vw,34px);line-height:1.08;margin-bottom:.7vh}
+.warn li span{display:block;font-size:clamp(13px,1.35vw,23px);line-height:1.32;color:var(--grime)}
+
+/* fire */
+.fire{position:absolute;left:0;right:0;bottom:0;height:44vh;pointer-events:none;z-index:1;overflow:hidden}
+.fire svg{position:absolute;inset:0;width:100%;height:100%;display:block;
+  -webkit-mask-image:linear-gradient(to top,#000 0%,#000 26%,rgba(0,0,0,.72) 54%,rgba(0,0,0,.25) 80%,rgba(0,0,0,0) 97%);
+  mask-image:linear-gradient(to top,#000 0%,#000 26%,rgba(0,0,0,.72) 54%,rgba(0,0,0,.25) 80%,rgba(0,0,0,0) 97%);
+  filter:blur(3px)}
+.fl{transform-box:fill-box;transform-origin:50% 100%;
+  animation-name:lick;animation-timing-function:cubic-bezier(.3,.05,.6,1);animation-iteration-count:infinite}
+@keyframes lick{
+  0%{transform:translateY(58px) scale(1.06,.4);opacity:0}
+  14%{opacity:1}
+  68%{opacity:.8}
+  100%{transform:translateY(-236px) scale(.2,1.42);opacity:0}
+}
+.fire u{position:absolute;bottom:-8vh;left:-8%;right:-8%;height:26vh;text-decoration:none;
+  background:radial-gradient(ellipse 66% 100% at 50% 100%, rgba(255,226,252,.5) 0%, rgba(216,84,220,.55) 26%, rgba(142,47,146,.22) 56%, rgba(142,47,146,0) 80%);
+  filter:blur(26px);animation:flick 1.4s ease-in-out infinite alternate}
+@keyframes flick{from{opacity:.6;transform:scaleY(.9)}to{opacity:1;transform:scaleY(1.1)}}
+.ember{position:absolute;width:5px;height:5px;background:#F6A6F7;border-radius:50%;
+  box-shadow:0 0 10px var(--pur);animation-name:float;animation-timing-function:ease-in;animation-iteration-count:infinite}
+@keyframes float{0%{transform:translateY(0) translateX(0);opacity:0}
+  18%{opacity:1}100%{transform:translateY(-40vh) translateX(var(--dx));opacity:0}}
+/* chrome */
+#num{position:fixed;right:1.6vw;bottom:1.4vh;font-family:var(--mono);font-size:12px;
+  letter-spacing:.14em;color:var(--grime);z-index:20;mix-blend-mode:difference;opacity:.75}
+#clock{position:relative;z-index:3;margin-top:5vh;display:flex;align-items:center;gap:1.6vw}
+.tnum{font-family:var(--mono);font-weight:600;font-size:clamp(40px,8vw,150px);letter-spacing:-.03em;line-height:1}
+.tnum.low{color:var(--pur)}
+.tnum.out{color:var(--alarm)}
+.tbtn{font-family:var(--disp);font-weight:800;font-size:clamp(14px,1.6vw,28px);
+  background:var(--pur);color:var(--ink);border:none;padding:1.3vh 1.8vw;cursor:pointer}
+.tbtn:hover{background:var(--paper)}
+#notes{position:fixed;left:0;right:0;bottom:0;background:var(--ink);color:var(--paper);
+  border-top:4px solid var(--pur);padding:2.2vh 3vw;z-index:30;display:none;max-height:42vh;overflow:auto}
+#notes.on{display:block}
+#notes h6{font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--pur);margin-bottom:1vh}
+#notes p{font-size:clamp(14px,1.35vw,21px);line-height:1.5;max-width:92ch}
+#notes p+p{margin-top:.9vh}
+#help{position:fixed;left:1.6vw;bottom:1.4vh;font-family:var(--mono);font-size:11px;
+  letter-spacing:.1em;color:var(--grime);z-index:20;mix-blend-mode:difference;opacity:.6}
+@media (prefers-reduced-motion:reduce){.fire i,.fire u,.ember{animation:none;opacity:.5}}
+</style>
+</head>
+<body>
+<div id="boot">LIGHTING THE FIRE</div>
+<div id="stage"></div>
+<div id="num"></div>
+<div id="help">← → move · N notes · T timer · F full</div>
+<div id="notes"><h6>SPEAKER NOTES</h6><div id="notes-body"></div></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i)};
+
+var SLIDES=[
+{bg:"black",fire:true,eyebrow:"MY HIGH SCHOOL OPERATING SYSTEM · LESSON 4",
+ big:"ORGANIZATION",
+ sub:"Not tidying. Finding.",
+ notes:["Say nothing about the title. Let them read it.",
+        "Do not preview the lesson. Do not say what organization means. The first thing out of your mouth is the question on the next slide."]},
+
+{bg:"cream",eyebrow:"BEFORE ANYTHING",
+ big:"It's March. A teacher asks you for the essay you wrote back in October.",
+ notes:["Read it once. Then stop talking and let it sit for a beat.",
+        "Do not add context, do not soften it, do not tell them where this is going."]},
+
+{bg:"cream",eyebrow:"HANDS UP FOR ONE",
+ big:"How long until you have it open?",big_sm:true,
+ spectrum:["5 SECONDS","30 SECONDS","A FEW MINUTES","I'D NEVER FIND IT"],
+ notes:["Read the four out loud, one at a time. Hands up for the one you pick. Everybody commits, nobody explains.",
+        "Count roughly. Say ONE neutral sentence. Example: 'OK. Most of you said thirty seconds.' That is all.",
+        "Do not tell them whether they are right. This question stays open for the next forty minutes. Sit down, laptops open, go."]},
+
+{bg:"black",fire:true,eyebrow:"PLAY",big:"LEVEL <em>ONE</em>",
+ sub:"Four classes. One week. Name things however you want.",
+ timer:420,
+ notes:["No help. Encouragement only.",
+        "If a student asks what to name a folder: 'Name it whatever you want.' Then walk away. Do not give strategy, do not hint, do not rescue. The struggle is the lesson and support during this phase is emotional, not cognitive.",
+        "Circulate. Look at what people are typing. You will use it in fifteen minutes."]},
+
+{bg:"cream",eyebrow:"HANDS UP",
+ big:"Who changed any of the folder names?",big_sm:true,
+ notes:["Probably a few hands. Maybe none. Either is fine.",
+        "Do not react yet. Go to the next slide immediately."]},
+
+{bg:"cream",eyebrow:"HANDS UP",
+ big:"Who didn't realize you could?",big_sm:true,
+ notes:["This is the beat. The game handed them a setup and they took it.",
+        "Include yourself so it is not a gotcha: 'That's not a criticism. It's what everybody does, me included. You got handed a setup and you ran with it.'"]},
+
+{bg:"cream",
+ big:"Is it yours, or did it just <em>come that way</em>?",
+ notes:["Let this sit. Do not answer it.",
+        "This is the same move as never subscribing to a calendar. You are setting up the end of class forty minutes early. Nobody should notice that yet."]},
+
+{bg:"cream",eyebrow:"PREDICT · SAY IT OUT LOUD",
+ big:"Level one was one week. What breaks first when I give you a whole semester?",big_sm:true,
+ notes:["Take three or four predictions out loud. WRITE THEM ON THE BOARD. Leave them up all period.",
+        "Confirm none of them. If somebody nails it, say: 'That's a prediction. Remember it. We'll check.' Do not tell them they are right. A confirmed prediction ends their interest.",
+        "Then straight into levels two and three."]},
+
+{bg:"black",fire:true,eyebrow:"PLAY",big:"LEVELS <em>2</em> AND <em>3</em>",
+ sub:"Your predictions are now being tested.",
+ timer:720,
+ notes:["Same rules. No strategy, encouragement only.",
+        "Keep circulating and reading screens. You are collecting file names for the board."]},
+
+{bg:"cream",eyebrow:"HANDS UP",
+ big:"Who lost something they had already put away?",big_sm:true,
+ notes:["Hands. Do not comment.",
+        "Next slide immediately."]},
+
+{bg:"cream",
+ big:"What was it <em>called</em>?",
+ notes:["Four or five students say the name out loud. draft_2. Untitled document. bio stuff.",
+        "Do not editorialize. Do not laugh at any of them. Let the room hear its own file names. Silence after each one is fine."]},
+
+{bg:"cream",eyebrow:"OUT LOUD · I'M WRITING THESE DOWN",
+ big:"Read me three file names off your screen. Whatever they say.",big_sm:true,
+ notes:["Collect from five or six students. WRITE THEM ALL ON THE BOARD next to the predictions from earlier.",
+        "This board is the most important object in the lesson. It is your set of contrasting cases and they generated it, not you.",
+        "Take the bad ones and the good ones with exactly the same tone."]},
+
+{bg:"cream",
+ big:"Which of these would you find in <em>March</em>?",
+ kicker:"POINT AT THE BOARD. LET THEM ARGUE.",
+ notes:["Now the comparison happens with their names, their predictions and their results all in one place.",
+        "Go back to the predictions you wrote at the start. Somebody called it. Say who. That one you confirm, because the game confirmed it, not you.",
+        "This is the consolidation beat. It is the part of this method that people skip and it is the part that makes it work. Do not rush it."]},
+
+{bg:"black",fire:true,
+ big:"You did the work. So why didn't it <em>count</em>?",
+ notes:["The question the whole period has been walking toward. Wait them out.",
+        "If nobody gets there, narrow it: 'The file existed. It was on your screen. What was missing?'",
+        "If they get it in five seconds, push: 'So what's the worst version of that outside a game?' You want a student to say the sentence: you lose points on something you already earned. Do not say it for them."]},
+
+{bg:"cream",eyebrow:"SAME FOUR · HANDS UP AGAIN",
+ big:"Where are you now?",
+ spectrum:["5 SECONDS","30 SECONDS","A FEW MINUTES","I'D NEVER FIND IT"],
+ notes:["Run the same four. Hands up. Twenty seconds, and it closes the loop you opened at minute three.",
+        "Name the shift out loud. 'At the start almost nobody had a hand up for that one.' Do not make them explain it."]},
+
+{bg:"black",fire:true,eyebrow:"NOW WE TALK ABOUT IT",
+ big:"THREE WAYS PEOPLE ACTUALLY <em>DO</em> THIS",
+ notes:["Only now do you teach. Everything from here is pinned to something that happened on a screen in this room in the last half hour.",
+        "Keep this to about eight minutes. They have already done the learning, you are naming it."]},
+
+{bg:"cream",eyebrow:"ONE",
+ big:"Naming",
+ stack:[{b:"THE RULE",t:"A name is a message to you in March."},
+        {b:"FROM THE BOARD",t:"One that held. One that didn't. Say why."}],
+ kicker:"DO NOT GIVE THEM A FORMAT. THEY INVENTED ONE UNDER PRESSURE ALREADY.",
+ notes:["Use two real examples off the board, one that survived and one that did not.",
+        "Explicitly do not hand out a naming convention. They each built one during the game. Your job is to make them notice they did, not to replace it with yours. Everyone organizes differently and a format they did not choose will not survive the week."]},
+
+{bg:"cream",eyebrow:"TWO",
+ big:"Paper has no <em>search bar</em>.",big_sm:true,
+ stack:[{b:"WHICH MEANS",t:"The pocket is the filename."},
+        {b:"WHICH MEANS",t:"An expandable folder with a tab per class, not loose in the bag."}],
+ notes:["In the game paper could not be renamed and could not be searched. The only thing you had was which pocket you chose.",
+        "That is the whole argument for a physical system. Paper is easy to recognize and impossible to find. Digital is the opposite."]},
+
+{bg:"cream",eyebrow:"THREE",
+ big:"Canvas knew. Nobody asked it.",big_sm:true,
+ kicker:"IN THE GAME, THE ONLY WAY TO FIND OUT WHAT YOU OWED WAS TO STOP AND GO LOOK.",
+ notes:["Canvas was the one portal in the game you could not organize and could not break. It was also the only one telling the truth about what you owed.",
+        "And it only worked if you remembered to open it. Which nobody does. That is the bridge to the last ten minutes."]},
+
+{bg:"black",fire:true,eyebrow:"LAPTOPS OPEN",
+ big:"So make it come to <em>you</em>.",
+ notes:["This is the one thing that has to happen before they leave.",
+        "Everyone on a laptop, not a phone. Google's From URL option is very hard to reach on mobile."]},
+
+{bg:"cream",eyebrow:"DO IT NOW",
+ big:"Canvas into your calendar",big_sm:true,
+ steps:[{n:"1",t:"Canvas · Calendar · Calendar Feed · copy the link"},
+        {n:"2",t:"Google: Other calendars · + · From URL · paste · Add"},
+        {n:"2",t:"Apple on a Mac: File · New Calendar Subscription · paste"},
+        {n:"2",t:"iPhone: Settings · Calendar · Accounts · Add · Other · Add Subscribed Calendar"},
+        {n:"3",t:"Give it a color you will recognize"}],
+ notes:["Walk the room. This will not work for everyone on the first try.",
+        "If the Calendar Feed link opens a page or downloads a file instead of showing a URL, right click it and copy the link address.",
+        "Tell them the feed link is private. Anyone who has it can see their calendar items."]},
+
+{bg:"cream",eyebrow:"BEFORE YOU TRUST IT",
+ big:"What this will <em>not</em> catch",big_sm:true,noflow:1,
+ warn:[{b:"Only what teachers entered with a due date.",t:"Anything that lives in the syllabus is invisible."},
+       {b:"It is read only.",t:"You cannot move or rename anything from your calendar."},
+       {b:"It can lag up to a day.",t:"For an urgent deadline, check Canvas itself."},
+       {b:"New semester, new classes, do it again.",t:"It will not pick them up on its own."}],
+ notes:["Do not bury these. The first one is the best sentence in the lesson.",
+        "Say it out loud: your source of truth has holes in it, and knowing where they are is the actual skill. That is the same thing you spent the whole period learning about your own drive."]},
+
+{bg:"black",fire:true,
+ big:"Everything you couldn't find was work you <em>already did</em>.",big_sm:true,
+ notes:["Say it once. Do not explain it. Do not add anything after it.",
+        "No exit ticket. They leave with a changed setting instead of a sentence."]}
+];
+
+/* ---------- build ---------- */
+var stage=$("stage");
+function fire(){
+  var NS="http://www.w3.org/2000/svg";
+  var f=document.createElement("div"); f.className="fire";
+  var u=document.createElement("u"); f.appendChild(u);
+
+  var svg=document.createElementNS(NS,"svg");
+  svg.setAttribute("viewBox","0 0 1000 400");
+  svg.setAttribute("preserveAspectRatio","none");
+  var uid="g"+Math.floor(Math.random()*1e6);
+
+  var defs=document.createElementNS(NS,"defs");
+  var filt=document.createElementNS(NS,"filter");
+  filt.setAttribute("id",uid);
+  filt.setAttribute("x","-25%"); filt.setAttribute("y","-25%");
+  filt.setAttribute("width","150%"); filt.setAttribute("height","150%");
+  filt.innerHTML =
+    '<feGaussianBlur in="SourceGraphic" stdDeviation="17" result="b"/>'+
+    '<feColorMatrix in="b" type="matrix" result="g" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -13"/>'+
+    '<feTurbulence type="fractalNoise" baseFrequency="0.012 0.042" numOctaves="2" seed="'+Math.floor(Math.random()*90)+'" result="t"/>'+
+    '<feDisplacementMap in="g" in2="t" scale="22" xChannelSelector="R" yChannelSelector="G" result="d"/>'+
+    '<feGaussianBlur in="d" stdDeviation="5"/>';
+  defs.appendChild(filt); svg.appendChild(defs);
+
+  // three stacked layers: deep plum body, magenta mid, hot core
+  var LAYERS=[
+    {fill:"#8E2F92",n:13,rx:[52,104],ry:[62,124],dur:[2.0,3.4],op:.92},
+    {fill:"#D854DC",n:11,rx:[34,72],ry:[46,96],dur:[1.7,2.9],op:.95},
+    {fill:"#FFE6FC",n:8, rx:[16,36],ry:[26,58],dur:[1.4,2.4],op:1}
+  ];
+  LAYERS.forEach(function(L){
+    var g=document.createElementNS(NS,"g");
+    g.setAttribute("filter","url(#"+uid+")");
+    for(var i=0;i<L.n;i++){
+      var e=document.createElementNS(NS,"ellipse");
+      var rx=L.rx[0]+Math.random()*(L.rx[1]-L.rx[0]);
+      var ry=L.ry[0]+Math.random()*(L.ry[1]-L.ry[0]);
+      e.setAttribute("cx", (-40+Math.random()*1080).toFixed(1));
+      e.setAttribute("cy", (408+Math.random()*34).toFixed(1));
+      e.setAttribute("rx", rx.toFixed(1));
+      e.setAttribute("ry", ry.toFixed(1));
+      e.setAttribute("fill", L.fill);
+      e.setAttribute("class","fl");
+      e.style.animationDuration=(L.dur[0]+Math.random()*(L.dur[1]-L.dur[0])).toFixed(2)+"s";
+      e.style.animationDelay=(-Math.random()*3.4).toFixed(2)+"s";
+      e.style.opacity=L.op;
+      g.appendChild(e);
+    }
+    svg.appendChild(g);
+  });
+  var bed=document.createElementNS(NS,"g");
+  bed.setAttribute("filter","url(#"+uid+")");
+  for(var q=0;q<14;q++){
+    var be=document.createElementNS(NS,"ellipse");
+    be.setAttribute("cx",(-30+Math.random()*1060).toFixed(1));
+    be.setAttribute("cy",(402+Math.random()*26).toFixed(1));
+    be.setAttribute("rx",(58+Math.random()*90).toFixed(1));
+    be.setAttribute("ry",(44+Math.random()*52).toFixed(1));
+    be.setAttribute("fill", q%3===0 ? "#FFE6FC" : (q%3===1 ? "#D854DC" : "#8E2F92"));
+    bed.appendChild(be);
+  }
+  svg.insertBefore(bed, svg.childNodes[1]);
+  f.appendChild(svg);
+
+  for(var j=0;j<16;j++){
+    var em=document.createElement("div"); em.className="ember";
+    em.style.left=(Math.random()*100)+"%"; em.style.bottom="0";
+    em.style.setProperty("--dx",(-80+Math.random()*160)+"px");
+    em.style.animationDuration=(2.6+Math.random()*3.2)+"s";
+    em.style.animationDelay=(-Math.random()*6)+"s";
+    f.appendChild(em);
+  }
+  return f;
+}
+SLIDES.forEach(function(d,i){
+  var s=document.createElement("section");
+  s.className="slide "+d.bg;
+  if(d.fire)s.appendChild(fire());
+  if(d.eyebrow){var e=document.createElement("div");e.className="eyebrow";e.textContent=d.eyebrow;s.appendChild(e)}
+  if(d.big){var h=document.createElement("h1");h.className="big"+(d.big_sm?" sm":"");h.innerHTML=d.big;s.appendChild(h)}
+  if(d.sub){var p=document.createElement("p");p.className="sub";p.textContent=d.sub;s.appendChild(p)}
+  if(d.spectrum){var sp=document.createElement("div");sp.className="spectrum";
+    d.spectrum.forEach(function(t){var c=document.createElement("div");c.textContent=t;sp.appendChild(c)});s.appendChild(sp)}
+  if(d.stack){var ul=document.createElement("ul");ul.className="stack";
+    d.stack.forEach(function(o){var li=document.createElement("li");
+      li.innerHTML="<b></b>"+"";li.querySelector("b").textContent=o.b;
+      li.appendChild(document.createTextNode(o.t));ul.appendChild(li)});s.appendChild(ul)}
+  if(d.steps){var os=document.createElement("ul");os.className="steps";
+    d.steps.forEach(function(o){var li=document.createElement("li");
+      var n=document.createElement("i");n.textContent=o.n;
+      var t=document.createElement("span");t.textContent=o.t;
+      li.appendChild(n);li.appendChild(t);os.appendChild(li)});s.appendChild(os)}
+  if(d.warn){var w=document.createElement("ul");w.className="warn";
+    d.warn.forEach(function(o){var li=document.createElement("li");
+      var b=document.createElement("b");b.textContent=o.b;
+      var sp=document.createElement("span");sp.textContent=o.t;
+      li.appendChild(b);li.appendChild(sp);w.appendChild(li)});s.appendChild(w)}
+  if(d.kicker){var k=document.createElement("div");k.className="kicker";k.textContent=d.kicker;s.appendChild(k)}
+  if(d.timer){
+    var c=document.createElement("div");c.id="";c.style.cssText="position:relative;z-index:3;margin-top:5vh;display:flex;align-items:center;gap:1.6vw";
+    var n=document.createElement("div");n.className="tnum";n.textContent=fmt(d.timer);
+    var b=document.createElement("button");b.className="tbtn";b.textContent="START";
+    c.appendChild(n);c.appendChild(b);s.appendChild(c);
+    s._timer={total:d.timer,left:d.timer,run:false,el:n,btn:b};
+    b.onclick=function(){toggleTimer(s)};
+  }
+  stage.appendChild(s);
+});
+function fmt(t){var m=Math.floor(t/60),ss=t%60;return m+":"+(ss<10?"0":"")+ss}
+
+/* ---------- timers ---------- */
+var tick=null;
+function toggleTimer(s){
+  var T=s._timer; T.run=!T.run; T.btn.textContent=T.run?"PAUSE":"START";
+  if(tick)clearInterval(tick);
+  if(T.run){tick=setInterval(function(){
+    if(T.left>0)T.left--;
+    T.el.textContent=fmt(T.left);
+    T.el.classList.toggle("low",T.left<=60&&T.left>0);
+    T.el.classList.toggle("out",T.left===0);
+    if(T.left===0){clearInterval(tick);T.run=false;T.btn.textContent="TIME"}
+  },1000)}
+}
+
+/* ---------- nav ---------- */
+var cur=0, slides=document.querySelectorAll(".slide");
+function go(n){
+  if(n<0||n>=slides.length)return;
+  slides[cur].classList.remove("on");
+  cur=n; slides[cur].classList.add("on");
+  $("num").textContent=(cur+1)+" / "+slides.length;
+  var nb=$("notes-body"); nb.innerHTML="";
+  (SLIDES[cur].notes||[]).forEach(function(t){var p=document.createElement("p");p.textContent=t;nb.appendChild(p)});
+}
+document.addEventListener("keydown",function(e){
+  if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown"){e.preventDefault();go(cur+1)}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();go(cur-1)}
+  else if(e.key==="Home"){go(0)}
+  else if(e.key==="End"){go(slides.length-1)}
+  else if(e.key==="n"||e.key==="N"){$("notes").classList.toggle("on")}
+  else if(e.key==="t"||e.key==="T"){if(slides[cur]._timer)toggleTimer(slides[cur])}
+  else if(e.key==="f"||e.key==="F"){
+    if(document.fullscreenElement)document.exitFullscreen();
+    else document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();
+  }
+});
+stage.addEventListener("click",function(e){ if(e.target.classList.contains("tbtn"))return; go(cur+1) });
+
+/* ---------- hold until fonts are in, so nothing reflows mid-class ---------- */
+function start(){ $("boot").classList.add("gone"); go(0); }
+if(document.fonts&&document.fonts.ready){
+  var done=false;
+  document.fonts.ready.then(function(){if(!done){done=true;start()}});
+  setTimeout(function(){if(!done){done=true;start()}},4000);
+} else start();
+})();
+</script>
+</body>
+</html>
