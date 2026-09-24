@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OS · Lesson 5 · Studying</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Martian+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=block" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFEAD9; --ink:#1B1A17; --pur:#D854DC; --plum:#8E2F92;
+  --grime:#6B6455; --rule:#C9C0A8; --alarm:#C4442B; --shade:#E2DBC6;
+  --disp:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Newsreader',Georgia,serif;
+  --mono:'Martian Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#0D0C0B}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased}
+
+#boot{position:fixed;inset:0;background:var(--ink);display:grid;place-items:center;z-index:999;
+  font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--pur)}
+#boot.gone{display:none}
+
+#stage{position:fixed;inset:0;display:grid;place-items:center;padding:0}
+.slide{position:absolute;inset:0;display:none;padding:6vh 7vw;overflow:hidden}
+.slide.on{display:flex;flex-direction:column;justify-content:center}
+.slide.cream{background:var(--paper);color:var(--ink)}
+.slide.black{background:var(--ink);color:var(--paper)}
+
+.eyebrow{font-family:var(--mono);font-size:clamp(11px,1.1vw,16px);letter-spacing:.24em;
+  color:var(--plum);margin-bottom:2.4vh;position:relative;z-index:3}
+.slide.black .eyebrow{color:var(--pur)}
+.big{font-family:var(--disp);font-weight:800;letter-spacing:-.035em;line-height:.94;
+  font-size:clamp(34px,6.4vw,124px);position:relative;z-index:3;max-width:17ch}
+.big.sm{font-size:clamp(30px,4.6vw,84px);max-width:22ch}
+.big em{font-style:normal;color:var(--pur)}
+.sub{font-family:var(--body);font-size:clamp(17px,2.05vw,38px);line-height:1.34;
+  margin-top:3.2vh;max-width:28ch;position:relative;z-index:3}
+.slide.black .sub{color:var(--shade)}
+.kicker{font-family:var(--mono);font-size:clamp(11px,1.15vw,17px);letter-spacing:.14em;
+  color:var(--grime);margin-top:3.4vh;position:relative;z-index:3}
+.slide.black .kicker{color:var(--rule)}
+
+.spectrum{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4vw;margin-top:5vh;position:relative;z-index:3}
+.spectrum div{border:4px solid var(--ink);padding:2.6vh 1.1vw;font-family:var(--disp);font-weight:800;
+  font-size:clamp(15px,1.85vw,34px);line-height:1.04;letter-spacing:-.02em}
+.spectrum div:nth-child(2){background:var(--shade)}
+.spectrum div:nth-child(4){background:var(--pur)}
+
+.stack{margin-top:4vh;display:flex;flex-direction:column;gap:2.2vh;position:relative;z-index:3}
+.stack li{list-style:none;font-family:var(--disp);font-weight:700;
+  font-size:clamp(19px,2.75vw,52px);line-height:1.08;letter-spacing:-.02em;
+  border-left:9px solid var(--pur);padding-left:1.5vw}
+.stack li b{font-weight:800;display:block;font-size:.66em;font-family:var(--mono);
+  letter-spacing:.1em;color:var(--plum);margin-bottom:.5vh}
+.slide.black .stack li b{color:var(--pur)}
+
+.steps{margin-top:4vh;display:flex;flex-direction:column;gap:1.8vh;position:relative;z-index:3}
+.steps li{list-style:none;font-family:var(--mono);font-size:clamp(13px,1.6vw,29px);line-height:1.4;
+  display:flex;gap:1.2vw;align-items:baseline}
+.steps li i{font-style:normal;font-family:var(--disp);font-weight:800;color:var(--pur);flex:none;
+  font-size:1.25em;min-width:1.6em}
+
+.warn{margin-top:3.6vh;display:grid;grid-template-columns:1fr 1fr;gap:2.4vh 3vw;
+  position:relative;z-index:3;max-width:84vw}
+.warn li{list-style:none;border-top:4px solid var(--pur);padding-top:1.3vh}
+.warn li b{display:block;font-family:var(--disp);font-weight:800;letter-spacing:-.02em;
+  font-size:clamp(16px,1.95vw,34px);line-height:1.08;margin-bottom:.7vh}
+.warn li span{display:block;font-size:clamp(13px,1.35vw,23px);line-height:1.32;color:var(--grime)}
+
+/* fire */
+.fire{position:absolute;left:0;right:0;bottom:0;height:44vh;pointer-events:none;z-index:1;overflow:hidden}
+.fire svg{position:absolute;inset:0;width:100%;height:100%;display:block;
+  -webkit-mask-image:linear-gradient(to top,#000 0%,#000 26%,rgba(0,0,0,.72) 54%,rgba(0,0,0,.25) 80%,rgba(0,0,0,0) 97%);
+  mask-image:linear-gradient(to top,#000 0%,#000 26%,rgba(0,0,0,.72) 54%,rgba(0,0,0,.25) 80%,rgba(0,0,0,0) 97%);
+  filter:blur(3px)}
+.fl{transform-box:fill-box;transform-origin:50% 100%;
+  animation-name:lick;animation-timing-function:cubic-bezier(.3,.05,.6,1);animation-iteration-count:infinite}
+@keyframes lick{
+  0%{transform:translateY(58px) scale(1.06,.4);opacity:0}
+  14%{opacity:1}
+  68%{opacity:.8}
+  100%{transform:translateY(-236px) scale(.2,1.42);opacity:0}
+}
+.fire u{position:absolute;bottom:-8vh;left:-8%;right:-8%;height:26vh;text-decoration:none;
+  background:radial-gradient(ellipse 66% 100% at 50% 100%, rgba(255,226,252,.5) 0%, rgba(216,84,220,.55) 26%, rgba(142,47,146,.22) 56%, rgba(142,47,146,0) 80%);
+  filter:blur(26px);animation:flick 1.4s ease-in-out infinite alternate}
+@keyframes flick{from{opacity:.6;transform:scaleY(.9)}to{opacity:1;transform:scaleY(1.1)}}
+.ember{position:absolute;width:5px;height:5px;background:#F6A6F7;border-radius:50%;
+  box-shadow:0 0 10px var(--pur);animation-name:float;animation-timing-function:ease-in;animation-iteration-count:infinite}
+@keyframes float{0%{transform:translateY(0) translateX(0);opacity:0}
+  18%{opacity:1}100%{transform:translateY(-40vh) translateX(var(--dx));opacity:0}}
+/* chrome */
+#num{position:fixed;right:1.6vw;bottom:1.4vh;font-family:var(--mono);font-size:12px;
+  letter-spacing:.14em;color:var(--grime);z-index:20;mix-blend-mode:difference;opacity:.75}
+#clock{position:relative;z-index:3;margin-top:5vh;display:flex;align-items:center;gap:1.6vw}
+.tnum{font-family:var(--mono);font-weight:600;font-size:clamp(40px,8vw,150px);letter-spacing:-.03em;line-height:1}
+.tnum.low{color:var(--pur)}
+.tnum.out{color:var(--alarm)}
+.tbtn{font-family:var(--disp);font-weight:800;font-size:clamp(14px,1.6vw,28px);
+  background:var(--pur);color:var(--ink);border:none;padding:1.3vh 1.8vw;cursor:pointer}
+.tbtn:hover{background:var(--paper)}
+#notes{position:fixed;left:0;right:0;bottom:0;background:var(--ink);color:var(--paper);
+  border-top:4px solid var(--pur);padding:2.2vh 3vw;z-index:30;display:none;max-height:42vh;overflow:auto}
+#notes.on{display:block}
+#notes h6{font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--pur);margin-bottom:1vh}
+#notes p{font-size:clamp(14px,1.35vw,21px);line-height:1.5;max-width:92ch}
+#notes p+p{margin-top:.9vh}
+#help{position:fixed;left:1.6vw;bottom:1.4vh;font-family:var(--mono);font-size:11px;
+  letter-spacing:.1em;color:var(--grime);z-index:20;mix-blend-mode:difference;opacity:.6}
+@media (prefers-reduced-motion:reduce){.fire i,.fire u,.ember{animation:none;opacity:.5}}
+</style>
+</head>
+<body>
+<div id="boot">LIGHTING THE FIRE</div>
+<div id="stage"></div>
+<div id="num"></div>
+<div id="help">← → move · N notes · T timer · F full</div>
+<div id="notes"><h6>SPEAKER NOTES</h6><div id="notes-body"></div></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(i){return document.getElementById(i)};
+
+var SLIDES=[
+{bg:"black",fire:true,eyebrow:"MY HIGH SCHOOL OPERATING SYSTEM · LESSON 5",
+ big:"STUDYING",
+ sub:"Why you blank on things you knew.",
+ notes:["Say nothing. Let them read it. Go straight to the question."]},
+
+{bg:"cream",eyebrow:"HANDS UP",
+ big:"Who has studied really hard for something and still felt lost on the test?",big_sm:true,
+ notes:["Most hands. Wait for all of them. Count it out loud.",
+        "One line back: 'Everybody. Including me.' Do not explain why yet.",
+        "Hand out the notes and start the clock."]},
+
+{bg:"black",fire:true,eyebrow:"FIVE MINUTES",
+ big:"Study these.",
+ sub:"Everything we have done in this class so far. Study the way you normally would.",
+ timer:300,
+ notes:["No instructions about how. If someone asks, say 'however you normally would.'",
+        "Walk around and watch. Almost all of them will read it top to bottom.",
+        "Note anyone who does something different. You may want them later."]},
+
+{bg:"black",fire:true,eyebrow:"NOTES DOWN",
+ big:"Take the test.",
+ sub:"Not graded. Does not go in the gradebook.",
+ timer:360,
+ notes:["Say clearly that it is ungraded. You want honest effort, not panic.",
+        "Notes face down or collected. Twelve questions."]},
+
+{bg:"cream",eyebrow:"THE SCORES",
+ big:"How did we do?",
+ kicker:"PROJECT THE CANVAS DISTRIBUTION. NO NAMES.",
+ notes:["Canvas, open the quiz, Quiz Statistics. The distribution graph has no names on it.",
+        "Do not reassure them and do not call it a hard quiz. Let the number sit there.",
+        "One question only: 'How many of you felt like you knew it while you were reading?' Most hands. That gap is the lesson."]},
+
+{bg:"black",fire:true,
+ big:"How studying actually <em>works</em>",big_sm:true,
+ notes:["About eight minutes for the next three slides. They just had the experience. Now name what happened."]},
+
+{bg:"cream",eyebrow:"ONE",
+ big:"Familiar is not the same as known.",big_sm:true,
+ stack:[{b:"WHAT HAPPENED",t:"Reading it again made the words easy to read again."},
+        {b:"WHAT YOUR BRAIN DID",t:"It read that easiness as knowing."}],
+ kicker:"THE FLUENCY ILLUSION. THE MOST CONVINCING FEELING IN STUDYING, AND IT IS USUALLY WRONG.",
+ notes:["This is the one that explains the quiz they just took.",
+        "Ask: while you were reading, did it feel like it was going in? Almost everyone says yes. Then point at the distribution still on the board."]},
+
+{bg:"cream",eyebrow:"TWO",
+ big:"Pulling it out is what builds it.",big_sm:true,
+ stack:[{b:"READING IS INPUT",t:"Your brain is receiving. It is not doing much."},
+        {b:"REMEMBERING IS WORK",t:"Every time you pull something out of nothing, you make it easier to pull out next time."}],
+ kicker:"WHICH IS WHY THE METHOD THAT FEELS HARDEST DOES THE MOST.",
+ notes:["The single most important idea of the day.",
+        "Say the last line out loud and expect them not to believe you yet. They will in twenty minutes."]},
+
+{bg:"cream",eyebrow:"THREE",
+ big:"Let it fade a little first.",
+ stack:[{b:"WHY CRAMMING FEELS GOOD",t:"You go over it while you still have it. It is easy, so it feels like it is working."},
+        {b:"WHY IT DOES NOT",t:"Easy remembering builds almost nothing. It has to get a little hard again first."}],
+ notes:["Spacing is not about total hours. Four twenty minute sessions beat one eighty minute session on the same material.",
+        "Same time. Different result."]},
+
+{bg:"cream",eyebrow:"WHY THIS MATTERS",
+ big:"You are spending the hours either way.",big_sm:true,
+ stack:[{b:"THE REAL CHOICE",t:"Not whether you study. Whether the studying counts for anything."},
+        {b:"THE COST",t:"Reading it four times and testing yourself once take the same hour."}],
+ notes:["This is the argument, and it is not a lecture about working harder. It is about the hours they are already spending.",
+        "Nobody in here is trying to study badly. They were taught to read things over, and it does not work."]},
+
+{bg:"black",fire:true,eyebrow:"WHAT TO ACTUALLY DO",
+ big:"FOUR <em>STRATEGIES</em>",
+ notes:["Two decide whether it sticks. Two decide whether it happens at all.",
+        "Ninety seconds each, keep it moving."]},
+
+{bg:"cream",eyebrow:"ONE",
+ big:"Self-testing",
+ stack:[{b:"DO THIS",t:"Cover it. Say it or write it from nothing. Then check."},
+        {b:"NOT THIS",t:"Reading the answer and thinking yeah, I knew that."}],
+ kicker:"HIGHEST RATED TECHNIQUE IN THE RESEARCH. ALSO THE ONE THAT FEELS WORST.",
+ notes:["Flashcards count, but only if you answer before you flip. Practice quizzes count. Blank paper counts.",
+        "The check is where people cheat themselves. Recognizing an answer is not producing one."]},
+
+{bg:"cream",eyebrow:"TWO",
+ big:"Spaced repetition",
+ stack:[{b:"DO THIS",t:"Four twenty minute sessions across four days."},
+        {b:"NOT THIS",t:"Eighty minutes the night before. Same time. Much worse."}],
+ notes:["The hard part is not the technique, it is knowing far enough ahead that you can spread it out.",
+        "Ask how many of them find out about a test with less than two days left."]},
+
+{bg:"cream",eyebrow:"THREE",
+ big:"The Feynman technique",
+ stack:[{b:"DO THIS",t:"Explain it out loud, in your own words, to somebody who has never heard of it."},
+        {b:"THE TELL",t:"The moment you get stuck is the exact thing you do not actually understand."}],
+ notes:["You can reread a sentence you do not understand. You cannot explain one. That is why it works.",
+        "Own words. If they are quoting the page, they are not doing it."]},
+
+{bg:"cream",eyebrow:"FOUR",
+ big:"Pomodoro",
+ stack:[{b:"DO THIS",t:"25 minutes, phone in another room, then a real 5 minute break."},
+        {b:"WHY IT IS ON THIS LIST",t:"The best technique in the world does nothing if you never start."}],
+ notes:["The other three decide whether it sticks. This one decides whether you sit down.",
+        "For a lot of this room, not starting is the actual problem, which makes this the most useful one on the page."]},
+
+{bg:"black",fire:true,eyebrow:"SAME NOTES. SAME FIVE MINUTES.",
+ big:"Pick <em>one</em> and use it.",
+ sub:"Self-test, or explain it to the person next to you.",
+ timer:300,
+ notes:["Notes back out. Five minutes, exactly the same as the first round.",
+        "Make them say out loud which one they are using before they start.",
+        "Walk the room. If somebody is just reading again, ask them which of the four that is."]},
+
+{bg:"black",fire:true,eyebrow:"NOTES DOWN",
+ big:"Take it again.",
+ sub:"Different questions. Same material.",
+ timer:360,
+ notes:["Twelve new questions on the same content."]},
+
+{bg:"cream",eyebrow:"THE SCORES",
+ big:"Test one next to test two.",big_sm:true,
+ kicker:"PROJECT BOTH DISTRIBUTIONS. NO NAMES.",
+ notes:["Side by side. Let them react before you say anything.",
+        "Then go straight to the next slide, because somebody is about to make the objection for you."]},
+
+{bg:"cream",eyebrow:"SOMEBODY IS ABOUT TO SAY THIS",
+ big:"\"Of course it went up. We just saw it twice.\"",big_sm:true,
+ stack:[{b:"CORRECT",t:"You did. That is spaced practice."},
+        {b:"ALSO",t:"You took a test on it. That is retrieval practice."},
+        {b:"AND",t:"You used a strategy on purpose for five minutes."}],
+ kicker:"THREE THINGS HAPPENED. ALL THREE ARE ON THE LIST.",
+ notes:["Say the objection yourself before a student does. Agreeing with it completely is what makes the rest believable.",
+        "The clock was identical. Five minutes and five minutes. Time was not the variable.",
+        "Be straight with them: this was a demonstration, not a controlled experiment. You cannot prove from one period that the strategy alone did it. What you can say is that all three things that happened are backed by research."]},
+
+{bg:"black",fire:true,
+ big:"The method that felt worst is the one that <em>worked</em>.",big_sm:true,
+ notes:["Say it once. Do not explain it further.",
+        "Last thing, out loud, no writing: name something you have coming up and which of the four you are going to use on it."]}
+];
+
+/* ---------- build ---------- */
+var stage=$("stage");
+function fire(){
+  var NS="http://www.w3.org/2000/svg";
+  var f=document.createElement("div"); f.className="fire";
+  var u=document.createElement("u"); f.appendChild(u);
+
+  var svg=document.createElementNS(NS,"svg");
+  svg.setAttribute("viewBox","0 0 1000 400");
+  svg.setAttribute("preserveAspectRatio","none");
+  var uid="g"+Math.floor(Math.random()*1e6);
+
+  var defs=document.createElementNS(NS,"defs");
+  var filt=document.createElementNS(NS,"filter");
+  filt.setAttribute("id",uid);
+  filt.setAttribute("x","-25%"); filt.setAttribute("y","-25%");
+  filt.setAttribute("width","150%"); filt.setAttribute("height","150%");
+  filt.innerHTML =
+    '<feGaussianBlur in="SourceGraphic" stdDeviation="17" result="b"/>'+
+    '<feColorMatrix in="b" type="matrix" result="g" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -13"/>'+
+    '<feTurbulence type="fractalNoise" baseFrequency="0.012 0.042" numOctaves="2" seed="'+Math.floor(Math.random()*90)+'" result="t"/>'+
+    '<feDisplacementMap in="g" in2="t" scale="22" xChannelSelector="R" yChannelSelector="G" result="d"/>'+
+    '<feGaussianBlur in="d" stdDeviation="5"/>';
+  defs.appendChild(filt); svg.appendChild(defs);
+
+  // three stacked layers: deep plum body, magenta mid, hot core
+  var LAYERS=[
+    {fill:"#8E2F92",n:13,rx:[52,104],ry:[62,124],dur:[2.0,3.4],op:.92},
+    {fill:"#D854DC",n:11,rx:[34,72],ry:[46,96],dur:[1.7,2.9],op:.95},
+    {fill:"#FFE6FC",n:8, rx:[16,36],ry:[26,58],dur:[1.4,2.4],op:1}
+  ];
+  LAYERS.forEach(function(L){
+    var g=document.createElementNS(NS,"g");
+    g.setAttribute("filter","url(#"+uid+")");
+    for(var i=0;i<L.n;i++){
+      var e=document.createElementNS(NS,"ellipse");
+      var rx=L.rx[0]+Math.random()*(L.rx[1]-L.rx[0]);
+      var ry=L.ry[0]+Math.random()*(L.ry[1]-L.ry[0]);
+      e.setAttribute("cx", (-40+Math.random()*1080).toFixed(1));
+      e.setAttribute("cy", (408+Math.random()*34).toFixed(1));
+      e.setAttribute("rx", rx.toFixed(1));
+      e.setAttribute("ry", ry.toFixed(1));
+      e.setAttribute("fill", L.fill);
+      e.setAttribute("class","fl");
+      e.style.animationDuration=(L.dur[0]+Math.random()*(L.dur[1]-L.dur[0])).toFixed(2)+"s";
+      e.style.animationDelay=(-Math.random()*3.4).toFixed(2)+"s";
+      e.style.opacity=L.op;
+      g.appendChild(e);
+    }
+    svg.appendChild(g);
+  });
+  var bed=document.createElementNS(NS,"g");
+  bed.setAttribute("filter","url(#"+uid+")");
+  for(var q=0;q<14;q++){
+    var be=document.createElementNS(NS,"ellipse");
+    be.setAttribute("cx",(-30+Math.random()*1060).toFixed(1));
+    be.setAttribute("cy",(402+Math.random()*26).toFixed(1));
+    be.setAttribute("rx",(58+Math.random()*90).toFixed(1));
+    be.setAttribute("ry",(44+Math.random()*52).toFixed(1));
+    be.setAttribute("fill", q%3===0 ? "#FFE6FC" : (q%3===1 ? "#D854DC" : "#8E2F92"));
+    bed.appendChild(be);
+  }
+  svg.insertBefore(bed, svg.childNodes[1]);
+  f.appendChild(svg);
+
+  for(var j=0;j<16;j++){
+    var em=document.createElement("div"); em.className="ember";
+    em.style.left=(Math.random()*100)+"%"; em.style.bottom="0";
+    em.style.setProperty("--dx",(-80+Math.random()*160)+"px");
+    em.style.animationDuration=(2.6+Math.random()*3.2)+"s";
+    em.style.animationDelay=(-Math.random()*6)+"s";
+    f.appendChild(em);
+  }
+  return f;
+}
+SLIDES.forEach(function(d,i){
+  var s=document.createElement("section");
+  s.className="slide "+d.bg;
+  if(d.fire)s.appendChild(fire());
+  if(d.eyebrow){var e=document.createElement("div");e.className="eyebrow";e.textContent=d.eyebrow;s.appendChild(e)}
+  if(d.big){var h=document.createElement("h1");h.className="big"+(d.big_sm?" sm":"");h.innerHTML=d.big;s.appendChild(h)}
+  if(d.sub){var p=document.createElement("p");p.className="sub";p.textContent=d.sub;s.appendChild(p)}
+  if(d.spectrum){var sp=document.createElement("div");sp.className="spectrum";
+    d.spectrum.forEach(function(t){var c=document.createElement("div");c.textContent=t;sp.appendChild(c)});s.appendChild(sp)}
+  if(d.stack){var ul=document.createElement("ul");ul.className="stack";
+    d.stack.forEach(function(o){var li=document.createElement("li");
+      li.innerHTML="<b></b>"+"";li.querySelector("b").textContent=o.b;
+      li.appendChild(document.createTextNode(o.t));ul.appendChild(li)});s.appendChild(ul)}
+  if(d.steps){var os=document.createElement("ul");os.className="steps";
+    d.steps.forEach(function(o){var li=document.createElement("li");
+      var n=document.createElement("i");n.textContent=o.n;
+      var t=document.createElement("span");t.textContent=o.t;
+      li.appendChild(n);li.appendChild(t);os.appendChild(li)});s.appendChild(os)}
+  if(d.warn){var w=document.createElement("ul");w.className="warn";
+    d.warn.forEach(function(o){var li=document.createElement("li");
+      var b=document.createElement("b");b.textContent=o.b;
+      var sp=document.createElement("span");sp.textContent=o.t;
+      li.appendChild(b);li.appendChild(sp);w.appendChild(li)});s.appendChild(w)}
+  if(d.kicker){var k=document.createElement("div");k.className="kicker";k.textContent=d.kicker;s.appendChild(k)}
+  if(d.timer){
+    var c=document.createElement("div");c.id="";c.style.cssText="position:relative;z-index:3;margin-top:5vh;display:flex;align-items:center;gap:1.6vw";
+    var n=document.createElement("div");n.className="tnum";n.textContent=fmt(d.timer);
+    var b=document.createElement("button");b.className="tbtn";b.textContent="START";
+    c.appendChild(n);c.appendChild(b);s.appendChild(c);
+    s._timer={total:d.timer,left:d.timer,run:false,el:n,btn:b};
+    b.onclick=function(){toggleTimer(s)};
+  }
+  stage.appendChild(s);
+});
+function fmt(t){var m=Math.floor(t/60),ss=t%60;return m+":"+(ss<10?"0":"")+ss}
+
+/* ---------- timers ---------- */
+var tick=null;
+function toggleTimer(s){
+  var T=s._timer; T.run=!T.run; T.btn.textContent=T.run?"PAUSE":"START";
+  if(tick)clearInterval(tick);
+  if(T.run){tick=setInterval(function(){
+    if(T.left>0)T.left--;
+    T.el.textContent=fmt(T.left);
+    T.el.classList.toggle("low",T.left<=60&&T.left>0);
+    T.el.classList.toggle("out",T.left===0);
+    if(T.left===0){clearInterval(tick);T.run=false;T.btn.textContent="TIME"}
+  },1000)}
+}
+
+/* ---------- nav ---------- */
+var cur=0, slides=document.querySelectorAll(".slide");
+function go(n){
+  if(n<0||n>=slides.length)return;
+  slides[cur].classList.remove("on");
+  cur=n; slides[cur].classList.add("on");
+  $("num").textContent=(cur+1)+" / "+slides.length;
+  var nb=$("notes-body"); nb.innerHTML="";
+  (SLIDES[cur].notes||[]).forEach(function(t){var p=document.createElement("p");p.textContent=t;nb.appendChild(p)});
+}
+document.addEventListener("keydown",function(e){
+  if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown"){e.preventDefault();go(cur+1)}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();go(cur-1)}
+  else if(e.key==="Home"){go(0)}
+  else if(e.key==="End"){go(slides.length-1)}
+  else if(e.key==="n"||e.key==="N"){$("notes").classList.toggle("on")}
+  else if(e.key==="t"||e.key==="T"){if(slides[cur]._timer)toggleTimer(slides[cur])}
+  else if(e.key==="f"||e.key==="F"){
+    if(document.fullscreenElement)document.exitFullscreen();
+    else document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();
+  }
+});
+stage.addEventListener("click",function(e){ if(e.target.classList.contains("tbtn"))return; go(cur+1) });
+
+/* ---------- hold until fonts are in, so nothing reflows mid-class ---------- */
+function start(){ $("boot").classList.add("gone"); go(0); }
+if(document.fonts&&document.fonts.ready){
+  var done=false;
+  document.fonts.ready.then(function(){if(!done){done=true;start()}});
+  setTimeout(function(){if(!done){done=true;start()}},4000);
+} else start();
+})();
+</script>
+</body>
+</html>
