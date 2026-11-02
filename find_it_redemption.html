@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Find It: Redemption</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3EEE6; --ink:#2B2D31; --tile:#2B2D31; --tileInk:#F3EEE6; --accent:#D854DC; --muted:#6c6a66; --used:#d9d2c6; --usedInk:#a39c90; --line:#2B2D31; --good:#1f7a4d; --bad:#b3261e; --panel:#fffaf3;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme:dark; --bg:#1d1e21; --ink:#F3EEE6; --tile:#33353b; --tileInk:#F3EEE6; --muted:#a9a49b; --used:#26272b; --usedInk:#55565c; --line:#4a4c53; --good:#4cc38a; --bad:#ff6b5e; --panel:#26272b;
+}}
+:root[data-theme="dark"]{ color-scheme:dark; --bg:#1d1e21; --ink:#F3EEE6; --tile:#33353b; --tileInk:#F3EEE6; --muted:#a9a49b; --used:#26272b; --usedInk:#55565c; --line:#4a4c53; --good:#4cc38a; --bad:#ff6b5e; --panel:#26272b; }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;display:flex;flex-direction:column}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+header{display:flex;align-items:center;gap:16px;padding:14px 22px;flex-wrap:wrap}
+header h1{font-size:clamp(22px,2.6vw,34px);font-weight:800;margin:0;letter-spacing:-.02em}
+header .sp{flex:1}
+.btn{border:2px solid var(--line);background:transparent;border-radius:999px;padding:8px 18px;font-weight:600;font-size:15px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+main{flex:1;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:auto repeat(4,1fr);gap:10px;padding:0 22px 12px;min-height:0}
+.cat{font-weight:800;font-size:clamp(14px,1.7vw,24px);text-align:center;padding:6px 4px;border-bottom:4px solid var(--accent)}
+.tile{background:var(--tile);color:var(--tileInk);border:0;border-radius:6px;font-weight:800;font-size:clamp(28px,4.6vw,68px);letter-spacing:-.03em;transition:transform .12s}
+.tile:hover{transform:scale(1.02)}
+.tile.used{background:var(--used);color:var(--usedInk);cursor:default;transform:none;font-size:clamp(14px,1.4vw,20px);font-weight:400}
+footer{display:flex;gap:10px;padding:10px 22px 16px;flex-wrap:wrap}
+.team{flex:1;min-width:120px;border:2px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:2px;background:var(--panel)}
+.team.turn{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent)}
+.team input{border:0;background:transparent;color:var(--ink);font:inherit;font-weight:600;font-size:15px;width:100%;padding:0}
+.team .score{font-size:clamp(24px,2.6vw,38px);font-weight:800;font-variant-numeric:tabular-nums}
+.team .adj{display:flex;gap:6px}
+.team .adj button{border:1px solid var(--line);background:transparent;border-radius:4px;width:30px;height:24px;line-height:1;font-size:16px}
+.turnlbl{font-size:12px;color:var(--accent);font-weight:600;min-height:15px}
+
+/* overlay */
+.ov{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;padding:4vh 6vw;text-align:center;z-index:10}
+.ov.show{display:flex}
+.ov .meta{font-size:clamp(16px,1.8vw,24px);color:var(--muted);font-weight:600}
+.ov .clue{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:clamp(32px,5vw,72px);line-height:1.15;max-width:22ch;margin:2vh 0 3vh}
+.clock{font-size:clamp(90px,16vw,220px);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.04em;line-height:1}
+.clock.low{color:var(--bad)}
+.bar{width:min(900px,80vw);height:12px;border:2px solid var(--line);border-radius:999px;overflow:hidden;margin:2vh 0}
+.bar i{display:block;height:100%;background:var(--accent);width:100%;transition:width .25s linear}
+.answer{font-size:clamp(22px,2.8vw,40px);font-weight:600;max-width:30ch;margin:1vh 0 2vh;display:none}
+.answer.show{display:block}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:1.5vh}
+.award{border:2px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 14px;font-weight:600;font-size:16px}
+.award.plus{border-color:var(--good);color:var(--good)}
+.award.minus{border-color:var(--bad);color:var(--bad)}
+.timeup{font-size:clamp(28px,4vw,56px);font-weight:800;color:var(--bad);min-height:1.2em}
+.hint{font-size:13px;color:var(--muted);margin-top:2vh}
+.settings{display:none;position:fixed;right:22px;top:70px;background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:16px;z-index:20;width:280px;text-align:left}
+.settings.show{display:block}
+.settings label{display:flex;justify-content:space-between;align-items:center;margin:6px 0;font-size:15px}
+.settings input{width:70px;font:inherit;padding:2px 6px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.tile{transition:none}.bar i{transition:none}}
+</style></head>
+<body>
+<header>
+  <h1>Find It: Redemption</h1>
+  <span class="sp"></span>
+  <button class="btn primary" id="orgBtn">Start 5:00 reorganize</button>
+  <button class="btn" id="setBtn">Settings</button>
+</header>
+<main id="board"></main>
+<footer id="teams"></footer>
+
+<div class="ov" id="ov">
+  <div class="meta" id="meta"></div>
+  <div class="clue" id="clue"></div>
+  <div class="clock" id="clock"></div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="timeup" id="timeup"></div>
+  <div class="answer" id="ans"></div>
+  <div class="row" id="ctrl"></div>
+  <div class="row" id="awards"></div>
+  <div class="hint">Space: start or pause timer &nbsp;&nbsp; A: show answer &nbsp;&nbsp; Esc: back to board</div>
+</div>
+
+<div class="settings" id="settings">
+  <label>Groups <input type="number" id="nGroups" min="2" max="8"></label>
+  <label>100 seconds <input type="number" id="t100" min="5"></label>
+  <label>200 seconds <input type="number" id="t200" min="5"></label>
+  <label>300 seconds <input type="number" id="t300" min="5"></label>
+  <label>400 seconds <input type="number" id="t400" min="5"></label>
+  <label>Organize minutes <input type="number" id="orgMin" min="1"></label>
+  <div class="row" style="justify-content:flex-start">
+    <button class="btn" id="resetBtn">Reset game</button>
+    <button class="btn" id="closeSet">Done</button>
+  </div>
+</div>
+
+<script>
+const CATS=["Report card","The clock","Deadlines","Fine print","Grab bag"];
+const VALS=[100,200,300,400];
+const Q={
+"0-100":["The number of Bio quiz questions Jordan got fully right","What is 2? (#2 and #4)"],
+"0-200":["The correct answer to question 1 on the Bio quiz","What is mitochondria?"],
+"0-300":["Jordan's score on Section C of the math test","What is 10 out of 16?"],
+"0-400":["The three things Jordan can check off before requesting a math retake","What are test corrections, practice set B, and meeting with Dr. Lin or a tutor?"],
+"1-100":["The class Jordan has at 2:45 on Monday","What is Red Block: Metacognition?"],
+"1-200":["The time Jordan eats lunch on Wednesday","What is 11:40?"],
+"1-300":["The time the bus leaves for Wednesday's soccer game","What is 3:00?"],
+"1-400":["The class Jordan has right before Biology on Thursday","What is French 1?"],
+"2-100":["The day the Hammurabi worksheet is due","What is Friday 11/6?"],
+"2-200":["The day the personal narrative final draft is due","What is Monday 11/9?"],
+"2-300":["The day of the French vocab quiz","What is Thursday 11/5? (jeudi)"],
+"2-400":["The deadline for the elective interest form, and who it goes to","What is Monday 11/9, Ms. Park?"],
+"3-100":["Jordan's French teacher","Who is Mme. Duval?"],
+"3-200":["Where soccer practice happens","What is Kezar Stadium?"],
+"3-300":["The word count range for the personal narrative","What is 600 to 900 words?"],
+"3-400":["The two things Jordan needs to bring on the field trip","What are a water bottle and a bag lunch?"],
+"4-100":["Show me: hold up the Biology lab","The enzyme lab"],
+"4-200":["The French word for older","What is aîné (aînée)?"],
+"4-300":["Show me: hold up the page where Jordan wrote a topic idea, and name one idea","Narrative rubric. What is the day the power went out, or soccer tryouts?"],
+"4-400":["Show me: hold up the page with Friday's Learning Center hours, and say when it opens","Learning Center flyer. What is 7:45 AM?"]
+};
+const DEF={n:6,t:{100:15,200:12,300:10,400:8},org:5,scores:[],names:[],used:{},turn:0};
+let S;
+function load(){try{const r=localStorage.getItem("finditR");S=r?JSON.parse(r):null}catch(e){S=null}
+ if(!S){S=JSON.parse(JSON.stringify(DEF))} fix();}
+function save(){try{localStorage.setItem("finditR",JSON.stringify(S))}catch(e){}}
+function fix(){for(let i=0;i<S.n;i++){if(S.scores[i]==null)S.scores[i]=0;if(!S.names[i])S.names[i]="Group "+(i+1)} if(S.turn>=S.n)S.turn=0;}
+
+const board=document.getElementById("board"),teams=document.getElementById("teams");
+function renderBoard(){board.innerHTML="";
+ CATS.forEach(c=>{const d=document.createElement("div");d.className="cat";d.textContent=c;board.appendChild(d)});
+ VALS.forEach(v=>CATS.forEach((c,ci)=>{const k=ci+"-"+v,b=document.createElement("button");
+  b.className="tile"+(S.used[k]?" used":"");b.textContent=S.used[k]?(S.used[k]===true?"done":S.used[k]):v;
+  b.setAttribute("aria-label",c+" for "+v);
+  if(!S.used[k])b.onclick=()=>openClue(ci,v);board.appendChild(b)}));}
+function renderTeams(){teams.innerHTML="";
+ for(let i=0;i<S.n;i++){const t=document.createElement("div");t.className="team"+(i===S.turn?" turn":"");
+  t.innerHTML=`<div class="turnlbl">${i===S.turn?"Picking next":""}</div><input value="${S.names[i].replace(/"/g,"&quot;")}" aria-label="Group name"><div class="score">${S.scores[i]}</div><div class="adj"><button aria-label="minus 100">−</button><button aria-label="plus 100">+</button><button aria-label="Set as picking group" style="width:auto;padding:0 6px;font-size:12px">turn</button></div>`;
+  const [inp]=t.getElementsByTagName("input");inp.onchange=e=>{S.names[i]=e.target.value||("Group "+(i+1));save()};
+  const bs=t.querySelectorAll(".adj button");bs[0].onclick=()=>{S.scores[i]-=100;save();renderTeams()};
+  bs[1].onclick=()=>{S.scores[i]+=100;save();renderTeams()};bs[2].onclick=()=>{S.turn=i;save();renderTeams()};
+  teams.appendChild(t)}}
+
+/* audio */
+let ac;function tone(f,d,type="square",vol=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;g.gain.value=vol;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
+function buzzer(){tone(140,.9,"sawtooth",.25);setTimeout(()=>tone(110,.9,"sawtooth",.25),120)}
+/* original quiz-show thinking loop */
+const MEL=[[659,1],[784,1],[659,1],[523,1],[587,1],[698,1],[880,1],[784,1],[659,1],[784,1],[1047,1],[988,1],[880,2],[784,2],[659,1],[784,1],[659,1],[523,1],[587,1],[698,1],[880,1],[784,1],[698,1],[659,1],[587,1],[494,1],[523,4]];
+const BASS=[131,196,175,196,131,196,175,131];
+let mGain=null,mTO=null;
+function loopOnce(){if(!mGain)return;const beat=60/138,t0=ac.currentTime+.05;let t=t0;
+ MEL.forEach(([f,d])=>{const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d*beat*.9);o.connect(g);g.connect(mGain);o.start(t);o.stop(t+d*beat);t+=d*beat});
+ const len=t-t0;BASS.forEach((f,i)=>{const bt=t0+i*len/BASS.length,o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.0001,bt);g.gain.exponentialRampToValueAtTime(.3,bt+.02);g.gain.exponentialRampToValueAtTime(.0001,bt+len/BASS.length*.8);o.connect(g);g.connect(mGain);o.start(bt);o.stop(bt+len/BASS.length)});
+ mTO=setTimeout(loopOnce,len*1000-60)}
+function startMusic(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();if(mGain)return;mGain=ac.createGain();mGain.gain.value=.5;mGain.connect(ac.destination);loopOnce()}catch(e){}}
+function stopMusic(){clearTimeout(mTO);mTO=null;if(mGain){try{const g=mGain;g.gain.setTargetAtTime(0,ac.currentTime,.05);setTimeout(()=>g.disconnect(),300)}catch(e){}mGain=null}}
+
+/* timer overlay */
+const ov=document.getElementById("ov"),clock=document.getElementById("clock"),bar=document.getElementById("bar"),
+ meta=document.getElementById("meta"),clue=document.getElementById("clue"),ans=document.getElementById("ans"),
+ ctrl=document.getElementById("ctrl"),awards=document.getElementById("awards"),timeup=document.getElementById("timeup");
+let total=0,left=0,iv=null,running=false,cur=null,mode=null;
+function fmt(s){return s>=60?Math.floor(s/60)+":"+String(s%60).padStart(2,"0"):String(s)}
+function draw(){clock.textContent=fmt(left);bar.style.width=(total?left/total*100:0)+"%";clock.classList.toggle("low",left<=5&&total>0)}
+function tick(){left--; if(left<=3&&left>0)tone(880,.12); draw(); if(left<=0){stop();timeup.textContent="Time!";buzzer(); if(mode==="clue")setCtrl()}}
+function start(){if(running||left<=0)return;running=true;iv=setInterval(tick,1000);if(mode==="clue")startMusic();setCtrl()}
+function stop(){running=false;clearInterval(iv);iv=null;stopMusic()}
+function toggle(){running?(stop(),setCtrl()):start()}
+function setCtrl(){ctrl.innerHTML="";
+ const mk=(t,fn,p)=>{const b=document.createElement("button");b.className="btn"+(p?" primary":"");b.textContent=t;b.onclick=fn;ctrl.appendChild(b)};
+ if(left>0)mk(running?"Pause":(left===total?"Start search":"Resume"),toggle,!running);
+ if(mode==="clue"){ if(!ans.classList.contains("show"))mk("Show answer",showAns,left<=0); mk("Back to board",closeClue);}
+ else mk("Close",closeOv);}
+function showAns(){ans.classList.add("show");stop();setCtrl();
+ awards.innerHTML="";for(let i=0;i<S.n;i++){const p=document.createElement("button");p.className="award plus";p.textContent=S.names[i]+" +"+cur.v;
+  p.onclick=()=>{S.scores[i]+=cur.v;S.used[cur.k]=S.names[i];save();closeClue(true)};awards.appendChild(p)}
+ const no=document.createElement("button");no.className="award minus";no.textContent="Nobody got it";no.onclick=()=>{S.used[cur.k]=true;save();closeClue(true)};awards.appendChild(no);}
+function openClue(ci,v){cur={k:ci+"-"+v,v};mode="clue";const q=Q[cur.k];
+ meta.textContent=CATS[ci]+" for "+v+"  |  "+S.names[S.turn]+" picked";clue.textContent=q[0];ans.textContent=q[1];ans.classList.remove("show");
+ total=left=+S.t[v];timeup.textContent="";awards.innerHTML="";draw();setCtrl();ov.classList.add("show");}
+function closeClue(advance){stop();ov.classList.remove("show");if(advance===true){S.turn=(S.turn+1)%S.n;save()}renderBoard();renderTeams();mode=null}
+function closeOv(){stop();ov.classList.remove("show");mode=null}
+document.getElementById("orgBtn").onclick=()=>{mode="org";meta.textContent="";clue.textContent="Reorganize your pile.";
+ ans.classList.remove("show");awards.innerHTML="";timeup.textContent="";total=left=S.org*60;draw();setCtrl();ov.classList.add("show")};
+document.addEventListener("keydown",e=>{if(!ov.classList.contains("show"))return;
+ if(e.target.tagName==="INPUT")return;
+ if(e.code==="Space"){e.preventDefault();if(left>0)toggle()}
+ else if(e.key==="Escape"){mode==="clue"?closeClue():closeOv()}
+ else if((e.key==="a"||e.key==="A")&&mode==="clue"&&!ans.classList.contains("show"))showAns()});
+
+/* settings */
+const st=document.getElementById("settings");
+document.getElementById("setBtn").onclick=()=>{nGroups.value=S.n;t100.value=S.t[100];t200.value=S.t[200];t300.value=S.t[300];t400.value=S.t[400];orgMin.value=S.org;st.classList.toggle("show")};
+document.getElementById("closeSet").onclick=()=>{S.n=Math.min(8,Math.max(2,+nGroups.value||6));
+ [100,200,300,400].forEach(v=>S.t[v]=Math.max(5,+document.getElementById("t"+v).value||S.t[v]));
+ S.org=Math.max(1,+orgMin.value||5);fix();save();st.classList.remove("show");renderTeams()};
+document.getElementById("resetBtn").onclick=()=>{if(confirm("Reset scores and board?")){const keep={n:S.n,t:S.t,org:S.org};S=JSON.parse(JSON.stringify(DEF));Object.assign(S,keep);S.scores=[];S.names=[];fix();save();st.classList.remove("show");renderBoard();renderTeams()}};
+
+load();renderBoard();renderTeams();
+</script>
+</body></html>
