@@ -530,7 +530,7 @@ function stageGate(){if(preview)return true;if(chapter===3){const roles=new Set(
 function gjStoreGet(k){try{return window.localStorage.getItem(k)}catch(e){return ''}}
 function gjStoreSet(k,v){try{window.localStorage.setItem(k,v)}catch(e){}}
 function drawScheduler(){ const __oldListScroll=$('caseBody')?.querySelector('.cal-items')?.scrollTop||0; $('caseTabs').innerHTML=CHAPTERS.map((n,i)=>`<button class="case-tab ${i+1===chapter?'active':''} ${i<solved?'done':''} ${i+1>solved+1?'lock':''}" onclick="gotoChapter(${i+1})" ${i+1>solved+1?'disabled':''}>${String(i+1).padStart(2,'0')} · ${n}</button>`).join('');const b=$('caseBody');if(chapter===1){b.innerHTML=`<div class="case-overline">CASE FILE 01 / TIME ESTIMATES</div><h2 class="case-title">The homework planner</h2><p class="case-intro">She says she never has enough time. Ask your teammates what Canvas claims and what her past work logs show. Enter only how long each assignment <b>actually</b> takes her.</p><div class="case-center"><table class="file-table"><thead><tr><th>ASSIGNMENT</th><th style="text-align:right">REAL TIME · MINUTES</th></tr></thead><tbody>${ASSIGN.map(t=>`<tr><td>${esc(t.name)}</td><td><input type="number" min="0" step="30" id="time-${t.id}" data-time="${t.id}" value="${esc(answerTimes[t.id]??'')}" placeholder="?" aria-label="Actual minutes for ${esc(t.name)}"></td></tr>`).join('')}</tbody></table></div><div class="case-bottom"><div id="caseFeedback" class="case-msg">The answer lives in other people’s evidence folders.</div><button class="btn dark" onclick="checkTimes()">Check all five times →</button></div>`;b.querySelectorAll('[data-time]').forEach(inp=>inp.addEventListener('input',e=>answerTimes[e.target.dataset.time]=e.target.value));}
-else if(chapter===2){b.innerHTML=`<div class="case-overline">CASE FILE 02 / UNFINISHED DETAILS</div><h2 class="case-title">The small pile</h2><p class="case-intro">Gorgonzola keeps carrying tiny unfinished actions in her head. Several little obligations are still unfinished. Find <b>five distinct actions</b> across your team’s evidence. Record what needs doing and where someone found each clue. Decide together how long the whole pile would realistically take.</p><div class="case-center ledger-scroll scrollbar"><div class="microledger">${quickLedger.map((it,i)=>`<div class="micro-note" style="--tilt:${[-1.5,.6,-.8,1.4,-.4][i]}deg"><span class="micro-count">${String(i+1).padStart(2,'0')}</span><input class="micro-answer" maxlength="115" aria-label="Quick action ${i+1}" placeholder="Write an action you discovered…" value="${esc(it.task)}" oninput="quickLedger[${i}].task=this.value"><select class="micro-source" aria-label="Evidence source for action ${i+1}" onchange="quickLedger[${i}].source=this.value"><option value="">Found in…</option>${(size===4?[['portal','School Portal (Canvas/Gmail)'],['note','Notebook'],['life','Outside school']]:[['canvas','Canvas'],['inbox','Inbox'],['note','Notebook'],['life','Outside school']]).map(x=>`<option value="${x[0]}" ${it.source===x[0]?'selected':''}>${x[1]}</option>`).join('')}</select></div>`).join('')}</div><label class="quick-total">Total time for all five <input type="number" min="0" max="120" step="1" id="quickTotal" value="${esc(quickTotal)}" oninput="quickTotal=this.value" placeholder="?" aria-label="Total minutes for all five quick actions"> min <small>Your team’s combined estimate, in minutes</small></label></div><div class="case-bottom"><span class="case-msg" id="caseFeedback">Use normal language. The same clue may appear in more than one place; either source is acceptable.</span><button class="btn dark" onclick="checkQuick()">File the five notes →</button></div>`;}
+else if(chapter===2){b.innerHTML=`<div class="case-overline">CASE FILE 02 / UNFINISHED DETAILS</div><h2 class="case-title">The small pile</h2><p class="case-intro">Gorgonzola keeps carrying tiny unfinished actions in her head. Several little obligations are still unfinished. Find <b>five distinct actions</b> across your team’s evidence. Record what needs doing and where someone found each clue. More than one answer can be valid: focus on five different actions that could be finished quickly. Decide together how long the whole pile would realistically take.</p><div class="case-center ledger-scroll scrollbar"><div class="microledger">${quickLedger.map((it,i)=>`<div class="micro-note" style="--tilt:${[-1.5,.6,-.8,1.4,-.4][i]}deg"><span class="micro-count">${String(i+1).padStart(2,'0')}</span><input class="micro-answer" maxlength="115" aria-label="Quick action ${i+1}" placeholder="Write an action you discovered…" value="${esc(it.task)}" oninput="quickLedger[${i}].task=this.value"><select class="micro-source" aria-label="Evidence source for action ${i+1}" onchange="quickLedger[${i}].source=this.value"><option value="">Found in…</option>${(size===4?[['portal','School Portal (Canvas/Gmail)'],['note','Notebook'],['life','Outside school']]:[['canvas','Canvas'],['inbox','Inbox'],['note','Notebook'],['life','Outside school']]).map(x=>`<option value="${x[0]}" ${it.source===x[0]?'selected':''}>${x[1]}</option>`).join('')}</select></div>`).join('')}</div><label class="quick-total">Total time for all five <input type="number" min="0" max="120" step="1" id="quickTotal" value="${esc(quickTotal)}" oninput="quickTotal=this.value" placeholder="?" aria-label="Total minutes for all five quick actions"> min <small>Your team’s combined estimate, in minutes</small></label></div><div class="case-bottom"><span class="case-msg" id="caseFeedback">Use your own words. Different evidence-backed quick actions can work; avoid listing the same job twice.</span><button class="btn dark" onclick="checkQuick()">File the five notes →</button></div>`;}
 else if(chapter===3){b.innerHTML=`<div class="case-overline">CASE FILE 03 / THE WORK THAT NEVER STARTS</div><h2 class="case-title">The task she avoids</h2><p class="case-intro">One school task keeps getting postponed, even when Gorgonzola has time. Compare the evidence your team collected. Identify the assignment, two specific things she does instead of starting, and a realistic first move.</p><div class="case-center dread-evidence scrollbar"><div class="dread-field"><label>01 · Which specific assignment?</label><select class="field" onchange="dreadTask=this.value"><option value="">Choose after investigating…</option>${[ASSIGN[1],ASSIGN[2],ASSIGN[4],ASSIGN[0],ASSIGN[3]].map(t=>`<option value="${t.id}" ${dreadTask===t.id?'selected':''}>${esc(t.name)}</option>`).join('')}</select></div><div class="dread-field"><label>02 · Where did you find that?</label><select class="field" onchange="dreadSourcePrimary=this.value"><option value="">Choose a source…</option>${(size===4?['portal','note','life']:['canvas','inbox','note','life']).map(id=>`<option value="${id}" ${dreadSourcePrimary===id?'selected':''}>${ROLE[id][0]}</option>`).join('')}</select></div><div class="dread-field"><label>03 · One other place where you found supporting evidence</label><select class="field" onchange="dreadSource=this.value"><option value="">Choose another source…</option>${(size===4?['portal','note','life']:['canvas','inbox','note','life']).map(id=>`<option value="${id}" ${dreadSource===id?'selected':''}>${ROLE[id][0]}</option>`).join('')}</select></div><div class="dread-field"><label>04 · One thing she did instead</label><input class="field" placeholder="Describe one behavior…" value="${esc(dreadAvoid1)}" oninput="dreadAvoid1=this.value"></div><div class="dread-field"><label>05 · Another thing she did instead</label><input class="field" placeholder="A different behavior…" value="${esc(dreadAvoid2)}" oninput="dreadAvoid2=this.value"></div><div class="dread-field wide"><label>06 · What concrete first move would help her begin?</label><input class="field" placeholder="Something concrete she could do before the work itself…" value="${esc(dreadStart)}" oninput="dreadStart=this.value"></div></div><div class="case-bottom"><span class="case-msg" id="caseFeedback">Use your own words. Typos are okay; evidence and a specific starting action matter.</span><button class="btn dark" onclick="checkDread()">Submit evidence →</button></div>`;}
 else if(chapter===4){b.innerHTML=`<div class="case-overline">CASE FILE 04 / THE WEEK</div><h2 class="case-title" style="margin:3px 0 4px">Build her week</h2><p class="case-intro" style="margin-bottom:8px">Click a task on the right, then a starting slot. Click a filled slot to remove it. Each square is 30 minutes, 3–8 PM. Protect fixed commitments and ask the team about changes.</p><div class="calendar-layout"><div class="calendar-grid" id="calGrid">${drawCalendarGrid()}</div><div class="cal-side"><div class="subhead">UNSCHEDULED BLOCKS</div><div class="cal-items scrollbar">${BLOCKS.map(x=>`<button class="cal-chip ${x.life?'life':''} ${selectedBlock===x.id?'picked':''} ${placement[x.id]||x.id==='hangout'&&cutFriend?'done':''}" onclick="pickBlock('${x.id}')">${esc(x.name)} <small style="float:right">${x.cells*30}m</small></button>`).join('')}</div><div class="dread-payoff"><strong>THE PLAN</strong>${placement.hist?'Her schedule is coming together. See what is realistically possible before you close the case.':'Does the order of the work make sense as well as its timing?'}</div></div></div><div class="case-bottom"><span class="case-msg" id="caseFeedback">${Object.keys(placement).length} of ${BLOCKS.length} blocks placed</span><button class="btn dark" onclick="checkWeek()">Close the case →</button></div>`;}
 else{b.innerHTML=`<div class="endcase"><div class="case-overline">CASE CLOSED</div><h2>A workable week.</h2><p>You reconstructed her real workload, cleared the small tasks, and put the loathsome assignment first. Getting the dreaded work out of the way lowers the worry hanging over her and leaves more energy for the work she enjoys, friends, and family.</p><div class="v10-finale"><div class="v10-cheese" aria-label="Illustration of Gorgonzola Jones as a friendly cartoon cheese character">${v10Character()}</div><blockquote>“Wait, I can actually do this. Thanks for helping me put my week back together!”<br><small>— Gorgonzola</small></blockquote></div><button class="btn dark" style="margin-top:14px" onclick="downloadReflection()">Download your Time Management guide · PDF ↓</button></div>`;}
@@ -544,47 +544,115 @@ function words(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[
 function editDistance(a,b){if(a===b)return 0;if(Math.abs(a.length-b.length)>2)return 3;const dp=Array.from({length:b.length+1},(_,i)=>i);for(let i=1;i<=a.length;i++){let prev=dp[0];dp[0]=i;for(let j=1;j<=b.length;j++){let old=dp[j];dp[j]=Math.min(dp[j]+1,dp[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));prev=old}}return dp[b.length]}
 function tokenClose(a,b){if(a===b)return true;if(a.length<5||b.length<5)return false;return editDistance(a,b)<=((Math.min(a.length,b.length)>=9)?2:1)}
 function textHas(s, terms){const toks=words(s);return terms.some(term=>{const q=words(term);return q.length&&q.every(w=>toks.some(t=>tokenClose(t,w)||t===w||w.length>=6&&t.startsWith(w)))})}
+function quickActionCategory(raw){
+ const t=words(raw).join(' ');
+ if(!t)return null;
+ const has=(...terms)=>textHas(t,terms);
+ // The time-management skill is about small *actions*, not doing a major assignment.
+ // An upload/submission alone is quick; actually writing the assignment is not.
+ if(has('write essay','draft essay','complete essay','finish essay','work on essay',
+        'write lab','do the lab','complete lab writeup','finish lab writeup',
+        'do math problem set','finish math problem set','solve math problem set',
+        'read history chapter','read chapter 7','read entire chapter','history reading',
+        'study spanish vocab','study for quiz','study for test',
+        'write history notes','do homework','finish all homework','clean entire room'))return null;
+ // Authentic school and life chores. These are examples, not five required passwords.
+ // Order matters: a Learning Center email is an appointment, not a second email task.
+ if(has('syllabus','syllabi','course outline','mark as read','syllabus acknowledgement'))return 'syllabus';
+ if(has('discussion','discuss','forum','one sentence post','chapter reflection'))return 'discussion';
+ if(has('learning center','learning centre','lc appointment','make up appointment',
+        'makeup appointment','make up quiz invite','quiz appointment','appointment invitation',
+        'accept appointment','confirm appointment','appointment email'))return 'learning-center';
+ if(has('priya','missed math notes','math class notes','ask for notes','notes from priya'))return 'priya-notes';
+ if(has('dance theme','vote','student council poll','dance poll','school poll','poll'))return 'dance-vote';
+ if(has('water bottle','waterbottle','grab water','get water','refill bottle','fill bottle'))return 'water-bottle';
+ if(has('submit assignment','submitting assignment','submit homework','upload assignment',
+        'upload homework','turn in assignment','hand in assignment','submit finished work',
+        'upload file','submit the packet','turn in packet','hand in packet','submit work',
+        'submit','submission'))return 'submit-work';
+ if(has('cleats','jersey','soccer bag','pack bag','pack my bag','extra socks','pack for practice'))return 'pack-bag';
+ if(has('reply to email','reply email','answer email','send email','writing email',
+        'write email','email teacher','email the teacher','message teacher','respond to teacher',
+        'send a message to teacher','email','inbox reply','respond to an email'))return 'email-reply';
+ if(has('group chat','reply friends','message friends','text friends','reply to friends',
+        'respond friends','respond to group','reply to cluster','respond to cluster','message cluster','text cluster','cluster chat','friend group'))return 'friend-message';
+ if(has('ask dad','dad pickup','dad pick up','confirm ride','ride home','pickup time',
+        'pick up time','confirm pickup','text dad','message dad'))return 'ride-arrangement';
+ if(has('reminder','calendar event','set alarm','put in calendar','add to planner',
+        'write in planner','add calendar','check calendar','add to calendar'))return 'reminder';
+ if(has('library hold','library book','return book','pick up book','collect library','library pickup'))return 'library';
+ if(has('charger','charge laptop','charge phone','plug in laptop','plug in phone'))return 'charge-device';
+ if(has('laundry','put away clothes','take out trash','take out recycling',
+        'feed dog','walk the dog','grab snack','get snack','grab lunch'))return 'other-errand';
+ if(has('send text','send a text','text someone','text back','reply text',
+        'reply to text','answer text','answer a text','text message'))return 'other-text';
+ return null;
+}
 function checkQuick(){
  if(!stageGate())return;
- const clues=[
- ['syllab','syllabus','syllabi','course outline'],
- ['discussion','discuss','forum','history post'],
- ['learning center','learning centre','appointment','learning center invite','make up','makeup','make up invitation','learning center email','lc invite'],
- ['priya','text','missed notes','math notes'],
- ['vote','dance theme','student council poll','fall dance poll']
- ];
  const answers=quickLedger.filter(x=>String(x.task||'').trim());
- if(answers.length!==5)return feedback('There are five different loose ends. Find the rest of the evidence with your team.');
- const used=new Set();
- for(const x of answers){
-  const ix=clues.findIndex((aliases,i)=>!used.has(i)&&aliases.some(k=>textHas(x.task,[k])));
-  if(ix<0)return feedback('At least one action is not recognized or appears twice. Use a short phrase close to the task in your evidence. Minor spelling mistakes are fine.');
-  used.add(ix);
+ if(answers.length!==5)return feedback('Find and write five different small actions. Each yellow note holds one action.');
+ const used=new Map();
+ for(let i=0;i<answers.length;i++){
+  const category=quickActionCategory(answers[i].task);
+  if(!category)return feedback('Note '+(i+1)+' needs a clear, specific quick action. A full homework assignment is not a quick task; a short follow-up, submission, message or errand can be. Different wording and typos are fine.');
+  if(used.has(category))return feedback('Notes '+used.get(category)+' and '+(i+1)+' seem to describe the same action. Find five distinct small jobs, even if you describe them in your own words.');
+  used.set(category,i+1);
  }
- if(used.size!==5)return feedback('You need five distinct loose ends.');
  const mins=Number(quickTotal);
- if(String(quickTotal).trim()===''||!Number.isFinite(mins))return feedback('Estimate the total time for all five actions together.');
- if(mins<=0||mins>10)return feedback('Recheck your total. These five little things should not require a long work block.');
- feedback('That small pile can be handled quickly, leaving less unfinished business on her mind.',true);
+ if(String(quickTotal).trim()===''||!Number.isFinite(mins))return feedback('Estimate the total number of minutes for all five actions together.');
+ if(mins<=0||mins>10)return feedback('Reconsider your combined estimate. The goal is to notice how quickly these five small jobs can be handled.');
+ feedback('That is a realistic small pile. Your team recognized five distinct quick actions.',true);
  setTimeout(advance,650);
 }
-
 function chooseDread(type,id){if(type==='task')dreadTask=id;else dreadSource=id;drawScheduler()}
+function avoidanceCategory(raw){
+ const t=words(raw).join(' ');
+ if(!t)return null;
+ const has=(...v)=>textHas(t,v);
+ // These categories describe reasonable forms of avoidance, including answers
+ // students gave during the classroom pilot. Specific actions matter; no exact sentence does.
+ if(has('dishwasher','dishes','dish','washing plates','laundry','chores','housework',
+        'clean kitchen','cleaned kitchen','vacuum','sweep','mop','take out trash'))return 'chores';
+ if(has('rearrange','rearranged','tidy desk','tidied desk','clean desk','cleaned desk',
+        'organize room','organized room','clean room','cleaned room','tidy room',
+        'organized desk','organizing desk','sort desk','organize supplies',
+        'organizing supplies','cleaning room','reorganize desk','desk'))return 'organizing-space';
+ if(has('playlist','playlists','spotify','music','song','songs','pick songs','made a mix'))return 'music';
+ if(has('scroll','scrolling','doomscroll','tiktok','tik tok','instagram','insta','snapchat',
+        'check phone','checking phone','on phone','social media','phone notifications'))return 'phone-scrolling';
+ if(has('text friends','talk friends','chat friends','call friends','group chat',
+        'messaging friends','texting friends','typing a message to friends','talking to friends','hang out friends','hanging out','chatting','facetiming'))return 'socializing';
+ if(has('youtube','netflix','watch videos','watched videos','watch tv','watching tv',
+        'watched a show','watching a show','watch movie','reels','vines','watch memes'))return 'watching-media';
+ if(has('get snack','grab snack','eat snack','make food','cook food',
+        'eat lunch','ate lunch','got a snack','getting snacks','grab food','get food','make sandwich',
+        'fill water bottle','refill water','get water'))return 'food-break';
+ if(has('games','game','gaming','pong','tetris','word search','play on phone',
+        'played game','play game'))return 'games';
+ if(has('planner','color code','colour code','reorganized notes','reorganizing notes',
+        'rewrite notes','rewriting notes','calendar','made a list','make a list',
+        'color coding notes','organized binder','binder'))return 'busywork-planning';
+ if(has('nap','napping','sleep','slept','laid down','lay down','rested','took break'))return 'rest';
+ if(has('doodle','doodling','draw','drawing','sketch','sketching','paint','painting'))return 'art';
+ if(has('shopping','browse clothes','online shop','looked at clothes','look at clothes'))return 'browsing';
+ if(has('walk dog','walked dog','played with dog','pet the dog','fed dog','play with cat'))return 'pets';
+ return null;
+}
 function checkDread(){
  if(!stageGate())return;
- if(!dreadTask||!dreadSourcePrimary||!dreadSource||!dreadAvoid1.trim()||!dreadAvoid2.trim()||!dreadStart.trim())return feedback('Identify the assignment, two different evidence sources, two different ways she put it off, and a first step.');
- const groups=[['dish','dishes','dishwasher','kitchen','plate','chore'],['desk','tidy','tidying','organized','organizing','rearrange','rearranging','clean room','sort'],['scroll','scrolling','tiktok','phone','instagram','social'],['playlist','playlists','music','song']];
- const category=s=>groups.findIndex(g=>g.some(w=>textHas(s,[w])));
- const a=category(dreadAvoid1),b=category(dreadAvoid2);
+ if(!dreadTask||!dreadSourcePrimary||!dreadSource||!dreadAvoid1.trim()||!dreadAvoid2.trim()||!dreadStart.trim())
+  return feedback('Name the assignment, two sources, two different specific things she did instead, and one first step.');
+ if(dreadTask!=='hist')return feedback('That assignment does not fit all the evidence. Recheck the other roles.');
+ const a=avoidanceCategory(dreadAvoid1),b=avoidanceCategory(dreadAvoid2);
+ if(a===null||b===null)return feedback('Describe concrete activities she used to put the work off, not just “procrastinated.” Use your own wording; ordinary spelling mistakes are fine.');
+ if(a===b)return feedback('Those describe the same kind of avoidance. Find a second, different behavior; you do not need to quote the notebook word for word.');
  const first=textHas(dreadStart,['open','read','turn','page','book','chapter','history','118','start','begin','get out','pick up','take out']);
- if(dreadTask!=='hist')return feedback('That choice does not match the task she keeps postponing. Cross-check your sources.');
- if(a<0||b<0||a===b)return feedback('Use two different examples of what she did instead. Natural wording is fine.');
- if(!first)return feedback('Describe a real action she could do to start the reading, rather than a general intention.');
- if(dreadSourcePrimary===dreadSource)return feedback('Choose two different evidence sources, then compare what your teammates found.');
- if(![dreadSourcePrimary,dreadSource].every(id=>(size===4?['portal','note','life']:['canvas','inbox','note','life']).includes(id)))return feedback('Choose two sources from the evidence folders.');
- feedback('The evidence fits. Starting the avoided task first clears away the worry.',true);setTimeout(advance,650);
+ if(!first)return feedback('Give one small, physical starting action rather than just saying “do the homework.”');
+ if(dreadSourcePrimary===dreadSource)return feedback('Use two different evidence sources; any two valid locations are fine.');
+ if(![dreadSourcePrimary,dreadSource].every(id=>(size===4?['portal','note','life']:['canvas','inbox','note','life']).includes(id)))return feedback('Select two of the available evidence sources.');
+ feedback('The team found the avoided assignment and two real examples of putting it off.',true);setTimeout(advance,650);
 }
-
 function drawCalendarGrid(){let r='<div class="cal-head">TIME</div>'+DAYS.map(x=>`<div class="cal-head">${x}</div>`).join('');for(let i=0;i<10;i++){r+=`<div class="cal-time">${HOURS[i]}</div>`;for(let j=0;j<7;j++){const d=DAYS[j],fill=Object.entries(placement).find(([id,p])=>p.day===d&&i>=p.row&&i<p.row+p.cells);if(fill){const [id,p]=fill,blk=BLOCKS.find(b=>b.id===id),start=i===p.row;r+=`<button class="cal-slot busy ${blk.life?'life':''}" title="${esc(blk.name)}" onclick="calendarClick('${d}',${i})">${start?`<span class="slotlabel">${esc(blk.name)}</span>`:''}</button>`;}else r+=`<button class="cal-slot" onclick="calendarClick('${d}',${i})" aria-label="${d} ${HOURS[i]}"></button>`;}}return r}
 function pickBlock(id){if(placement[id]){delete placement[id];selectedBlock=''}else if(id==='hangout'&&cutFriend){cutFriend=false;selectedBlock=id}else selectedBlock=selectedBlock===id?'':id;drawScheduler()}
 function cutFriends(){if(cutFriend){cutFriend=false;selectedBlock='hangout'}else{cutFriend=true;delete placement.hangout;selectedBlock=''}drawScheduler()}
@@ -1081,15 +1149,13 @@ function v11AnswerHTML(){
  const row=(a,b)=>`<tr><th>${a}</th><td>${b}</td></tr>`;
  return `<div class="v11-teacher-key"><h2>Gorgonzola · Teacher answer key</h2><p>Private testing only. Students never see this without entering the secret code.</p>
  <h3>01 · Actual homework times</h3><table>${row('History Ch. 7 + notes','60 min · notebook: three previous History reading logs')}${row('Math Problem Set 4','90 min · notebook: earlier math sets')}${row('Bio lab writeup','90 min · notebook: earlier biology draft logs')}${row('English essay draft','180 min · Messages → “Cluster” group chat')}${row('Spanish vocab','30 min · notebook: previous flashcards/study log')}</table><p>Only enter actual times in the Scheduler. Canvas provides the assignments and teacher estimates.</p>
- <h3>02 · The small pile</h3><p>Write <strong>five different actions</strong>, in any order. A source is accepted from any evidence folder. A total of <strong>1–10 minutes</strong> passes.</p><table>${row('1. Syllabus','Mark the History syllabus read · acceptable: syllabus, syllabi, course outline')}${row('2. Discussion','Post the History discussion sentence · acceptable: discussion, forum, History post')}${row('3. Learning Center','Accept the Learning Center appointment / make-up invite · acceptable: Learning Center, appointment, make-up')}${row('4. Priya','Text Priya asking for math notes · acceptable: Priya, text, missed notes, math notes')}${row('5. Dance poll','Vote for the school dance theme · acceptable: vote, dance theme, student council poll')}</table><p><b>Important:</b> The checker recognizes one action from each category, not a duplicate. “Reply to friends” is no longer the fifth answer. Sample total: 7 minutes.</p>
- <h3>03 · The avoided assignment</h3><table>${row('Assignment','History Ch. 7 reading + notes')}${row('Two distinct avoidance behaviors','Any two of: emptying dishwasher/dishes, rearranging/tidying desk, phone scrolling, making a playlist.')}${row('First physical step','Open History book to page 118; open the book or begin the chapter reading also passes.')}${row('Second source','Any independent role: Canvas, Gmail, or Outside School. Notebook alone does not suffice.')}</table>
+ <h3>02 · The small pile</h3><p>Write <strong>five different actions</strong>, in any order. A source is accepted from any evidence folder. A total of <strong>1–10 minutes</strong> passes.</p><table>${row('1. Syllabus','Mark the History syllabus read · acceptable: syllabus, syllabi, course outline')}${row('2. Discussion','Post the History discussion sentence · acceptable: discussion, forum, History post')}${row('3. Learning Center','Accept the Learning Center appointment / make-up invite · acceptable: Learning Center, appointment, make-up')}${row('4. Priya','Text Priya asking for math notes · acceptable: Priya, text, missed notes, math notes')}${row('5. Dance poll','Vote for the school dance theme · acceptable: vote, dance theme, student council poll')}</table><p><b>Important:</b> The five entries above are examples, not the only accepted answers. Other evidence-backed quick actions can count (such as sending a brief email, getting her water bottle, or submitting already-finished work). The five actions must be distinct; estimate 1–10 minutes total. Short natural wording and misspellings count.</p>
+ <h3>03 · The avoided assignment</h3><table>${row('Assignment','History Ch. 7 reading + notes')}${row('Two distinct avoidance behaviors','Any two distinct concrete avoidance behaviors (for example chores, reorganizing her desk, scrolling, making playlists, chatting, watching videos, or other believable distractions). Typos and paraphrases count.')}${row('First physical step','Open History book to page 118; open the book or begin the chapter reading also passes.')}${row('Second source','Any independent role: Canvas, Gmail, or Outside School. Notebook alone does not suffice.')}</table>
  <h3>04 · The week</h3><p>Place all assignments, the small-task block, make-up quiz and fixed commitments. The calendar—not an essay—is the final answer.</p><table>${row('Practices','Monday, Tuesday and Thursday from 3–6 PM including the ride')}${row('Spanish make-up','Wednesday at 3–4 PM, after studying')}${row('Grandma','Wednesday 6–8 PM')}${row('Family trip','Friday, full 3–8 PM grid')}${row('Tournament','Saturday, full 3–8 PM grid representing the blocked day')}${row('Sunday dinner','Sunday 6–7 PM')}${row('Friends','Include a free four-cell block, do not cut it')}${row('English / Learning Center','Acknowledge the extension and Learning Center invitation via Inbox; use updated deadlines.')}</table><p><b>One fully valid example:</b> Mon 3–6 practice; Mon 6–7 History; Mon 7–7:30 Spanish study; Mon 7:30–8 quick tasks. Tue 3–6 practice; Tue 6–7:30 Math. Wed 3–4 quiz; Wed 4–5:30 Biology; Wed 6–8 Grandma. Thu 3–6 practice; Thu 6–8 friends. Friday family trip; Saturday tournament. Sun 3–6 English; Sun 6–7 family dinner. The History task precedes other homework. The grid represents Friday and Saturday as blocked after-school time, not literal event hours.</p></div>`;
 }
 function v11OpenTeacherKey(){if(!v8TestMode)return;showModal(`<div class="v11-keymodal">${v11AnswerHTML()}<button class="btn" onclick="closeModal()">Close key</button></div>`)}
-function v8TestKey(){return 'Open the full teacher key for each chapter: times, five exact small actions and synonyms, avoidance behaviors, and fixed calendar constraints.'}
-/* Fix player-facing validation explanation without leaking the actual list. */
-const v11BaseCheckQuick=checkQuick;
-checkQuick=function(){v11BaseCheckQuick();const f=$('caseFeedback');if(f&&!f.classList.contains('success')&&/different activity|same loose end|same action|same clue/i.test(f.textContent))f.textContent='At least one note is not distinct or is not recognized. Ask the relevant player to reread the wording in their evidence, then write a short action close to how it appears there. Spelling does not have to be perfect.'};
+function v8TestKey(){return 'Open the full teacher key for each chapter: times, example quick actions and alternatives, avoidance behaviors, and fixed calendar constraints.'}
+/* Chapters 2 and 3 now accept varied evidence-supported student wording. */
 
 
 
